@@ -1,5 +1,5 @@
 import { Header } from "@/components/Header";
-import { TableResumen } from "@/components/TableResumen";
+import { TableResumen, ColumnDef } from "@/components/TableResumen";
 import costosData from "@/../data/costos.json";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Lightbulb, Users } from "lucide-react";
@@ -14,7 +14,7 @@ interface CostoItem {
     mensaje_ia: string;
 }
 
-const columns = [
+const columns: ColumnDef<CostoItem>[] = [
   { header: "Insumo / Servicio", accessorKey: "insumo" },
   { header: "Costo Actual", accessorKey: "costo_actual", cell: (row: CostoItem) => `$${row.costo_actual.toFixed(2)}` },
   { header: "Variación Esperada", accessorKey: "variacion_esperada", cell: (row: CostoItem) => `${row.variacion_esperada.toFixed(1)}%` },

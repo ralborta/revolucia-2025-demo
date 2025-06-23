@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Header } from "@/components/Header";
-import { TableResumen } from "@/components/TableResumen";
+import { TableResumen, ColumnDef } from "@/components/TableResumen";
 import conciliacionData from "@/../data/conciliacion.json";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle, FileDown, CheckCircle, XCircle } from "lucide-react";
@@ -15,7 +16,7 @@ interface ConciliacionItem {
     estado: string;
 }
 
-const columns = [
+const columns: ColumnDef<ConciliacionItem>[] = [
   { header: "Fecha", accessorKey: "fecha" },
   { header: "Descripción", accessorKey: "descripcion" },
   { header: "Monto Contable", accessorKey: "monto_contable", cell: (row: ConciliacionItem) => `$${row.monto_contable.toFixed(2)}` },

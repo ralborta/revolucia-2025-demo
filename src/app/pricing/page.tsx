@@ -1,5 +1,5 @@
 import { Header } from "@/components/Header";
-import { TableResumen } from "@/components/TableResumen";
+import { TableResumen, ColumnDef } from "@/components/TableResumen";
 import pricingData from "@/../data/pricing.json";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Lightbulb, TrendingDown, TrendingUp } from "lucide-react";
@@ -17,7 +17,7 @@ interface PricingItem {
   mensaje_agente: string;
 }
 
-const columns = [
+const columns: ColumnDef<PricingItem>[] = [
   { header: "SKU", accessorKey: "sku" },
   { header: "Producto", accessorKey: "nombre" },
   { header: "Precio Actual", accessorKey: "precio_actual", cell: (row: PricingItem) => `$${row.precio_actual}` },

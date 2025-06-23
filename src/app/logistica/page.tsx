@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Header } from "@/components/Header";
-import { TableResumen } from "@/components/TableResumen";
+import { TableResumen, ColumnDef } from "@/components/TableResumen";
 import { DetailPanel } from "@/components/DetailPanel";
 import logisticaData from "@/../data/logistica.json";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,7 @@ interface LogisticaItem {
     recomendaciones_ia: string[];
 }
 
-const columns = [
+const columns: ColumnDef<LogisticaItem>[] = [
   { header: "ID Viaje", accessorKey: "id" },
   { header: "Unidad", accessorKey: "unidad" },
   { header: "Ruta", accessorKey: "ruta" },
