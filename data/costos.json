@@ -1,0 +1,26 @@
+[
+  {
+    "id": "COSTO-001",
+    "insumo": "Materia Prima 'Polímero ZX'",
+    "costo_actual": 120.50,
+    "variacion_esperada": 3.0,
+    "impacto_operativo": "Alto. Afecta al 80% de los productos.",
+    "mensaje_ia": "Materia prima aumentará 3%. Sugiero anticipar compras."
+  },
+  {
+    "id": "COSTO-002",
+    "insumo": "Servicio de Transporte 'LogiFast'",
+    "costo_actual": 5500.00,
+    "variacion_esperada": 0.5,
+    "impacto_operativo": "Medio. Afecta solo a la distribución nacional.",
+    "mensaje_ia": "Costo de transporte estable. No se requieren acciones."
+  },
+  {
+    "id": "COSTO-003",
+    "insumo": "Energía Eléctrica (Planta)",
+    "costo_actual": 8500.00,
+    "variacion_esperada": 1.2,
+    "impacto_operativo": "Bajo. Impacto marginal en el costo unitario.",
+    "mensaje_ia": "Aumento menor en energía. Se puede absorber sin ajustar precios."
+  }
+] 

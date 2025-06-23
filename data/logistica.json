@@ -1,0 +1,54 @@
+[
+  {
+    "id": "VIAJE-001",
+    "unidad": "Unidad #417",
+    "ruta": "Centro de Distribución -> Sucursal Norte",
+    "km_inicial": 32100,
+    "km_final": 32450,
+    "fecha": "2024-06-25",
+    "estado": "Completado",
+    "papeleta_img": "/images/Remito TSB 1.jpg",
+    "chat_simulado": [
+      {
+        "autor": "Agente Empliados Logística",
+        "mensaje": "Hola Juan. Por favor envía foto clara de papeleta y KM actual del vehículo. Gracias!"
+      },
+      {
+        "autor": "Transportista",
+        "mensaje": "📸 Foto enviada"
+      },
+      {
+        "autor": "Agente Empliados Logística",
+        "mensaje": "✅ Recibido y validado.\nHora: 14:23\nKilometraje: 32,450 km\n¡Gracias!"
+      }
+    ],
+    "recomendaciones_ia": [
+      "Unidad #417 cercana a mantenimiento. Programar revisión.",
+      "Retrasos frecuentes detectados en Ruta 8."
+    ]
+  },
+  {
+    "id": "VIAJE-002",
+    "unidad": "Unidad #205",
+    "ruta": "Puerto -> Centro de Distribución",
+    "km_inicial": 15670,
+    "km_final": 15980,
+    "fecha": "2024-06-24",
+    "estado": "Completado",
+    "papeleta_img": "/images/Remito TSB 2.jpg",
+    "chat_simulado": [],
+    "recomendaciones_ia": []
+  },
+  {
+    "id": "VIAJE-003",
+    "unidad": "Unidad #311",
+    "ruta": "Centro de Distribución -> Sucursal Sur",
+    "km_inicial": 89500,
+    "km_final": null,
+    "fecha": "2024-06-26",
+    "estado": "En curso",
+    "papeleta_img": null,
+    "chat_simulado": [],
+    "recomendaciones_ia": []
+  }
+] 

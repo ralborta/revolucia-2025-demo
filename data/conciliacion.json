@@ -1,0 +1,42 @@
+[
+  {
+    "id": "CON-001",
+    "fecha": "2024-06-25",
+    "descripcion": "Pago a Proveedor 'TecnoGlobal'",
+    "monto_contable": 15000.50,
+    "monto_bancario": 15000.50,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-002",
+    "fecha": "2024-06-25",
+    "descripcion": "Depósito Cliente 'Industrias Atlas'",
+    "monto_contable": 32000.00,
+    "monto_bancario": 32000.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-003",
+    "fecha": "2024-06-24",
+    "descripcion": "Comisión Bancaria no registrada",
+    "monto_contable": 0,
+    "monto_bancario": 150.00,
+    "estado": "⚠️"
+  },
+  {
+    "id": "CON-004",
+    "fecha": "2024-06-23",
+    "descripcion": "Cobro duplicado 'Servicios Web'",
+    "monto_contable": 2500.00,
+    "monto_bancario": 5000.00,
+    "estado": "❌"
+  },
+  {
+    "id": "CON-005",
+    "fecha": "2024-06-22",
+    "descripcion": "Impuesto sobre ventas",
+    "monto_contable": 4800.00,
+    "monto_bancario": 0,
+    "estado": "⚠️"
+  }
+] 

@@ -1,0 +1,36 @@
+[
+  {
+    "sku": "PROD-001",
+    "nombre": "Componente Electrónico A",
+    "precio_actual": 990,
+    "precio_sugerido": 940,
+    "variacion": -5.05,
+    "stock_actual": 1500,
+    "ritmo_ventas": [
+      { "mes": "Enero", "ventas": 120 },
+      { "mes": "Febrero", "ventas": 150 },
+      { "mes": "Marzo", "ventas": 130 },
+      { "mes": "Abril", "ventas": 110 },
+      { "mes": "Mayo", "ventas": 90 }
+    ],
+    "mensaje_agente": "Stock alto, competencia bajó precios, objetivo mensual 60%. Sugiero precio: $940.",
+    "interaccion_costos": "Confirmado: el nuevo costo estimado permite margen positivo."
+  },
+  {
+    "sku": "PROD-002",
+    "nombre": "Componente Electrónico B",
+    "precio_actual": 1250,
+    "precio_sugerido": 1300,
+    "variacion": 4,
+    "stock_actual": 400,
+    "ritmo_ventas": [
+      { "mes": "Enero", "ventas": 200 },
+      { "mes": "Febrero", "ventas": 220 },
+      { "mes": "Marzo", "ventas": 250 },
+      { "mes": "Abril", "ventas": 280 },
+      { "mes": "Mayo", "ventas": 300 }
+    ],
+    "mensaje_agente": "Demanda en alza y stock bajo. Sugiero subir el precio a $1300 para maximizar margen.",
+    "interaccion_costos": "Costo estable. Aumento de precio es viable."
+  }
+] 
