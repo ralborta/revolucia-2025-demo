@@ -28,25 +28,93 @@ interface SkuData {
 
 const analysisSteps = [
   { 
-    text: "Consultando datos del producto...", 
+    text: "Analizando datos del producto...", 
     icon: Search, 
     bgColor: "bg-blue-600", 
     iconColor: "text-white",
-    progress: 25 
+    progress: 8,
+    duration: 3000
   },
   { 
-    text: "Analizando precios competidores...", 
+    text: "Consultando precios de competidores...", 
     icon: BarChart3, 
     bgColor: "bg-blue-600", 
     iconColor: "text-white",
-    progress: 65 
+    progress: 18,
+    duration: 4000
+  },
+  { 
+    text: "Analizando presupuesto y márgenes...", 
+    icon: DollarSign, 
+    bgColor: "bg-green-600", 
+    iconColor: "text-white",
+    progress: 28,
+    duration: 3500
+  },
+  { 
+    text: "Evaluando objetivos de venta...", 
+    icon: Target, 
+    bgColor: "bg-purple-600", 
+    iconColor: "text-white",
+    progress: 38,
+    duration: 3500
+  },
+  { 
+    text: "Calculando ritmo de ventas actual...", 
+    icon: BarChart3, 
+    bgColor: "bg-orange-600", 
+    iconColor: "text-white",
+    progress: 48,
+    duration: 4000
+  },
+  { 
+    text: "Verificando niveles de stock...", 
+    icon: Package, 
+    bgColor: "bg-indigo-600", 
+    iconColor: "text-white",
+    progress: 58,
+    duration: 3500
+  },
+  { 
+    text: "Procesando información recopilada...", 
+    icon: Bot, 
+    bgColor: "bg-slate-600", 
+    iconColor: "text-white",
+    progress: 65,
+    duration: 5000,
+    isPause: true
+  },
+  { 
+    text: "🔗 Conectando con Agente de Costos...", 
+    icon: RefreshCw, 
+    bgColor: "bg-cyan-600", 
+    iconColor: "text-white",
+    progress: 72,
+    duration: 4000
+  },
+  { 
+    text: "Consultando estructura de costos...", 
+    icon: DollarSign, 
+    bgColor: "bg-cyan-600", 
+    iconColor: "text-white",
+    progress: 82,
+    duration: 4500
+  },
+  { 
+    text: "Verificando Markup% y rentabilidad...", 
+    icon: Target, 
+    bgColor: "bg-green-600", 
+    iconColor: "text-white",
+    progress: 92,
+    duration: 4000
   },
   { 
     text: "Generando recomendación inteligente...", 
-    icon: Target, 
-    bgColor: "bg-blue-600", 
+    icon: Bot, 
+    bgColor: "bg-purple-600", 
     iconColor: "text-white",
-    progress: 100 
+    progress: 100,
+    duration: 3000
   },
 ];
 
@@ -65,7 +133,7 @@ export function PricingDemo() {
     setCurrentStep(0);
     setProgress(0);
 
-    // Simulate analysis steps with slower timing
+    // Simulate analysis steps with realistic timing (45 seconds total)
     const stepRunner = (stepIndex: number) => {
       if (stepIndex >= analysisSteps.length) {
         if (sku.toUpperCase() === "SKU1025") {
@@ -77,13 +145,14 @@ export function PricingDemo() {
         return;
       }
       
+      const currentStepData = analysisSteps[stepIndex];
       setCurrentStep(stepIndex);
       
       // Animate progress gradually
-      const targetProgress = analysisSteps[stepIndex].progress;
+      const targetProgress = currentStepData.progress;
       const startProgress = stepIndex > 0 ? analysisSteps[stepIndex - 1].progress : 0;
-      const duration = 2500; // 2.5 seconds per step
-      const increment = (targetProgress - startProgress) / (duration / 50);
+      const duration = currentStepData.duration;
+      const increment = (targetProgress - startProgress) / (duration / 100);
       let currentProgress = startProgress;
       
       const progressTimer = setInterval(() => {
@@ -91,10 +160,13 @@ export function PricingDemo() {
         if (currentProgress >= targetProgress) {
           currentProgress = targetProgress;
           clearInterval(progressTimer);
-          setTimeout(() => stepRunner(stepIndex + 1), 500);
+          
+          // Add pause for strategic analysis step
+          const nextStepDelay = currentStepData.isPause ? 2000 : 800;
+          setTimeout(() => stepRunner(stepIndex + 1), nextStepDelay);
         }
-        setProgress(currentProgress);
-      }, 50);
+        setProgress(Math.min(currentProgress, targetProgress));
+      }, 100);
     };
 
     stepRunner(0);
@@ -150,36 +222,148 @@ export function PricingDemo() {
       {/* Analysis Progress */}
       {loading && (
         <div className="space-y-6">
-          {/* Progress Bar */}
-          <Card className="border-none shadow-lg">
-            <CardContent className="p-6">
-              <div className="space-y-4">
+          {/* Modern Progress Bar */}
+          <Card className="border-none shadow-lg bg-gradient-to-r from-slate-800 to-slate-900">
+            <CardContent className="p-8">
+              <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-slate-800">Progreso del Análisis</h3>
-                  <span className="text-sm font-medium text-slate-600">{Math.round(progress)}%</span>
+                  <h3 className="text-2xl font-bold text-white">Análisis en Progreso</h3>
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <div className="text-3xl font-bold text-white">{Math.round(progress)}%</div>
+                      <div className="text-slate-300 text-sm">Completado</div>
+                    </div>
+                  </div>
                 </div>
-                <Progress value={progress} className="h-3" />
+                
+                {/* Enhanced Progress Bar */}
+                <div className="space-y-3">
+                  <Progress 
+                    value={progress} 
+                    className="h-4 bg-slate-700 border border-slate-600" 
+                  />
+                  <div className="flex justify-between text-xs text-slate-400">
+                    <span>Inicio</span>
+                    <span>Análisis</span>
+                    <span>Costos</span>
+                    <span>Finalización</span>
+                  </div>
+                </div>
+
+                {/* Time Estimation */}
+                <div className="flex items-center justify-center gap-4 pt-2">
+                  <div className="text-slate-300 text-sm">
+                    Tiempo estimado: ~45 segundos
+                  </div>
+                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                  <div className="text-slate-300 text-sm">
+                    Paso {currentStep + 1} de {analysisSteps.length}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
           
-          {/* Current Step */}
+          {/* Current Step with Enhanced Design */}
+          <Card className="border-none shadow-lg overflow-hidden">
+            <CardContent className="p-0">
+              <div className={`${analysisSteps[currentStep]?.bgColor} p-8`}>
+                <div className="flex items-center gap-6">
+                  <div className="relative">
+                    <div className="p-6 rounded-full bg-white/20 backdrop-blur-sm border border-white/30">
+                      {analysisSteps[currentStep] && 
+                        createElement(analysisSteps[currentStep].icon, {
+                          className: `h-12 w-12 ${analysisSteps[currentStep].iconColor}`
+                        })
+                      }
+                    </div>
+                    {/* Animated ring */}
+                    <div className="absolute inset-0 rounded-full border-4 border-white/20 animate-ping"></div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-white mb-2">
+                      {analysisSteps[currentStep]?.text}
+                    </h3>
+                    <div className="flex items-center gap-4">
+                      <div className="text-white/80 text-lg">
+                        {analysisSteps[currentStep]?.isPause 
+                          ? "Consolidando información antes de continuar..." 
+                          : "Procesando datos en tiempo real..."
+                        }
+                      </div>
+                      {/* Animated dots */}
+                      <div className="flex gap-1">
+                        <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
+                        <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
+                        <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Step counter */}
+                  <div className="text-right">
+                    <div className="text-white/60 text-sm font-medium">PASO</div>
+                    <div className="text-3xl font-bold text-white">
+                      {(currentStep + 1).toString().padStart(2, '0')}
+                    </div>
+                    <div className="text-white/60 text-sm">de {analysisSteps.length.toString().padStart(2, '0')}</div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Step details */}
+              <div className="p-6 bg-white">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <span className="text-slate-600">
+                      {currentStep < 6 ? "Recopilando información" : 
+                       currentStep < 10 ? "Consultando agente de costos" : 
+                       "Generando recomendación"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <span className="text-slate-600">
+                      Conexión: {currentStep >= 7 ? "Agente de Costos" : "Base de datos"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                    <span className="text-slate-600">
+                      Estado: {analysisSteps[currentStep]?.isPause ? "Procesando" : "Activo"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Process Timeline */}
           <Card className="border-none shadow-lg">
+            <CardHeader className="bg-slate-100">
+              <CardTitle className="text-lg text-slate-800">Línea de Tiempo del Análisis</CardTitle>
+            </CardHeader>
             <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className={`p-4 rounded-full ${analysisSteps[currentStep]?.bgColor}`}>
-                  {analysisSteps[currentStep] && 
-                    createElement(analysisSteps[currentStep].icon, {
-                      className: `h-8 w-8 ${analysisSteps[currentStep].iconColor}`
-                    })
-                  }
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-slate-800">
-                    {analysisSteps[currentStep]?.text}
-                  </h3>
-                  <p className="text-slate-600">Procesando información...</p>
-                </div>
+              <div className="flex flex-wrap gap-2">
+                {analysisSteps.map((step, index) => (
+                  <div 
+                    key={index}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                      index <= currentStep 
+                        ? `${step.bgColor} text-white shadow-md transform scale-105` 
+                        : 'bg-slate-200 text-slate-500'
+                    }`}
+                  >
+                    {createElement(step.icon, { className: "h-3 w-3" })}
+                    <span className="hidden sm:inline">
+                      {step.text.replace(/🔗\s/, '').substring(0, 20)}...
+                    </span>
+                    {index <= currentStep && (
+                      <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    )}
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
