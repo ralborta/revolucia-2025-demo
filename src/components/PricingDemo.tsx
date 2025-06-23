@@ -3,9 +3,19 @@
 import { useState, createElement } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Search, Bot, TrendingUp, CheckCircle2 } from "lucide-react";
+import { 
+  Search, 
+  Bot, 
+  CheckCircle2, 
+  DollarSign, 
+  BarChart3, 
+  Target,
+  Package,
+  Download,
+  RefreshCw
+} from "lucide-react";
 import data from "@/../mock/sku1025.json";
 
 interface SkuData {
@@ -18,24 +28,24 @@ interface SkuData {
 
 const analysisSteps = [
   { 
-    text: "Consultando datos...", 
+    text: "Consultando datos del producto...", 
     icon: Search, 
-    bgColor: "bg-blue-100", 
-    iconColor: "text-blue-600",
+    bgColor: "bg-blue-600", 
+    iconColor: "text-white",
     progress: 25 
   },
   { 
     text: "Analizando precios competidores...", 
-    icon: TrendingUp, 
-    bgColor: "bg-cyan-100", 
-    iconColor: "text-cyan-600",
+    icon: BarChart3, 
+    bgColor: "bg-blue-600", 
+    iconColor: "text-white",
     progress: 65 
   },
   { 
-    text: "Agente determinando recomendación...", 
-    icon: Bot, 
-    bgColor: "bg-blue-100", 
-    iconColor: "text-blue-600",
+    text: "Generando recomendación inteligente...", 
+    icon: Target, 
+    bgColor: "bg-blue-600", 
+    iconColor: "text-white",
     progress: 100 
   },
 ];
@@ -91,57 +101,84 @@ export function PricingDemo() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-6">
       {/* Header Section */}
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">Pricing</h1>
-        
-        {/* SKU Input Section */}
-        <div className="space-y-4">
-          <label className="text-sm font-medium text-gray-700">SKU:</label>
-          <div className="flex gap-3 items-center">
-            <Input
-              type="text"
-              value={sku}
-              onChange={(e) => setSku(e.target.value)}
-              disabled={loading}
-              className="max-w-xs h-12 text-lg"
-              placeholder="SKU1025"
-            />
-            <Button 
-              onClick={handleConsultar} 
-              disabled={loading}
-              className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white font-medium"
-            >
-              Consultar
-            </Button>
+      <Card className="border-none shadow-lg bg-gradient-to-r from-blue-600 to-blue-700">
+        <CardHeader className="text-center py-8">
+          <div className="flex justify-center mb-4">
+            <div className="p-4 bg-white/20 rounded-full">
+              <DollarSign className="h-12 w-12 text-white" />
+            </div>
           </div>
-        </div>
-      </div>
+          <CardTitle className="text-3xl font-bold text-white">
+            Consulta SKU y/o Producto
+          </CardTitle>
+          <p className="text-blue-100 text-lg">
+            Análisis inteligente de precios en tiempo real
+          </p>
+        </CardHeader>
+      </Card>
+
+      {/* SKU Input Section */}
+      <Card className="border-none shadow-lg">
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <label className="text-lg font-semibold text-slate-800">SKU:</label>
+            <div className="flex gap-4 items-center">
+              <Input
+                type="text"
+                value={sku}
+                onChange={(e) => setSku(e.target.value)}
+                disabled={loading}
+                className="max-w-sm h-12 text-lg border-2 border-slate-200 focus:border-blue-500"
+                placeholder="SKU1025"
+              />
+              <Button 
+                onClick={handleConsultar} 
+                disabled={loading}
+                className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg"
+                size="lg"
+              >
+                <Search className="h-5 w-5 mr-2" />
+                Consultar
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Analysis Progress */}
       {loading && (
         <div className="space-y-6">
           {/* Progress Bar */}
-          <div className="w-full">
-            <Progress value={progress} className="h-2" />
-          </div>
+          <Card className="border-none shadow-lg">
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-slate-800">Progreso del Análisis</h3>
+                  <span className="text-sm font-medium text-slate-600">{Math.round(progress)}%</span>
+                </div>
+                <Progress value={progress} className="h-3" />
+              </div>
+            </CardContent>
+          </Card>
           
           {/* Current Step */}
-          <Card className="border-0 shadow-sm">
+          <Card className="border-none shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-full ${analysisSteps[currentStep]?.bgColor}`}>
+                <div className={`p-4 rounded-full ${analysisSteps[currentStep]?.bgColor}`}>
                   {analysisSteps[currentStep] && 
                     createElement(analysisSteps[currentStep].icon, {
-                      className: `h-6 w-6 ${analysisSteps[currentStep].iconColor}`
+                      className: `h-8 w-8 ${analysisSteps[currentStep].iconColor}`
                     })
                   }
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900">
+                  <h3 className="text-xl font-semibold text-slate-800">
                     {analysisSteps[currentStep]?.text}
                   </h3>
+                  <p className="text-slate-600">Procesando información...</p>
                 </div>
               </div>
             </CardContent>
@@ -153,75 +190,91 @@ export function PricingDemo() {
       {result && (
         <div className="space-y-6">
           {/* Success Step */}
-          <Card className="border-0 shadow-sm">
+          <Card className="border-none shadow-lg bg-green-50 border-green-200">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-full bg-green-100">
-                  <CheckCircle2 className="h-6 w-6 text-green-600" />
+                <div className="p-4 rounded-full bg-green-600">
+                  <CheckCircle2 className="h-8 w-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900">
+                  <h3 className="text-xl font-semibold text-slate-800">
                     Análisis completado para: {result.producto}
                   </h3>
-                  <p className="text-sm text-gray-600">SKU: {result.sku}</p>
+                  <p className="text-slate-600 text-lg">SKU: {result.sku}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Product Details */}
+          {/* Product Details - Resumen de Precios */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="border-0 shadow-sm">
+            <Card className="border-none shadow-lg bg-slate-600 text-white">
               <CardContent className="p-6 text-center">
-                <div className="text-2xl font-bold text-gray-900">${result.precio_actual}</div>
-                <div className="text-sm text-gray-600">Precio Actual</div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-slate-200 text-sm font-medium">Precio Actual</span>
+                  <Package className="h-6 w-6 text-slate-300" />
+                </div>
+                <div className="text-3xl font-bold">${result.precio_actual.toLocaleString()}</div>
+                <div className="text-slate-300 text-sm">Precio vigente</div>
               </CardContent>
             </Card>
-            <Card className="border-0 shadow-sm">
+
+            <Card className="border-none shadow-lg bg-blue-600 text-white">
               <CardContent className="p-6 text-center">
-                <div className="text-2xl font-bold text-gray-900">${result.precio_competidor}</div>
-                <div className="text-sm text-gray-600">Precio Competidor</div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-blue-100 text-sm font-medium">Precio Competidor</span>
+                  <BarChart3 className="h-6 w-6 text-blue-200" />
+                </div>
+                <div className="text-3xl font-bold">${result.precio_competidor.toLocaleString()}</div>
+                <div className="text-blue-200 text-sm">Mercado actual</div>
               </CardContent>
             </Card>
-            <Card className="border-0 shadow-sm">
+
+            <Card className="border-none shadow-lg bg-green-600 text-white">
               <CardContent className="p-6 text-center">
-                <div className="text-2xl font-bold text-green-600">$970</div>
-                <div className="text-sm text-gray-600">Precio Sugerido</div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-green-100 text-sm font-medium">Precio Sugerido</span>
+                  <Target className="h-6 w-6 text-green-200" />
+                </div>
+                <div className="text-3xl font-bold">$970</div>
+                <div className="text-green-200 text-sm">Optimización IA</div>
               </CardContent>
             </Card>
           </div>
 
           {/* Market Analysis */}
-          <Card className="border-0 shadow-sm">
+          <Card className="border-none shadow-lg">
+            <CardHeader className="bg-slate-800 text-white">
+              <CardTitle className="text-xl">Análisis de Mercado</CardTitle>
+            </CardHeader>
             <CardContent className="p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Análisis de Mercado</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Demanda actual:</span>
-                    <span className="font-medium text-green-600">Alta</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                    <span className="font-medium text-slate-700">Demanda actual:</span>
+                    <span className="font-bold text-green-600 text-lg">Alta</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Tendencia:</span>
-                    <span className="font-medium text-blue-600">↗ Creciente</span>
+                  <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                    <span className="font-medium text-slate-700">Tendencia:</span>
+                    <span className="font-bold text-blue-600 text-lg">↗ Creciente</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Stock disponible:</span>
-                    <span className="font-medium">1,250 unidades</span>
+                  <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                    <span className="font-medium text-slate-700">Stock disponible:</span>
+                    <span className="font-bold text-slate-800 text-lg">1,250 unidades</span>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Margen actual:</span>
-                    <span className="font-medium">28.5%</span>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                    <span className="font-medium text-slate-700">Margen actual:</span>
+                    <span className="font-bold text-slate-800 text-lg">28.5%</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Margen sugerido:</span>
-                    <span className="font-medium text-green-600">31.2%</span>
+                  <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                    <span className="font-medium text-slate-700">Margen sugerido:</span>
+                    <span className="font-bold text-green-600 text-lg">31.2%</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Ventas estimadas:</span>
-                    <span className="font-medium text-blue-600">+15%</span>
+                  <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                    <span className="font-medium text-slate-700">Ventas estimadas:</span>
+                    <span className="font-bold text-blue-600 text-lg">+15%</span>
                   </div>
                 </div>
               </div>
@@ -229,27 +282,39 @@ export function PricingDemo() {
           </Card>
 
           {/* Recommendation */}
-          <Card className="border-0 shadow-sm bg-blue-50">
+          <Card className="border-none shadow-lg bg-gradient-to-r from-purple-600 to-purple-700 text-white">
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-3">
+                <Bot className="h-8 w-8" />
+                Recomendación del Agente IA
+              </CardTitle>
+            </CardHeader>
             <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-blue-100">
-                  <Bot className="h-6 w-6 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Recomendación del Agente IA:
-                  </h3>
-                  <p className="text-gray-800 text-lg mb-4">
-                    {result.recomendacion}
-                  </p>
-                  <div className="bg-white rounded-lg p-4 border border-blue-200">
-                    <h4 className="font-medium text-gray-900 mb-2">Impacto Esperado:</h4>
-                    <ul className="space-y-1 text-sm text-gray-700">
-                      <li>• Incremento en ventas: <strong className="text-green-600">+15%</strong></li>
-                      <li>• Mejora en competitividad: <strong className="text-blue-600">Muy Alta</strong></li>
-                      <li>• Tiempo estimado de implementación: <strong>24 horas</strong></li>
-                      <li>• ROI proyectado: <strong className="text-green-600">+12.8%</strong></li>
-                    </ul>
+              <p className="text-purple-100 text-lg mb-6 leading-relaxed">
+                {result.recomendacion}
+              </p>
+              <div className="bg-white/10 rounded-lg p-6 border border-white/20">
+                <h4 className="font-semibold text-purple-100 mb-4 text-lg">Impacto Esperado:</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Incremento en ventas:</span>
+                      <span className="font-bold text-green-300">+15%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Mejora en competitividad:</span>
+                      <span className="font-bold text-blue-300">Muy Alta</span>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Tiempo de implementación:</span>
+                      <span className="font-bold">24 horas</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>ROI proyectado:</span>
+                      <span className="font-bold text-green-300">+12.8%</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -257,41 +322,43 @@ export function PricingDemo() {
           </Card>
 
           {/* Historical Data */}
-          <Card className="border-0 shadow-sm">
+          <Card className="border-none shadow-lg">
+            <CardHeader className="bg-slate-800 text-white">
+              <CardTitle className="text-xl">Datos Históricos</CardTitle>
+            </CardHeader>
             <CardContent className="p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Datos Históricos</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-medium text-gray-700 mb-2">Últimos 30 días:</h4>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span>Ventas promedio:</span>
-                      <span className="font-medium">45 unidades/día</span>
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-slate-800 mb-4 text-lg">Últimos 30 días:</h4>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                      <span className="font-medium">Ventas promedio:</span>
+                      <span className="font-bold text-blue-600">45 unidades/día</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Precio promedio:</span>
-                      <span className="font-medium">$1,050</span>
+                    <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                      <span className="font-medium">Precio promedio:</span>
+                      <span className="font-bold text-blue-600">$1,050</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Mejor día:</span>
-                      <span className="font-medium text-green-600">67 unidades</span>
+                    <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                      <span className="font-medium">Mejor día:</span>
+                      <span className="font-bold text-green-600">67 unidades</span>
                     </div>
                   </div>
                 </div>
-                <div>
-                  <h4 className="font-medium text-gray-700 mb-2">Comparación Competencia:</h4>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span>Competidor A:</span>
-                      <span className="font-medium">$980</span>
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-slate-800 mb-4 text-lg">Comparación Competencia:</h4>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                      <span className="font-medium">Competidor A:</span>
+                      <span className="font-bold text-slate-800">$980</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Competidor B:</span>
-                      <span className="font-medium">$965</span>
+                    <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                      <span className="font-medium">Competidor B:</span>
+                      <span className="font-bold text-slate-800">$965</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Promedio mercado:</span>
-                      <span className="font-medium">$972</span>
+                    <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
+                      <span className="font-medium">Promedio mercado:</span>
+                      <span className="font-bold text-orange-600">$972</span>
                     </div>
                   </div>
                 </div>
@@ -300,14 +367,17 @@ export function PricingDemo() {
           </Card>
 
           {/* Action Buttons */}
-          <div className="flex gap-3 justify-center">
-            <Button className="bg-green-600 hover:bg-green-700 text-white">
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3">
+              <CheckCircle2 className="h-5 w-5 mr-2" />
               Implementar Recomendación
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3">
+              <Download className="h-5 w-5 mr-2" />
               Exportar Análisis
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" className="border-2 border-slate-600 text-slate-600 hover:bg-slate-50 font-semibold px-8 py-3">
+              <RefreshCw className="h-5 w-5 mr-2" />
               Consultar Otro SKU
             </Button>
           </div>
@@ -316,15 +386,15 @@ export function PricingDemo() {
 
       {/* Error State */}
       {error && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-none shadow-lg border-red-200 bg-red-50">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-full bg-red-100">
-                <Search className="h-6 w-6 text-red-600" />
+              <div className="p-4 rounded-full bg-red-600">
+                <Search className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-red-900">Error</h3>
-                <p className="text-red-700">{error}</p>
+                <h3 className="text-xl font-semibold text-red-900">Error en la consulta</h3>
+                <p className="text-red-700 text-lg">{error}</p>
               </div>
             </div>
           </CardContent>

@@ -39,7 +39,7 @@ export default function PricingPage() {
           <div className="w-full">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold text-slate-800">
-                🧠 Demo Interactivo - Consulta por SKU
+                Consulta SKU y/o Producto
               </h2>
               <Button 
                 variant="outline" 
