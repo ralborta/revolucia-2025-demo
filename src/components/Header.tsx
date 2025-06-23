@@ -2,14 +2,12 @@
 
 import Link from "next/link";
 import {
-  Bell,
   Bot,
   CircleUser,
   Home,
   Landmark,
   Combine,
   Menu,
-  Package2,
   Truck,
   DollarSign,
 } from "lucide-react";
