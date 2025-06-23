@@ -161,8 +161,68 @@ export function PricingDemo() {
                 </div>
                 <div>
                   <h3 className="text-lg font-medium text-gray-900">
-                    Análisis completado
+                    Análisis completado para: {result.producto}
                   </h3>
+                  <p className="text-sm text-gray-600">SKU: {result.sku}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Product Details */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="border-0 shadow-sm">
+              <CardContent className="p-6 text-center">
+                <div className="text-2xl font-bold text-gray-900">${result.precio_actual}</div>
+                <div className="text-sm text-gray-600">Precio Actual</div>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-sm">
+              <CardContent className="p-6 text-center">
+                <div className="text-2xl font-bold text-gray-900">${result.precio_competidor}</div>
+                <div className="text-sm text-gray-600">Precio Competidor</div>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-sm">
+              <CardContent className="p-6 text-center">
+                <div className="text-2xl font-bold text-green-600">$970</div>
+                <div className="text-sm text-gray-600">Precio Sugerido</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Market Analysis */}
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Análisis de Mercado</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Demanda actual:</span>
+                    <span className="font-medium text-green-600">Alta</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Tendencia:</span>
+                    <span className="font-medium text-blue-600">↗ Creciente</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Stock disponible:</span>
+                    <span className="font-medium">1,250 unidades</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Margen actual:</span>
+                    <span className="font-medium">28.5%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Margen sugerido:</span>
+                    <span className="font-medium text-green-600">31.2%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Ventas estimadas:</span>
+                    <span className="font-medium text-blue-600">+15%</span>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -177,15 +237,80 @@ export function PricingDemo() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Recomendación del Agente:
+                    Recomendación del Agente IA:
                   </h3>
-                  <p className="text-gray-800 text-lg">
+                  <p className="text-gray-800 text-lg mb-4">
                     {result.recomendacion}
                   </p>
+                  <div className="bg-white rounded-lg p-4 border border-blue-200">
+                    <h4 className="font-medium text-gray-900 mb-2">Impacto Esperado:</h4>
+                    <ul className="space-y-1 text-sm text-gray-700">
+                      <li>• Incremento en ventas: <strong className="text-green-600">+15%</strong></li>
+                      <li>• Mejora en competitividad: <strong className="text-blue-600">Muy Alta</strong></li>
+                      <li>• Tiempo estimado de implementación: <strong>24 horas</strong></li>
+                      <li>• ROI proyectado: <strong className="text-green-600">+12.8%</strong></li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </CardContent>
           </Card>
+
+          {/* Historical Data */}
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Datos Históricos</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium text-gray-700 mb-2">Últimos 30 días:</h4>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span>Ventas promedio:</span>
+                      <span className="font-medium">45 unidades/día</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Precio promedio:</span>
+                      <span className="font-medium">$1,050</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Mejor día:</span>
+                      <span className="font-medium text-green-600">67 unidades</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-700 mb-2">Comparación Competencia:</h4>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span>Competidor A:</span>
+                      <span className="font-medium">$980</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Competidor B:</span>
+                      <span className="font-medium">$965</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Promedio mercado:</span>
+                      <span className="font-medium">$972</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 justify-center">
+            <Button className="bg-green-600 hover:bg-green-700 text-white">
+              Implementar Recomendación
+            </Button>
+            <Button variant="outline">
+              Exportar Análisis
+            </Button>
+            <Button variant="outline">
+              Consultar Otro SKU
+            </Button>
+          </div>
         </div>
       )}
 
