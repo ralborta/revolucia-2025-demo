@@ -2,46 +2,66 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bot, Combine, DollarSign, Home, Landmark, Truck } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Bot, Home, Truck, DollarSign, Landmark, Combine, User } from "lucide-react";
 
-const navLinks = [
-  { href: "/", label: "Dashboard", icon: Home },
-  { href: "/logistica", label: "Logística", icon: Truck },
-  { href: "/pricing", label: "Pricing", icon: DollarSign },
-  { href: "/conciliacion", label: "Conciliación", icon: Landmark },
-  { href: "/costos", label: "Costos", icon: Combine },
+const navigation = [
+  { name: "Dashboard", href: "/", icon: Home },
+  { name: "Logística", href: "/logistica", icon: Truck },
+  { name: "Pricing", href: "/pricing", icon: DollarSign },
+  { name: "Conciliación", href: "/conciliacion", icon: Landmark },
+  { name: "Costos", href: "/costos", icon: Combine },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="hidden border-r bg-muted/40 md:block">
+    <div className="hidden border-r bg-slate-900 md:block">
       <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
+        {/* Header */}
+        <div className="flex h-16 items-center border-b border-slate-700 px-6">
+          <Link className="flex items-center gap-2 font-semibold text-white" href="/">
             <Bot className="h-6 w-6" />
             <span>Agentes IA Demo</span>
           </Link>
         </div>
-        <div className="flex-1">
-          <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
+        
+        {/* Navigation */}
+        <div className="flex-1 px-3 py-2">
+          <nav className="space-y-1">
+            {navigation.map((item) => {
+              const isActive = pathname === item.href;
               return (
                 <Link
-                  key={link.label}
-                  href={link.href}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary ${
-                    isActive ? "bg-muted text-primary" : ""
-                  }`}
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all",
+                    isActive
+                      ? "bg-slate-800 text-white shadow-sm"
+                      : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                  )}
                 >
-                  <link.icon className="h-4 w-4" />
-                  {link.label}
+                  <item.icon className="h-5 w-5" />
+                  {item.name}
                 </Link>
               );
             })}
           </nav>
+        </div>
+
+        {/* User Profile */}
+        <div className="border-t border-slate-700 p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-600">
+              <User className="h-4 w-4 text-white" />
+            </div>
+            <div className="text-sm">
+              <div className="font-medium text-white">Raúl</div>
+              <div className="text-slate-400">Admin</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
