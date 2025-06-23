@@ -7,7 +7,7 @@ Esta aplicación web simula el funcionamiento de 4 agentes de inteligencia artif
 **Características principales:**
 - ✅ **Sin dependencias externas**: Utiliza datos históricos simulados almacenados en archivos JSON
 - ✅ **Interfaz moderna**: Diseño limpio y profesional con TailwindCSS y shadcn/ui
-- ✅ **Funcionalidad interactiva**: Demo de consulta de SKU integrado en la sección de pricing
+- ✅ **Funcionalidad interactiva**: Demo de consulta de SKU con animaciones y análisis en tiempo real
 - ✅ **Despliegue automático**: Configurado para Vercel desde GitHub
 
 ## 🚀 Funcionalidades
@@ -28,7 +28,6 @@ Esta aplicación web simula el funcionamiento de 4 agentes de inteligencia artif
 - Sugerencias inteligentes de precios
 - Gráficos de tendencias de ventas
 - Integración con análisis de costos
-- **🧪 Demo Interactivo Integrado**: Consulta de productos por SKU con análisis en tiempo real
 
 ### 🧾 Agente de Conciliación
 - Comparación entre registros contables y bancarios
@@ -41,6 +40,13 @@ Esta aplicación web simula el funcionamiento de 4 agentes de inteligencia artif
 - Análisis de impacto en pricing
 - Recomendaciones de optimización
 - Colaboración con otros agentes
+
+### 🧪 **NUEVO: Demo Interactivo de Pricing**
+- **Ruta**: `/demo-pricing`
+- Consulta de productos por SKU
+- Análisis en tiempo real simulado
+- Animaciones paso a paso del proceso
+- Recomendaciones detalladas con métricas
 
 ## 🛠️ Stack Tecnológico
 
@@ -74,7 +80,7 @@ npm start
 
 1. **Dashboard**: Visita la página principal para ver el resumen general
 2. **Navegación**: Usa el sidebar para explorar cada agente
-3. **Demo Interactivo**: Ve a la sección "Pricing" y haz clic en "Probar Demo"
+3. **Demo Interactivo**: Ve a `/demo-pricing` y prueba con el SKU "SKU1025"
 4. **Exploración**: Cada sección muestra diferentes capacidades de los agentes
 
 ## 📁 Estructura del Proyecto
@@ -84,9 +90,10 @@ src/
 ├── app/                    # Páginas de la aplicación
 │   ├── page.tsx           # Dashboard principal
 │   ├── logistica/         # Agente de logística
-│   ├── pricing/           # Agente de pricing (con demo integrado)
+│   ├── pricing/           # Agente de pricing
 │   ├── conciliacion/      # Agente de conciliación
-│   └── costos/            # Agente de costos
+│   ├── costos/            # Agente de costos
+│   └── demo-pricing/      # Demo interactivo
 ├── components/            # Componentes reutilizables
 │   ├── ui/               # Componentes de shadcn/ui
 │   ├── Header.tsx        # Header de páginas
@@ -104,21 +111,14 @@ mock/
 
 ## 🎨 Características del Demo Interactivo
 
-### Ubicación
-- **Integrado en**: Sección "Pricing" del dashboard
-- **Acceso**: Botón "Probar Demo" en la página de pricing
-- **Navegación**: Botón "Volver al Análisis" para regresar
-
 ### Flujo de Usuario
-1. **Navegar a Pricing**: Desde el sidebar del dashboard
-2. **Activar Demo**: Hacer clic en "Probar Demo"
-3. **Input**: Ingresa un SKU (ej: "SKU1025")
-4. **Análisis**: Observa las animaciones paso a paso:
+1. **Input**: Ingresa un SKU (ej: "SKU1025")
+2. **Análisis**: Observa las animaciones paso a paso:
    - 🔍 Consultando datos del producto
    - 🧠 Analizando precios de competidores
    - 📈 Evaluando tendencias de mercado
    - 🤖 Agente determinando recomendación
-5. **Resultado**: Visualiza el análisis completo con:
+3. **Resultado**: Visualiza el análisis completo con:
    - Comparación de precios
    - Recomendación del agente IA
    - Métricas de mercado
@@ -144,7 +144,6 @@ El proyecto está configurado para despliegue automático en Vercel:
 - **Sin APIs reales**: No se conecta a servicios externos
 - **Demo educativo**: Diseñado para demostración en presentaciones
 - **Responsive**: Funciona en dispositivos móviles y desktop
-- **Integración fluida**: El demo está perfectamente integrado en la experiencia de usuario
 
 ## 🤝 Contribución
 
