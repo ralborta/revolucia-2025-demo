@@ -1,3 +1,5 @@
+"use client";
+
 import { Header } from "@/components/Header";
 import { TableResumen, ColumnDef } from "@/components/TableResumen";
 import pricingData from "@/../data/pricing.json";
