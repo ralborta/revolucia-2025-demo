@@ -5,8 +5,8 @@ export default function DemoPricingPage() {
   return (
     <>
       <Header title="Demo: Agente de Pricing Interactivo" />
-      <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-8">
-        <div className="w-full max-w-2xl">
+      <main className="flex-1 flex flex-col p-4 md:p-8">
+        <div className="w-full max-w-6xl mx-auto">
           <PricingDemo />
         </div>
       </main>

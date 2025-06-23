@@ -3,5 +3,30 @@
   "producto": "Producto Ejemplo Avanzado",
   "precio_actual": 1050,
   "precio_competidor": 980,
-  "recomendacion": "Sugiero ajustar el precio a $970 para competir mejor."
+  "recomendacion": "Sugiero ajustar el precio a $970 para competir mejor.",
+  "analisis_detallado": {
+    "tendencia_mercado": "Estable",
+    "competidores_activos": 3,
+    "stock_disponible": "Alto",
+    "margen_proyectado": "+12%",
+    "ventas_esperadas": "+25%",
+    "riesgo": "Bajo",
+    "factores_considerados": [
+      "Precios de competencia en tiempo real",
+      "Tendencias históricas de ventas",
+      "Stock disponible en almacén",
+      "Objetivos de margen mensual",
+      "Análisis de demanda estacional"
+    ]
+  },
+  "historial_precios": [
+    { "fecha": "2024-01", "precio": 1100 },
+    { "fecha": "2024-02", "precio": 1080 },
+    { "fecha": "2024-03", "precio": 1050 }
+  ],
+  "competidores": [
+    { "nombre": "Competidor A", "precio": 980, "stock": "Bajo" },
+    { "nombre": "Competidor B", "precio": 1020, "stock": "Medio" },
+    { "nombre": "Competidor C", "precio": 990, "stock": "Alto" }
+  ]
 } 
