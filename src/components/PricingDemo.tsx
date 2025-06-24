@@ -188,7 +188,7 @@ export function PricingDemo() {
           <p className="text-blue-100 text-lg">
             Análisis inteligente de precios en tiempo real
           </p>
-        </CardHeader>
+      </CardHeader>
       </Card>
 
       {/* SKU Input Section */}
@@ -197,11 +197,11 @@ export function PricingDemo() {
           <div className="space-y-4">
             <label className="text-lg font-semibold text-slate-800">SKU:</label>
             <div className="flex gap-4 items-center">
-              <Input
-                type="text"
-                value={sku}
-                onChange={(e) => setSku(e.target.value)}
-                disabled={loading}
+          <Input
+            type="text"
+            value={sku}
+            onChange={(e) => setSku(e.target.value)}
+            disabled={loading}
                 className="max-w-sm h-12 text-lg border-2 border-slate-200 focus:border-blue-500"
                 placeholder="SKU1025"
               />
@@ -212,15 +212,15 @@ export function PricingDemo() {
                 size="lg"
               >
                 <Search className="h-5 w-5 mr-2" />
-                Consultar
-              </Button>
-            </div>
+            Consultar
+          </Button>
+        </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Analysis Progress */}
-      {loading && (
+        {loading && (
         <div className="space-y-6">
           {/* Modern Progress Bar */}
           <Card className="border-none shadow-lg bg-gradient-to-r from-slate-800 to-slate-900">
@@ -327,15 +327,15 @@ export function PricingDemo() {
                     <span className="text-slate-600">
                       Conexión: {currentStep >= 7 ? "Agente de Costos" : "Base de datos"}
                     </span>
-                  </div>
+                           </div>
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
                     <span className="text-slate-600">
                       Estado: {analysisSteps[currentStep]?.isPause ? "Procesando" : "Activo"}
                     </span>
-                  </div>
-                </div>
-              </div>
+                        </div>
+            </div>
+          </div>
             </CardContent>
           </Card>
 
@@ -371,7 +371,7 @@ export function PricingDemo() {
       )}
 
       {/* Results */}
-      {result && (
+        {result && (
         <div className="space-y-6">
           {/* Success Step */}
           <Card className="border-none shadow-lg bg-green-50 border-green-200">
@@ -422,7 +422,7 @@ export function PricingDemo() {
                 </div>
                 <div className="text-3xl font-bold">$970</div>
                 <div className="text-green-200 text-sm">Optimización IA</div>
-              </CardContent>
+                </CardContent>
             </Card>
           </div>
 
@@ -581,8 +581,8 @@ export function PricingDemo() {
                 <p className="text-red-700 text-lg">{error}</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+      </CardContent>
+    </Card>
       )}
     </div>
   );

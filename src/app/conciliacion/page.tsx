@@ -103,8 +103,8 @@ export default function ConciliacionPage() {
                   >
                     <Search className="h-5 w-5" />
                     Probar Demo
-                  </Button>
-                </div>
+            </Button>
+        </div>
               </CardContent>
             </Card>
 
@@ -306,7 +306,7 @@ export default function ConciliacionPage() {
                         <li>• Validar diferencias con el área contable</li>
                         <li>• Solicitar auditoría de transacciones</li>
                         <li>• Actualizar registros contables</li>
-                      </ul>
+                        </ul>
                     </div>
                   </div>
                 </CardContent>
