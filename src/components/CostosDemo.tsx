@@ -22,54 +22,16 @@ import {
   Phone
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import costosData from "../../data/costos.json";
 
-interface CostoAnalisis {
-  sku: string;
-  producto: string;
+interface CostoItem {
+  id: string;
+  insumo: string;
   costo_actual: number;
-  costo_promedio_3m: number;
-  costo_estimado_3m: number;
-  variacion_estimada: number;
-  estado: "🟢" | "🟡" | "🔴";
-  proveedor: string;
-  categoria: string;
+  variacion_esperada: number;
+  impacto_operativo: string;
+  mensaje_ia: string;
 }
-
-const mockCostosData: CostoAnalisis[] = [
-  {
-    sku: "SKU2031",
-    producto: "Monitor LED 24 pulgadas",
-    costo_actual: 520,
-    costo_promedio_3m: 495,
-    costo_estimado_3m: 540,
-    variacion_estimada: 3.8,
-    estado: "🟡",
-    proveedor: "TechSupply Corp",
-    categoria: "Electrónicos"
-  },
-  {
-    sku: "SKU1205",
-    producto: "Teclado Mecánico RGB",
-    costo_actual: 180,
-    costo_promedio_3m: 175,
-    costo_estimado_3m: 195,
-    variacion_estimada: 8.3,
-    estado: "🔴",
-    proveedor: "KeyTech Solutions",
-    categoria: "Periféricos"
-  },
-  {
-    sku: "SKU3047",
-    producto: "Mouse Inalámbrico Pro",
-    costo_actual: 85,
-    costo_promedio_3m: 90,
-    costo_estimado_3m: 82,
-    variacion_estimada: -3.5,
-    estado: "🟢",
-    proveedor: "MouseTech Ltd",
-    categoria: "Periféricos"
-  }
-];
 
 const analysisSteps = [
   { 
@@ -114,13 +76,13 @@ const analysisSteps = [
   },
 ];
 
-export function CostosDemo() {
-  const [selectedSKUs, setSelectedSKUs] = useState("SKU2031");
+export function Costos() {
+  const [selectedCategoria, setSelectedCategoria] = useState("todos");
   const [rangoTemporal, setRangoTemporal] = useState("3-meses");
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [result, setResult] = useState<CostoAnalisis[] | null>(null);
+  const [result, setResult] = useState<CostoItem[] | null>(null);
   const [showMessages, setShowMessages] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -135,12 +97,8 @@ export function CostosDemo() {
     // Simulate analysis steps (20-25 seconds total)
     const stepRunner = (stepIndex: number) => {
       if (stepIndex >= analysisSteps.length) {
-        // Filter results based on selected SKUs
-        const filteredResults = selectedSKUs === "todos" 
-          ? mockCostosData 
-          : mockCostosData.filter(item => item.sku === selectedSKUs);
-        
-        setResult(filteredResults);
+        // Usar los datos del JSON importado
+        setResult(costosData as CostoItem[]);
         setLoading(false);
         
         // Show messages after 2 seconds
@@ -170,15 +128,6 @@ export function CostosDemo() {
     };
 
     stepRunner(0);
-  };
-
-  const getStatusColor = (estado: string) => {
-    switch (estado) {
-      case "🟢": return "text-green-600 bg-green-50 border-green-200";
-      case "🟡": return "text-yellow-600 bg-yellow-50 border-yellow-200";
-      case "🔴": return "text-red-600 bg-red-50 border-red-200";
-      default: return "text-gray-600 bg-gray-50 border-gray-200";
-    }
   };
 
   const getVariationIcon = (variacion: number) => {
@@ -211,16 +160,17 @@ export function CostosDemo() {
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
-              <label className="text-lg font-semibold text-slate-800">Producto(s) a Analizar:</label>
-              <Select value={selectedSKUs} onValueChange={setSelectedSKUs} disabled={loading}>
+              <label className="text-lg font-semibold text-slate-800">Categoría de Costos:</label>
+              <Select value={selectedCategoria} onValueChange={setSelectedCategoria} disabled={loading}>
                 <SelectTrigger className="h-12 text-lg border-2 border-slate-200 focus:border-orange-500">
-                  <SelectValue placeholder="Selecciona producto(s)" />
+                  <SelectValue placeholder="Selecciona categoría" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="SKU2031">📺 SKU2031 - Monitor LED 24&quot;</SelectItem>
-                  <SelectItem value="SKU1205">⌨️ SKU1205 - Teclado Mecánico RGB</SelectItem>
-                  <SelectItem value="SKU3047">🖱️ SKU3047 - Mouse Inalámbrico Pro</SelectItem>
-                  <SelectItem value="todos">📦 Todos los productos</SelectItem>
+                  <SelectItem value="todos">📦 Todos los insumos</SelectItem>
+                  <SelectItem value="materia-prima">🏭 Materias primas</SelectItem>
+                  <SelectItem value="servicios">🚛 Servicios</SelectItem>
+                  <SelectItem value="energia">⚡ Energía</SelectItem>
+                  <SelectItem value="materiales">🔧 Materiales</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -249,7 +199,7 @@ export function CostosDemo() {
               size="lg"
             >
               <Search className="h-5 w-5 mr-2" />
-              Analizar Costos
+              Ejecutar Análisis
             </Button>
           </div>
         </CardContent>
@@ -363,7 +313,7 @@ export function CostosDemo() {
                     Análisis de costos completado
                   </h3>
                   <p className="text-slate-600 text-lg">
-                    Rango: {rangoTemporal} | Productos: {result.length} analizados
+                    Rango: {rangoTemporal} | Insumos: {result.length} analizados
                   </p>
                 </div>
               </div>
@@ -380,38 +330,36 @@ export function CostosDemo() {
                 <table className="w-full">
                   <thead className="bg-slate-100">
                     <tr>
-                      <th className="text-left p-4 font-semibold text-slate-700">Producto</th>
+                      <th className="text-left p-4 font-semibold text-slate-700">Insumo</th>
                       <th className="text-left p-4 font-semibold text-slate-700">Costo Actual</th>
-                      <th className="text-left p-4 font-semibold text-slate-700">Prom. 3M</th>
-                      <th className="text-left p-4 font-semibold text-slate-700">Estimado 3M</th>
                       <th className="text-left p-4 font-semibold text-slate-700">Variación</th>
-                      <th className="text-left p-4 font-semibold text-slate-700">Estado</th>
+                      <th className="text-left p-4 font-semibold text-slate-700">Impacto</th>
+                      <th className="text-left p-4 font-semibold text-slate-700">Recomendación IA</th>
                     </tr>
                   </thead>
                   <tbody>
                     {result.map((item, index) => (
-                      <tr key={item.sku} className={`border-b hover:bg-slate-50 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-25'}`}>
+                      <tr key={item.id} className={`border-b hover:bg-slate-50 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-25'}`}>
                         <td className="p-4">
                           <div>
-                            <div className="font-semibold text-slate-800">{item.sku}</div>
-                            <div className="text-sm text-slate-600">{item.producto}</div>
+                            <div className="font-semibold text-slate-800">{item.id}</div>
+                            <div className="text-sm text-slate-600">{item.insumo}</div>
                           </div>
                         </td>
                         <td className="p-4 font-semibold text-slate-900">${item.costo_actual}</td>
-                        <td className="p-4 font-semibold text-slate-900">${item.costo_promedio_3m}</td>
-                        <td className="p-4 font-semibold text-slate-900">${item.costo_estimado_3m}</td>
                         <td className="p-4">
                           <div className="flex items-center gap-2">
-                            {getVariationIcon(item.variacion_estimada)}
-                            <span className={`font-semibold ${item.variacion_estimada > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                              {item.variacion_estimada > 0 ? '+' : ''}{item.variacion_estimada}%
+                            {getVariationIcon(item.variacion_esperada)}
+                            <span className={`font-semibold ${item.variacion_esperada > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                              {item.variacion_esperada > 0 ? '+' : ''}{item.variacion_esperada}%
                             </span>
                           </div>
                         </td>
                         <td className="p-4">
-                          <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(item.estado)}`}>
-                            {item.estado}
-                          </span>
+                          <span className="text-sm text-slate-600">{item.impacto_operativo}</span>
+                        </td>
+                        <td className="p-4">
+                          <span className="text-sm text-slate-600 italic">{item.mensaje_ia}</span>
                         </td>
                       </tr>
                     ))}
@@ -431,8 +379,7 @@ export function CostosDemo() {
             </CardHeader>
             <CardContent className="p-6">
               <p className="text-orange-100 text-lg mb-6 leading-relaxed">
-                🔎 Se sugiere ajustar políticas de compra para {result.filter(r => r.variacion_estimada > 5).length > 0 ? 'varios productos que muestran' : 'el producto que muestra'} una tendencia de aumento sostenido. 
-                {result.length > 1 && ` Se analizaron ${result.length} productos con diferentes niveles de riesgo.`}
+                🔎 Análisis completado de {result.length} insumos. Se detectaron {result.filter(r => r.variacion_esperada > 3).length} elementos con variaciones significativas que requieren atención prioritaria.
               </p>
               <div className="bg-white/10 rounded-lg p-6 border border-white/20">
                 <h4 className="font-semibold text-orange-100 mb-4 text-lg">Acciones Recomendadas:</h4>
@@ -440,7 +387,7 @@ export function CostosDemo() {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
-                      <span>Revisar contratos con proveedores</span>
+                      <span>Revisar contratos con proveedores críticos</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
@@ -475,13 +422,13 @@ export function CostosDemo() {
                 </CardHeader>
                 <CardContent className="p-6">
                   <div className="bg-white rounded-lg p-4 border-2 border-green-300 shadow-sm">
-                    <div className="text-sm font-semibold text-green-700 mb-2">📲 Agente Empleados Costos</div>
+                    <div className="text-sm font-semibold text-green-700 mb-2">📲 Agente de Costos</div>
                     <div className="space-y-2 text-sm text-slate-700">
-                      <p>Hola Carla.</p>
-                      <p>Se completó el análisis del {result[0].sku}.</p>
-                      <p>📈 El costo subió {result[0].variacion_estimada}% en 3 meses.</p>
-                      <p>⚠️ Recomendamos revisar al proveedor.</p>
-                      <p>¿Querés que lo contactemos ahora?</p>
+                      <p>Hola equipo!</p>
+                      <p>✅ Análisis de {result.length} insumos completado</p>
+                      <p>⚠️ {result.filter(r => r.variacion_esperada > 3).length} insumos con variaciones altas</p>
+                      <p>📊 Total costos monitoreados: ${result.reduce((total, item) => total + item.costo_actual, 0).toLocaleString()}</p>
+                      <p>💡 Revisar proveedores críticos urgente</p>
                     </div>
                   </div>
                 </CardContent>
@@ -498,17 +445,18 @@ export function CostosDemo() {
                 <CardContent className="p-6">
                   <div className="bg-white rounded-lg p-4 border-2 border-blue-300 shadow-sm">
                     <div className="text-sm font-semibold text-blue-700 mb-2">
-                      Asunto: Análisis de costos completado – {result[0].sku}
+                      Asunto: Análisis de costos completado – {new Date().toLocaleDateString()}
                     </div>
                     <div className="space-y-2 text-sm text-slate-700">
-                      <p>Hola Carla,</p>
-                      <p>Te compartimos el resumen del análisis de costos del producto {result[0].sku}:</p>
+                      <p>Estimado equipo,</p>
+                      <p>Se completó el análisis de {result.length} insumos con los siguientes resultados:</p>
                       <ul className="list-disc list-inside space-y-1 ml-2">
-                        <li>Costo actual: ${result[0].costo_actual}</li>
-                        <li>Costo promedio 3M: ${result[0].costo_promedio_3m}</li>
-                        <li>Costo estimado 3M: ${result[0].costo_estimado_3m}</li>
+                        <li>Insumos analizados: {result.length}</li>
+                        <li>Con variaciones altas: {result.filter(r => r.variacion_esperada > 3).length}</li>
+                        <li>Impacto operativo alto: {result.filter(r => r.impacto_operativo.includes('Alto')).length}</li>
+                        <li>Requerirán seguimiento: {result.filter(r => r.variacion_esperada > 2).length}</li>
                       </ul>
-                      <p>⚠️ <strong>Recomendación:</strong> Revisar al proveedor actual por tendencia de aumento sostenido.</p>
+                      <p>📋 <strong>Acción:</strong> Revisar proveedores de insumos críticos</p>
                       <p className="mt-3">Saludos,<br/>Agente de Costos – Empliados IA</p>
                     </div>
                   </div>
@@ -521,11 +469,11 @@ export function CostosDemo() {
           <div className="flex flex-wrap gap-4 justify-center">
             <Button className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-8 py-3">
               <Download className="h-5 w-5 mr-2" />
-              Enviar Informe
+              Exportar Informe
             </Button>
             <Button variant="outline" className="border-2 border-purple-600 text-purple-600 hover:bg-purple-50 font-semibold px-8 py-3">
               <Phone className="h-5 w-5 mr-2" />
-              Solicitar Verificación de Proveedor
+              Contactar Proveedores
             </Button>
             <Button variant="outline" className="border-2 border-slate-600 text-slate-600 hover:bg-slate-50 font-semibold px-8 py-3">
               <RefreshCw className="h-5 w-5 mr-2" />

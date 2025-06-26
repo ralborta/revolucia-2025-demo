@@ -2,22 +2,21 @@
 
 import { useState } from "react";
 import { Header } from "@/components/Header";
-import { CostosDemo } from "@/components/CostosDemo";
+import { Costos } from "@/components/CostosDemo";
 import costosData from "@/../data/costos.json";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
-  AlertTriangle, 
-  FileDown, 
   TrendingUp, 
-  TrendingDown,
-  Bot,
-  Search,
+  TrendingDown, 
+  AlertTriangle, 
   DollarSign,
   BarChart3,
+  Bot,
   Package,
-  Factory
+  Factory,
+  FileDown
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // This type should ideally be shared or imported from a central types file
 interface CostoItem {
@@ -30,7 +29,7 @@ interface CostoItem {
 }
 
 export default function CostosPage() {
-  const [showDemo, setShowDemo] = useState(false);
+  const [showAnalysis, setShowAnalysis] = useState(false);
 
   // Calcular métricas resumidas
   const totalInsumos = costosData.length;
@@ -55,8 +54,8 @@ export default function CostosPage() {
     <>
       <Header title="Agente de Costos" />
       <main className="flex-1 flex flex-col gap-6 p-6 bg-slate-50">
-        {/* Demo Interactive Section */}
-        {showDemo ? (
+        {/* Analysis Interactive Section */}
+        {showAnalysis ? (
           <div className="w-full">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold text-slate-800">
@@ -64,17 +63,17 @@ export default function CostosPage() {
               </h2>
               <Button 
                 variant="outline" 
-                onClick={() => setShowDemo(false)}
+                onClick={() => setShowAnalysis(false)}
                 className="flex items-center gap-2 bg-white hover:bg-slate-100"
               >
                 ← Volver al Dashboard
               </Button>
             </div>
-            <CostosDemo />
+            <Costos />
           </div>
         ) : (
           <>
-            {/* Demo Activation Button */}
+            {/* Analysis Activation Button */}
             <Card className="border-none shadow-lg bg-gradient-to-r from-orange-600 to-orange-700">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -83,20 +82,22 @@ export default function CostosPage() {
                       <Bot className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-white">Demo Interactivo de Análisis de Costos</h3>
+                      <h3 className="text-xl font-semibold text-white">Análisis Inteligente de Costos</h3>
                       <p className="text-orange-100">
-                        Prueba el agente IA para análisis de costos con simulación de WhatsApp y Email
+                        Ejecuta el agente IA para análisis de costos con simulación de WhatsApp y Email
                       </p>
                     </div>
                   </div>
-                  <Button 
-                    onClick={() => setShowDemo(true)}
-                    className="flex items-center gap-2 bg-white text-orange-600 hover:bg-orange-50"
-                    size="lg"
-                  >
-                    <Search className="h-5 w-5" />
-                    Probar Demo
-                  </Button>
+                  <div className="text-center">
+                    <Button 
+                      onClick={() => setShowAnalysis(true)} 
+                      size="lg"
+                      className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-12 py-4 text-lg"
+                    >
+                      <BarChart3 className="h-6 w-6 mr-3" />
+                      Ejecutar Análisis
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

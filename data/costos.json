@@ -22,5 +22,157 @@
     "variacion_esperada": 1.2,
     "impacto_operativo": "Bajo. Impacto marginal en el costo unitario.",
     "mensaje_ia": "Aumento menor en energía. Se puede absorber sin ajustar precios."
+  },
+  {
+    "id": "COSTO-004",
+    "insumo": "Acero Inoxidable 316L",
+    "costo_actual": 2850.75,
+    "variacion_esperada": 4.8,
+    "impacto_operativo": "Alto. Material crítico para maquinaria.",
+    "mensaje_ia": "Incremento significativo en acero. Evaluar proveedores alternativos."
+  },
+  {
+    "id": "COSTO-005",
+    "insumo": "Combustible Diésel",
+    "costo_actual": 1200.00,
+    "variacion_esperada": -2.1,
+    "impacto_operativo": "Medio. Reduce costos de flota vehicular.",
+    "mensaje_ia": "Reducción de precio combustible. Oportunidad para optimizar rutas."
+  },
+  {
+    "id": "COSTO-006",
+    "insumo": "Componente Electrónico PCB-450",
+    "costo_actual": 78.90,
+    "variacion_esperada": 6.2,
+    "impacto_operativo": "Alto. Componente esencial en 70% productos.",
+    "mensaje_ia": "Fuerte aumento electrónicos. Considerar compra forward."
+  },
+  {
+    "id": "COSTO-007",
+    "insumo": "Packaging Cartón Corrugado",
+    "costo_actual": 340.25,
+    "variacion_esperada": 1.8,
+    "impacto_operativo": "Bajo. Impacto menor en costo final.",
+    "mensaje_ia": "Incremento leve en packaging. Mantener proveedores actuales."
+  },
+  {
+    "id": "COSTO-008",
+    "insumo": "Gas Natural Industrial",
+    "costo_actual": 4200.00,
+    "variacion_esperada": -1.5,
+    "impacto_operativo": "Medio. Reduce costos de calefacción.",
+    "mensaje_ia": "Reducción gas natural. Beneficia costos operativos."
+  },
+  {
+    "id": "COSTO-009",
+    "insumo": "Pintura Anticorrosiva Premium",
+    "costo_actual": 890.60,
+    "variacion_esperada": 2.7,
+    "impacto_operativo": "Medio. Afecta calidad acabados.",
+    "mensaje_ia": "Aumento moderado en pintura. Evaluar alternativas."
+  },
+  {
+    "id": "COSTO-010",
+    "insumo": "Servicio Mantenimiento Preventivo",
+    "costo_actual": 3600.00,
+    "variacion_esperada": 0.0,
+    "impacto_operativo": "Crítico. Previene paradas de producción.",
+    "mensaje_ia": "Costo mantenimiento estable. Mantener programa actual."
+  },
+  {
+    "id": "COSTO-011",
+    "insumo": "Cobre Electrolítico 99.9%",
+    "costo_actual": 1875.40,
+    "variacion_esperada": 5.5,
+    "impacto_operativo": "Alto. Material conductor esencial.",
+    "mensaje_ia": "Cobre experimenta alza. Monitorear mercado internacional."
+  },
+  {
+    "id": "COSTO-012",
+    "insumo": "Software Licencias CAD/CAM",
+    "costo_actual": 2200.00,
+    "variacion_esperada": -0.8,
+    "impacto_operativo": "Medio. Herramienta de diseño crítica.",
+    "mensaje_ia": "Ligera reducción licencias. Renovar contratos actuales."
+  },
+  {
+    "id": "COSTO-013",
+    "insumo": "Aditivo Químico Catalizador",
+    "costo_actual": 650.30,
+    "variacion_esperada": 7.1,
+    "impacto_operativo": "Alto. Acelera procesos productivos.",
+    "mensaje_ia": "Fuerte incremento catalizador. Buscar formulaciones alternativas."
+  },
+  {
+    "id": "COSTO-014",
+    "insumo": "Seguro Industrial Integral",
+    "costo_actual": 4800.00,
+    "variacion_esperada": 3.5,
+    "impacto_operativo": "Crítico. Protección obligatoria.",
+    "mensaje_ia": "Aumento seguro industrial. Negociar con aseguradoras."
+  },
+  {
+    "id": "COSTO-015",
+    "insumo": "Agua Industrial Tratada",
+    "costo_actual": 950.75,
+    "variacion_esperada": -1.2,
+    "impacto_operativo": "Medio. Reducción en servicios básicos.",
+    "mensaje_ia": "Reducción agua tratada. Optimiza costos operacionales."
+  },
+  {
+    "id": "COSTO-016",
+    "insumo": "Herramientas Corte Tungsteno",
+    "costo_actual": 285.90,
+    "variacion_esperada": 4.3,
+    "impacto_operativo": "Medio. Herramientas de precisión.",
+    "mensaje_ia": "Incremento herramientas. Evaluar vida útil extendida."
+  },
+  {
+    "id": "COSTO-017",
+    "insumo": "Lubricante Industrial Sintético",
+    "costo_actual": 420.85,
+    "variacion_esperada": 1.9,
+    "impacto_operativo": "Bajo. Mantenimiento maquinaria.",
+    "mensaje_ia": "Leve aumento lubricante. Impacto controlable."
+  },
+  {
+    "id": "COSTO-018",
+    "insumo": "Etiquetas Adhesivas Especiales",
+    "costo_actual": 180.40,
+    "variacion_esperada": -0.5,
+    "impacto_operativo": "Bajo. Identificación productos.",
+    "mensaje_ia": "Reducción menor etiquetas. Mantener proveedor actual."
+  },
+  {
+    "id": "COSTO-019",
+    "insumo": "Servicio Certificación ISO",
+    "costo_actual": 6500.00,
+    "variacion_esperada": 2.8,
+    "impacto_operativo": "Crítico. Requisito comercial.",
+    "mensaje_ia": "Aumento certificaciones. Costo necesario para competitividad."
+  },
+  {
+    "id": "COSTO-020",
+    "insumo": "Fibra Óptica Industrial",
+    "costo_actual": 1350.20,
+    "variacion_esperada": -3.2,
+    "impacto_operativo": "Medio. Comunicaciones internas.",
+    "mensaje_ia": "Reducción fibra óptica. Oportunidad para upgrading."
+  },
+  {
+    "id": "COSTO-021",
+    "insumo": "Válvulas Neumáticas Precision",
+    "costo_actual": 790.60,
+    "variacion_esperada": 3.8,
+    "impacto_operativo": "Alto. Control procesos automatizados.",
+    "mensaje_ia": "Incremento válvulas. Revisar inventario estratégico."
+  },
+  {
+    "id": "COSTO-022",
+    "insumo": "Consultoría Técnica Especializada",
+    "costo_actual": 8900.00,
+    "variacion_esperada": 1.5,
+    "impacto_operativo": "Medio. Optimización procesos.",
+    "mensaje_ia": "Aumento consultoría. Evaluar retorno inversión proyectos."
   }
 ] 
