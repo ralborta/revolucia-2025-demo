@@ -191,7 +191,7 @@ export default function DashboardPage() {
           <CardContent className="p-8">
             <div className="text-center">
               <Bot className="h-12 w-12 mx-auto mb-4 text-blue-300" />
-              <h2 className="text-2xl font-bold mb-4">Bienvenido a la Demo de Agentes IA</h2>
+              <h2 className="text-2xl font-bold mb-4">Bienvenido a la Plataforma de Agentes IA</h2>
               <p className="text-slate-300 max-w-3xl mx-auto leading-relaxed">
                 Este dashboard centraliza el monitoreo y control de todos los agentes de automatización 
                 empresarial. Cada agente especializado procesa datos en tiempo real, genera 
