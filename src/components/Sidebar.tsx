@@ -25,12 +25,12 @@ export function Sidebar() {
           <Link className="flex items-center gap-2 font-semibold text-white" href="/">
             <Image 
               src="/logo.svg" 
-              alt="Logo Agentes IA" 
+              alt="Logo Empliados" 
               width={24} 
               height={24}
               className="h-6 w-6"
             />
-            <span>Plataforma de Agentes IA</span>
+            <span>Plataforma Empl<span className="text-orange-400">ia</span>dos</span>
           </Link>
         </div>
         

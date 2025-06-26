@@ -10,8 +10,8 @@ const fontSans = FontSans({
 })
 
 export const metadata: Metadata = {
-  title: "Plataforma de Agentes IA - Empleados",
-  description: "Plataforma inteligente de agentes de IA para automatización empresarial.",
+  title: "Plataforma Empliados - Agentes IA",
+  description: "Plataforma inteligente Empliados para automatización empresarial con agentes de IA.",
 };
 
 export default function RootLayout({

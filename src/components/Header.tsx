@@ -52,12 +52,12 @@ export function Header({ title }: { title: string }) {
             >
               <Image 
                 src="/logo.svg" 
-                alt="Logo Agentes IA" 
+                alt="Logo Empliados" 
                 width={24} 
                 height={24}
                 className="h-6 w-6"
               />
-              <span>Plataforma de Agentes IA</span>
+              <span>Plataforma Empl<span className="text-orange-400">ia</span>dos</span>
             </Link>
             {navLinks.map(link => {
                 const isActive = pathname === link.href;
