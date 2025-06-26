@@ -74,7 +74,7 @@ export default function PricingPage() {
                     size="lg"
                   >
                     <Search className="h-5 w-5" />
-                    Probar Demo
+                    Ejecutar Análisis
                   </Button>
                 </div>
               </CardContent>

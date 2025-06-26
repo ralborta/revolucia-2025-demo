@@ -17,9 +17,9 @@ import {
   RefreshCw,
   Settings,
   Database,
-  Zap
+  Zap,
+  ChevronDown
 } from "lucide-react";
-import data from "@/../mock/sku1025.json";
 
 interface SkuData {
     sku: string;
@@ -29,31 +29,43 @@ interface SkuData {
     recomendacion: string;
 }
 
-// Lista de SKUs disponibles para mostrar
+// Lista de SKUs disponibles para mostrar en dropdown
 const availableSkus = [
-  { sku: "SKU1025", name: "Producto Premium A", price: 1200 },
-  { sku: "SKU2048", name: "Equipo Industrial B", price: 850 },
-  { sku: "SKU3071", name: "Componente Técnico C", price: 450 },
-  { sku: "SKU4094", name: "Herramienta Profesional D", price: 320 },
-  { sku: "SKU5117", name: "Material Especializado E", price: 180 },
-  { sku: "SKU6140", name: "Accesorio Premium F", price: 95 },
-  { sku: "SKU7163", name: "Dispositivo Avanzado G", price: 1450 },
-  { sku: "SKU8186", name: "Sistema Integrado H", price: 2200 },
-  { sku: "SKU9209", name: "Módulo Técnico I", price: 380 },
-  { sku: "SKU0232", name: "Pieza Especializada J", price: 720 },
-  { sku: "SKU1255", name: "Equipo Profesional K", price: 990 },
-  { sku: "SKU2278", name: "Componente Industrial L", price: 540 },
-  { sku: "SKU3301", name: "Herramienta Avanzada M", price: 415 },
-  { sku: "SKU4324", name: "Material Premium N", price: 280 },
-  { sku: "SKU5347", name: "Accesorio Técnico O", price: 165 },
-  { sku: "SKU6370", name: "Dispositivo Profesional P", price: 1180 },
-  { sku: "SKU7393", name: "Sistema Especializado Q", price: 1850 },
-  { sku: "SKU8416", name: "Módulo Premium R", price: 620 },
-  { sku: "SKU9439", name: "Pieza Avanzada S", price: 340 },
-  { sku: "SKU0462", name: "Equipo Técnico T", price: 890 },
-  { sku: "SKU1485", name: "Componente Premium U", price: 1320 },
-  { sku: "SKU2508", name: "Herramienta Industrial V", price: 750 }
+  "SKU1025", "SKU2048", "SKU3071", "SKU4094", "SKU5117", "SKU6140", 
+  "SKU7163", "SKU8186", "SKU9209", "SKU0232", "SKU1255", "SKU2278", 
+  "SKU3301", "SKU4324", "SKU5347", "SKU6370", "SKU7393", "SKU8416", 
+  "SKU9439", "SKU0462", "SKU1485", "SKU2508"
 ];
+
+// Función para generar datos dinámicos basados en el SKU
+const generateSkuData = (inputSku: string): SkuData => {
+  const skuNumber = parseInt(inputSku.replace(/\D/g, '')) || 1000;
+  const basePrice = 500 + (skuNumber % 2000);
+  const competitorPrice = basePrice + (skuNumber % 200) - 100;
+  const suggestedPrice = Math.round(basePrice * 0.85);
+  
+  const productNames = [
+    "Componente Electrónico", "Equipo Industrial", "Herramienta Profesional", 
+    "Material Especializado", "Dispositivo Avanzado", "Sistema Integrado",
+    "Módulo Técnico", "Pieza Especializada", "Accesorio Premium"
+  ];
+  
+  const productName = productNames[skuNumber % productNames.length];
+  
+  const recommendations = [
+    `Basado en el análisis de mercado, recomendamos ajustar el precio a $${suggestedPrice} para optimizar la competitividad. Esta estrategia puede incrementar las ventas en un 15% manteniendo márgenes saludables.`,
+    `El análisis sugiere reducir el precio a $${suggestedPrice} para mejorar la posición competitiva. Se proyecta un aumento del 12% en volumen de ventas con esta optimización.`,
+    `Recomendamos implementar un precio de $${suggestedPrice} basado en tendencias del mercado y análisis de competidores. Esta estrategia balanceará competitividad y rentabilidad.`
+  ];
+  
+  return {
+    sku: inputSku.toUpperCase(),
+    producto: `${productName} ${inputSku.slice(-1).toUpperCase()}`,
+    precio_actual: basePrice,
+    precio_competidor: competitorPrice,
+    recomendacion: recommendations[skuNumber % recommendations.length]
+  };
+};
 
 const analysisSteps = [
   { 
@@ -200,6 +212,7 @@ const implementationSteps = [
 
 export function PricingDemo() {
   const [sku, setSku] = useState("SKU1025");
+  const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [implementing, setImplementing] = useState(false);
   const [implemented, setImplemented] = useState(false);
@@ -221,11 +234,9 @@ export function PricingDemo() {
     // Simulate analysis steps with realistic timing (45 seconds total)
     const stepRunner = (stepIndex: number) => {
       if (stepIndex >= analysisSteps.length) {
-        if (sku.toUpperCase() === "SKU1025") {
-          setResult(data);
-        } else {
-          setError("SKU no encontrado. Por favor, intente con 'SKU1025'.");
-        }
+        // Generar datos para cualquier SKU
+        const generatedData = generateSkuData(sku);
+        setResult(generatedData);
         setLoading(false);
         return;
       }
@@ -295,17 +306,23 @@ export function PricingDemo() {
     implStepRunner(0);
   };
 
-  const handleSkuClick = (selectedSku: string) => {
+  const handleSkuSelect = (selectedSku: string) => {
     setSku(selectedSku);
+    setShowDropdown(false);
   };
 
-  const competitorPrices = [
+  const competitorPrices = result ? [
+    { name: "TechnoMax", price: result.precio_competidor + 15 },
+    { name: "IndustrialPro", price: result.precio_competidor - 15 },
+    { name: "PremiumTools", price: result.precio_competidor + 30 }
+  ] : [
     { name: "TechnoMax", price: 980 },
     { name: "IndustrialPro", price: 965 },
     { name: "PremiumTools", price: 995 }
   ];
 
   const averageCompetitorPrice = Math.round(competitorPrices.reduce((sum, comp) => sum + comp.price, 0) / competitorPrices.length);
+  const suggestedPrice = result ? Math.round(result.precio_actual * 0.85) : 970;
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -326,34 +343,6 @@ export function PricingDemo() {
         </CardHeader>
       </Card>
 
-      {/* Available SKUs Section */}
-      {!loading && !result && !implementing && (
-        <Card className="border-none shadow-lg">
-          <CardHeader className="bg-slate-800 text-white">
-            <CardTitle className="text-xl">SKUs Disponibles para Análisis</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              {availableSkus.map((item) => (
-                <div 
-                  key={item.sku}
-                  onClick={() => handleSkuClick(item.sku)}
-                  className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md ${
-                    sku === item.sku 
-                      ? 'border-blue-500 bg-blue-50' 
-                      : 'border-slate-200 hover:border-blue-300'
-                  }`}
-                >
-                  <div className="font-semibold text-slate-800">{item.sku}</div>
-                  <div className="text-sm text-slate-600 mb-2">{item.name}</div>
-                  <div className="text-lg font-bold text-blue-600">${item.price.toLocaleString()}</div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* SKU Input Section */}
       {!implementing && (
         <Card className="border-none shadow-lg">
@@ -361,14 +350,40 @@ export function PricingDemo() {
             <div className="space-y-4">
               <label className="text-lg font-semibold text-slate-800">SKU:</label>
               <div className="flex gap-4 items-center">
-                <Input
-                  type="text"
-                  value={sku}
-                  onChange={(e) => setSku(e.target.value)}
-                  disabled={loading}
-                  className="max-w-sm h-12 text-lg border-2 border-slate-200 focus:border-blue-500"
-                  placeholder="Ingrese SKU (ej: SKU1025)"
-                />
+                <div className="relative max-w-sm">
+                  <Input
+                    type="text"
+                    value={sku}
+                    onChange={(e) => setSku(e.target.value)}
+                    disabled={loading}
+                    className="h-12 text-lg border-2 border-slate-200 focus:border-blue-500 pr-12"
+                    placeholder="Ingrese SKU (ej: SKU1025)"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowDropdown(!showDropdown)}
+                    disabled={loading}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  >
+                    <ChevronDown className="h-5 w-5" />
+                  </button>
+                  
+                  {/* Dropdown */}
+                  {showDropdown && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+                      {availableSkus.map((skuOption) => (
+                        <button
+                          key={skuOption}
+                          onClick={() => handleSkuSelect(skuOption)}
+                          className="w-full text-left px-4 py-2 hover:bg-blue-50 text-slate-700 font-medium"
+                        >
+                          {skuOption}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
                 <Button 
                   onClick={handleConsultar} 
                   disabled={loading}
@@ -480,7 +495,7 @@ export function PricingDemo() {
       )}
 
       {/* Implementation Success */}
-      {implemented && (
+      {implemented && result && (
         <Card className="border-none shadow-lg bg-green-50 border-green-200">
           <CardContent className="p-8">
             <div className="text-center space-y-4">
@@ -493,16 +508,16 @@ export function PricingDemo() {
                 ¡Implementación Exitosa!
               </h3>
               <p className="text-green-700 text-xl">
-                El nuevo precio de $970 ha sido aplicado correctamente
+                El nuevo precio de ${suggestedPrice} ha sido aplicado correctamente
               </p>
               <div className="bg-white p-6 rounded-lg border border-green-200 max-w-2xl mx-auto">
                 <div className="grid grid-cols-2 gap-6 text-center">
                   <div>
-                    <div className="text-2xl font-bold text-slate-800">$1,200</div>
+                    <div className="text-2xl font-bold text-slate-800">${result.precio_actual.toLocaleString()}</div>
                     <div className="text-slate-600">Precio Anterior</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-green-600">$970</div>
+                    <div className="text-2xl font-bold text-green-600">${suggestedPrice.toLocaleString()}</div>
                     <div className="text-slate-600">Nuevo Precio</div>
                   </div>
                 </div>
@@ -720,7 +735,7 @@ export function PricingDemo() {
                   <span className="text-green-100 text-sm font-medium">Precio Sugerido</span>
                   <Target className="h-6 w-6 text-green-200" />
                 </div>
-                <div className="text-3xl font-bold">$970</div>
+                <div className="text-3xl font-bold">${suggestedPrice.toLocaleString()}</div>
                 <div className="text-green-200 text-sm">Optimización IA</div>
               </CardContent>
             </Card>
@@ -848,7 +863,7 @@ export function PricingDemo() {
                     </div>
                     <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
                       <span className="font-medium">Precio promedio:</span>
-                      <span className="font-bold text-blue-600">$1,050</span>
+                      <span className="font-bold text-blue-600">${Math.round(result.precio_actual * 1.1).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
                       <span className="font-medium">Mejor día:</span>
