@@ -18,7 +18,11 @@ import {
   Settings,
   Database,
   Zap,
-  ChevronDown
+  ChevronDown,
+  X,
+  TrendingUp,
+  TrendingDown,
+  Eye
 } from "lucide-react";
 
 interface SkuData {
@@ -213,6 +217,7 @@ const implementationSteps = [
 export function PricingDemo() {
   const [sku, setSku] = useState("SKU1025");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showCompetitorModal, setShowCompetitorModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [implementing, setImplementing] = useState(false);
   const [implemented, setImplemented] = useState(false);
@@ -718,14 +723,23 @@ export function PricingDemo() {
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-lg bg-blue-600 text-white">
+            <Card 
+              className="border-none shadow-lg bg-blue-600 text-white cursor-pointer hover:bg-blue-700 transition-colors duration-200"
+              onClick={() => setShowCompetitorModal(true)}
+            >
               <CardContent className="p-6 text-center">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-blue-100 text-sm font-medium">Promedio Competencia</span>
-                  <BarChart3 className="h-6 w-6 text-blue-200" />
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="h-6 w-6 text-blue-200" />
+                    <Eye className="h-4 w-4 text-blue-200" />
+                  </div>
                 </div>
                 <div className="text-3xl font-bold">${averageCompetitorPrice.toLocaleString()}</div>
-                <div className="text-blue-200 text-sm">Top 3 competidores</div>
+                <div className="text-blue-200 text-sm flex items-center justify-center gap-1">
+                  Top 3 competidores
+                  <ChevronDown className="h-3 w-3" />
+                </div>
               </CardContent>
             </Card>
 
@@ -741,32 +755,182 @@ export function PricingDemo() {
             </Card>
           </div>
 
-          {/* Competitor Analysis */}
-          <Card className="border-none shadow-lg">
-            <CardHeader className="bg-slate-800 text-white">
-              <CardTitle className="text-xl">Análisis de Competidores</CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                {competitorPrices.map((competitor, index) => (
-                  <div key={index} className="flex justify-between items-center p-4 bg-slate-50 rounded-lg">
+          {/* Modal de Competidores */}
+          {showCompetitorModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                {/* Header del Modal */}
+                <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-xl">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                      <span className="font-medium text-slate-700">{competitor.name}</span>
+                      <div className="p-2 bg-white/20 rounded-full">
+                        <BarChart3 className="h-6 w-6" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold">Análisis de Competencia</h3>
+                        <p className="text-blue-100">Precios detallados del mercado para {result?.sku}</p>
+                      </div>
                     </div>
-                    <span className="font-bold text-slate-800 text-lg">${competitor.price.toLocaleString()}</span>
+                    <button
+                      onClick={() => setShowCompetitorModal(false)}
+                      className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                    >
+                      <X className="h-6 w-6" />
+                    </button>
                   </div>
-                ))}
-                <div className="flex justify-between items-center p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
-                    <span className="font-bold text-blue-800">Promedio del Mercado</span>
+                </div>
+
+                {/* Contenido del Modal */}
+                <div className="p-6 space-y-6">
+                  {/* Producto Analizado */}
+                  <div className="bg-slate-50 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-semibold text-slate-800">{result?.producto}</h4>
+                        <p className="text-slate-600 text-sm">SKU: {result?.sku}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-slate-800">${result?.precio_actual.toLocaleString()}</div>
+                        <div className="text-slate-600 text-sm">Precio Actual</div>
+                      </div>
+                    </div>
                   </div>
-                  <span className="font-bold text-blue-800 text-xl">${averageCompetitorPrice.toLocaleString()}</span>
+
+                  {/* Lista de Competidores */}
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-semibold text-slate-800 border-b pb-2">
+                      Precios de Competidores
+                    </h4>
+                    
+                    {competitorPrices.map((competitor, index) => {
+                      const isLowest = competitor.price === Math.min(...competitorPrices.map(c => c.price));
+                      const isHighest = competitor.price === Math.max(...competitorPrices.map(c => c.price));
+                      const currentPrice = result?.precio_actual || 0;
+                      const difference = competitor.price - currentPrice;
+                      const percentDiff = ((difference / currentPrice) * 100);
+                      
+                      return (
+                        <div 
+                          key={index}
+                          className={`p-4 rounded-lg border-2 transition-all duration-200 hover:shadow-md ${
+                            isLowest ? 'bg-green-50 border-green-200' :
+                            isHighest ? 'bg-red-50 border-red-200' :
+                            'bg-slate-50 border-slate-200'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-4 h-4 rounded-full ${
+                                isLowest ? 'bg-green-500' :
+                                isHighest ? 'bg-red-500' :
+                                'bg-blue-500'
+                              }`}></div>
+                              <div>
+                                <div className="font-semibold text-slate-800">{competitor.name}</div>
+                                <div className="text-sm text-slate-600">
+                                  {isLowest && '🏆 Precio más bajo'}
+                                  {isHighest && '💰 Precio más alto'}
+                                  {!isLowest && !isHighest && '📊 Precio medio'}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-xl font-bold text-slate-800">
+                                ${competitor.price.toLocaleString()}
+                              </div>
+                              <div className={`text-sm flex items-center gap-1 ${
+                                difference > 0 ? 'text-red-600' : 'text-green-600'
+                              }`}>
+                                {difference > 0 ? (
+                                  <TrendingUp className="h-3 w-3" />
+                                ) : (
+                                  <TrendingDown className="h-3 w-3" />
+                                )}
+                                {difference > 0 ? '+' : ''}${Math.abs(difference).toLocaleString()}
+                                ({percentDiff > 0 ? '+' : ''}{percentDiff.toFixed(1)}%)
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Análisis Resumido */}
+                  <div className="bg-blue-50 rounded-lg p-5 border border-blue-200">
+                    <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                      <Bot className="h-5 w-5" />
+                      Análisis Competitivo
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-blue-700">Precio promedio mercado:</span>
+                          <span className="font-bold text-blue-900">${averageCompetitorPrice.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-blue-700">Rango de precios:</span>
+                          <span className="font-bold text-blue-900">
+                            ${Math.min(...competitorPrices.map(c => c.price)).toLocaleString()} - 
+                            ${Math.max(...competitorPrices.map(c => c.price)).toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-blue-700">Posición actual:</span>
+                          <span className="font-bold text-blue-900">
+                            {result && result.precio_actual < averageCompetitorPrice ? 'Por debajo del promedio' : 'Por encima del promedio'}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-blue-700">Competidor más bajo:</span>
+                          <span className="font-bold text-green-700">
+                            {competitorPrices.find(c => c.price === Math.min(...competitorPrices.map(p => p.price)))?.name}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-blue-700">Diferencia vs promedio:</span>
+                          <span className={`font-bold ${
+                            result && result.precio_actual < averageCompetitorPrice ? 'text-green-600' : 'text-red-600'
+                          }`}>
+                            {result && (((result.precio_actual - averageCompetitorPrice) / averageCompetitorPrice) * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-blue-700">Recomendación:</span>
+                          <span className="font-bold text-purple-600">Ajustar a ${suggestedPrice.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Botones de Acción */}
+                  <div className="flex gap-3 pt-4">
+                    <Button 
+                      onClick={() => setShowCompetitorModal(false)}
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <CheckCircle2 className="h-4 w-4 mr-2" />
+                      Entendido
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        setShowCompetitorModal(false);
+                        // Trigger implementation
+                        handleImplementar();
+                      }}
+                      className="flex-1 border-green-600 text-green-600 hover:bg-green-50"
+                    >
+                      <Zap className="h-4 w-4 mr-2" />
+                      Implementar Precio
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          )}
 
           {/* Market Analysis */}
           <Card className="border-none shadow-lg">
