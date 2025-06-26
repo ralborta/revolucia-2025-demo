@@ -241,7 +241,7 @@ export default function LogisticaPage() {
 
             {/* Vista Tradicional - Tabla y Detalles */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="md:col-span-1">
+        <div className="md:col-span-1">
                 <Card className="border-none shadow-lg">
                   <CardHeader className="bg-slate-800 text-white">
                     <div className="flex items-center justify-between">
@@ -253,21 +253,21 @@ export default function LogisticaPage() {
                     </div>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <TableResumen
-                        columns={columns}
-                        data={logisticaData}
-                        onRowClick={(row) => setSelectedItem(row as LogisticaItem)}
-                    />
+            <TableResumen
+                columns={columns}
+                data={logisticaData}
+                onRowClick={(row) => setSelectedItem(row as LogisticaItem)}
+            />
                   </CardContent>
                 </Card>
-              </div>
-              <div className="md:col-span-1">
+        </div>
+        <div className="md:col-span-1">
                 <Card className="border-none shadow-lg">
                   <CardHeader className="bg-blue-600 text-white">
                     <CardTitle className="text-xl">Detalles del Viaje</CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <DetailPanel item={selectedItem} />
+             <DetailPanel item={selectedItem} />
                   </CardContent>
                 </Card>
               </div>
@@ -331,7 +331,7 @@ export default function LogisticaPage() {
                   </div>
                 </CardContent>
               </Card>
-            </div>
+        </div>
           </>
         )}
       </main>
