@@ -10,15 +10,15 @@
     "papeleta_img": "/images/Remito TSB 1.jpg",
     "chat_simulado": [
       {
-        "autor": "Agente Empliados Logística",
+        "autor": "Agente Empleados Logística",
         "mensaje": "Hola Juan. Por favor envía foto clara de papeleta y KM actual del vehículo. Gracias!"
       },
       {
         "autor": "Transportista",
-        "mensaje": "📸 Foto enviada"
+        "mensaje": "📸 Foto enviada - KM: 32,450"
       },
       {
-        "autor": "Agente Empliados Logística",
+        "autor": "Agente Empleados Logística",
         "mensaje": "✅ Recibido y validado.\nHora: 14:23\nKilometraje: 32,450 km\n¡Gracias!"
       }
     ],
@@ -36,8 +36,19 @@
     "fecha": "2024-06-24",
     "estado": "Completado",
     "papeleta_img": "/images/Remito TSB 2.jpg",
-    "chat_simulado": [],
-    "recomendaciones_ia": []
+    "chat_simulado": [
+      {
+        "autor": "Agente Empleados Logística",
+        "mensaje": "Carlos, confirma llegada a destino y envía foto de descarga"
+      },
+      {
+        "autor": "Transportista",
+        "mensaje": "Llegué sin problemas. Foto enviada ✅"
+      }
+    ],
+    "recomendaciones_ia": [
+      "Excelente tiempo de viaje. Mantener esta eficiencia."
+    ]
   },
   {
     "id": "VIAJE-003",
@@ -48,7 +59,220 @@
     "fecha": "2024-06-26",
     "estado": "En curso",
     "papeleta_img": null,
+    "chat_simulado": [
+      {
+        "autor": "Agente Empleados Logística",
+        "mensaje": "Miguel, ¿cómo va el viaje? ¿Alguna novedad?"
+      },
+      {
+        "autor": "Transportista",
+        "mensaje": "Todo bien, llegando en 15 minutos"
+      }
+    ],
+    "recomendaciones_ia": [
+      "Viaje en tiempo esperado. Sin alertas."
+    ]
+  },
+  {
+    "id": "VIAJE-004",
+    "unidad": "Unidad #528",
+    "ruta": "Rosario -> Córdoba",
+    "km_inicial": 45200,
+    "km_final": 45580,
+    "fecha": "2024-06-24",
+    "estado": "Completado",
+    "papeleta_img": "/images/Remito TSB 3.jpg",
+    "chat_simulado": [
+      {
+        "autor": "Agente Empleados Logística",
+        "mensaje": "Eduardo, necesito confirmación de entrega en Córdoba"
+      },
+      {
+        "autor": "Transportista",
+        "mensaje": "Entrega realizada. Cliente conforme. KM: 45,580"
+      },
+      {
+        "autor": "Agente Empleados Logística",
+        "mensaje": "Perfecto. Gracias por la puntualidad."
+      }
+    ],
+    "recomendaciones_ia": [
+      "Ruta Rosario-Córdoba optimizada. Conductor eficiente."
+    ]
+  },
+  {
+    "id": "VIAJE-005",
+    "unidad": "Unidad #623",
+    "ruta": "Buenos Aires -> La Plata",
+    "km_inicial": 28900,
+    "km_final": 29120,
+    "fecha": "2024-06-23",
+    "estado": "Completado",
+    "papeleta_img": null,
     "chat_simulado": [],
-    "recomendaciones_ia": []
+    "recomendaciones_ia": [
+      "Falta documentación fotográfica. Solicitar al conductor."
+    ]
+  },
+  {
+    "id": "VIAJE-006",
+    "unidad": "Unidad #789",
+    "ruta": "Mendoza -> San Juan",
+    "km_inicial": 67800,
+    "km_final": 68150,
+    "fecha": "2024-06-23",
+    "estado": "Completado",
+    "papeleta_img": "/images/Remito TSB 4.jpg",
+    "chat_simulado": [
+      {
+        "autor": "Agente Empleados Logística",
+        "mensaje": "Roberto, ¿llegaste bien a San Juan?"
+      },
+      {
+        "autor": "Transportista",
+        "mensaje": "Sí, todo perfecto. Carga entregada completa."
+      }
+    ],
+    "recomendaciones_ia": [
+      "Ruta montañosa sin incidentes. Excelente conducción."
+    ]
+  },
+  {
+    "id": "VIAJE-007",
+    "unidad": "Unidad #456",
+    "ruta": "Tucumán -> Salta",
+    "km_inicial": 23450,
+    "km_final": null,
+    "fecha": "2024-06-26",
+    "estado": "En curso",
+    "papeleta_img": null,
+    "chat_simulado": [
+      {
+        "autor": "Agente Empleados Logística",
+        "mensaje": "Fernando, ¿cómo va el viaje hacia Salta?"
+      },
+      {
+        "autor": "Transportista",
+        "mensaje": "Demora por lluvia, pero avanzando. ETA: 17:30"
+      }
+    ],
+    "recomendaciones_ia": [
+      "Monitorear condiciones climáticas en ruta NOA."
+    ]
+  },
+  {
+    "id": "VIAJE-008",
+    "unidad": "Unidad #892",
+    "ruta": "Santa Fe -> Paraná",
+    "km_inicial": 89200,
+    "km_final": 89450,
+    "fecha": "2024-06-22",
+    "estado": "Completado",
+    "papeleta_img": "/images/Remito TSB 5.jpg",
+    "chat_simulado": [
+      {
+        "autor": "Agente Empleados Logística",
+        "mensaje": "Alejandro, confirma cruce del túnel y estado de carga"
+      },
+      {
+        "autor": "Transportista",
+        "mensaje": "Túnel cruzado sin problemas. Carga segura."
+      },
+      {
+        "autor": "Agente Empleados Logística",
+        "mensaje": "Excelente. Entrega confirmada en Paraná."
+      }
+    ],
+    "recomendaciones_ia": [
+      "Cruce de túnel sin incidentes. Protocolo cumplido."
+    ]
+  },
+  {
+    "id": "VIAJE-009",
+    "unidad": "Unidad #134",
+    "ruta": "Neuquén -> Bahía Blanca",
+    "km_inicial": 45670,
+    "km_final": 46120,
+    "fecha": "2024-06-22",
+    "estado": "Completado",
+    "papeleta_img": null,
+    "chat_simulado": [],
+    "recomendaciones_ia": [
+      "Viaje largo sin comunicación. Verificar protocolo."
+    ]
+  },
+  {
+    "id": "VIAJE-010",
+    "unidad": "Unidad #567",
+    "ruta": "Mar del Plata -> Tandil",
+    "km_inicial": 12340,
+    "km_final": 12560,
+    "fecha": "2024-06-21",
+    "estado": "Completado",
+    "papeleta_img": "/images/Remito TSB 6.jpg",
+    "chat_simulado": [
+      {
+        "autor": "Agente Empleados Logística",
+        "mensaje": "Gustavo, ¿cómo está el tráfico hacia Tandil?"
+      },
+      {
+        "autor": "Transportista",
+        "mensaje": "Ruta despejada. Llegando en horario."
+      }
+    ],
+    "recomendaciones_ia": [
+      "Ruta costera en buen estado. Tiempo óptimo."
+    ]
+  },
+  {
+    "id": "VIAJE-011",
+    "unidad": "Unidad #245",
+    "ruta": "Formosa -> Resistencia",
+    "km_inicial": 78900,
+    "km_final": 79180,
+    "fecha": "2024-06-21",
+    "estado": "Completado",
+    "papeleta_img": "/images/Remito TSB 7.jpg",
+    "chat_simulado": [
+      {
+        "autor": "Agente Empleados Logística",
+        "mensaje": "Diego, confirma estado de la mercadería en zona húmeda"
+      },
+      {
+        "autor": "Transportista",
+        "mensaje": "Todo protegido y seco. Sin problemas."
+      },
+      {
+        "autor": "Agente Empleados Logística",
+        "mensaje": "Perfecto. Entrega autorizada."
+      }
+    ],
+    "recomendaciones_ia": [
+      "Carga protegida correctamente en zona húmeda."
+    ]
+  },
+  {
+    "id": "VIAJE-012",
+    "unidad": "Unidad #891",
+    "ruta": "Ushuaia -> Río Grande",
+    "km_inicial": 34500,
+    "km_final": 34780,
+    "fecha": "2024-06-20",
+    "estado": "Completado",
+    "papeleta_img": null,
+    "chat_simulado": [
+      {
+        "autor": "Agente Empleados Logística",
+        "mensaje": "Marcelo, ¿cómo están las condiciones en Tierra del Fuego?"
+      },
+      {
+        "autor": "Transportista",
+        "mensaje": "Viento fuerte pero manejable. Entrega completada."
+      }
+    ],
+    "recomendaciones_ia": [
+      "Condiciones extremas manejadas profesionalmente.",
+      "Solicitar foto de papeleta para próximos viajes."
+    ]
   }
 ] 
