@@ -29,7 +29,7 @@ interface ConciliacionItem {
 }
 
 export default function ConciliacionPage() {
-  const [showDemo, setShowDemo] = useState(false);
+  const [showAnalysis, setShowAnalysis] = useState(false);
 
   // Calcular métricas resumidas
   const totalMovimientos = conciliacionData.length;
@@ -62,8 +62,8 @@ export default function ConciliacionPage() {
     <>
       <Header title="Agente de Conciliación" />
       <main className="flex-1 flex flex-col gap-6 p-6 bg-slate-50">
-        {/* Demo Interactive Section */}
-        {showDemo ? (
+        {/* Analysis Interactive Section */}
+        {showAnalysis ? (
           <div className="w-full">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold text-slate-800">
@@ -71,7 +71,7 @@ export default function ConciliacionPage() {
               </h2>
               <Button 
                 variant="outline" 
-                onClick={() => setShowDemo(false)}
+                onClick={() => setShowAnalysis(false)}
                 className="flex items-center gap-2 bg-white hover:bg-slate-100"
               >
                 ← Volver al Dashboard
@@ -81,7 +81,7 @@ export default function ConciliacionPage() {
           </div>
         ) : (
           <>
-            {/* Demo Activation Button */}
+            {/* Analysis Activation Button */}
             <Card className="border-none shadow-lg bg-gradient-to-r from-purple-600 to-purple-700">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -90,21 +90,21 @@ export default function ConciliacionPage() {
                       <Bot className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-white">Demo Interactivo de Conciliación</h3>
+                      <h3 className="text-xl font-semibold text-white">Análisis Inteligente de Conciliación</h3>
                       <p className="text-purple-100">
-                        Prueba el agente IA para conciliación bancaria, contable y fiscal
+                        Ejecuta el agente IA para conciliación bancaria, contable y fiscal
                       </p>
                     </div>
                   </div>
                   <Button 
-                    onClick={() => setShowDemo(true)}
+                    onClick={() => setShowAnalysis(true)}
                     className="flex items-center gap-2 bg-white text-purple-600 hover:bg-purple-50"
                     size="lg"
                   >
                     <Search className="h-5 w-5" />
-                    Probar Demo
-            </Button>
-        </div>
+                    Ejecutar Análisis
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 

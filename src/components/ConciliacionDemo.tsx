@@ -90,7 +90,7 @@ export function ConciliacionDemo() {
   const [result, setResult] = useState<ConciliacionData[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleAnalizar = async () => {
+  const handleEjecutar = async () => {
     setLoading(true);
     setResult(null);
     setError(null);
@@ -198,23 +198,34 @@ export function ConciliacionDemo() {
                   <SelectValue placeholder="Selecciona el período" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="marzo-2025">📅 Marzo 2025</SelectItem>
-                  <SelectItem value="febrero-2025">📅 Febrero 2025</SelectItem>
-                  <SelectItem value="enero-2025">📅 Enero 2025</SelectItem>
+                  <SelectItem value="enero-2025">Enero 2025</SelectItem>
+                  <SelectItem value="febrero-2025">Febrero 2025</SelectItem>
+                  <SelectItem value="marzo-2025">Marzo 2025</SelectItem>
+                  <SelectItem value="abril-2025">Abril 2025</SelectItem>
+                  <SelectItem value="mayo-2025">Mayo 2025</SelectItem>
+                  <SelectItem value="junio-2025">Junio 2025</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           
-          <div className="flex justify-center mt-6">
-            <Button 
-              onClick={handleAnalizar} 
+          <div className="mt-8 text-center">
+            <Button
+              onClick={handleEjecutar}
               disabled={loading}
-              className="h-12 px-8 bg-purple-600 hover:bg-purple-700 text-white font-semibold text-lg"
-              size="lg"
+              className="h-14 px-12 text-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg"
             >
-              <Search className="h-5 w-5 mr-2" />
-              Analizar Conciliación
+              {loading ? (
+                <>
+                  <RefreshCw className="mr-3 h-6 w-6 animate-spin" />
+                  Analizando...
+                </>
+              ) : (
+                <>
+                  <Search className="mr-3 h-6 w-6" />
+                  Ejecutar
+                </>
+              )}
             </Button>
           </div>
         </CardContent>
@@ -480,7 +491,7 @@ export function ConciliacionDemo() {
             </Button>
             <Button variant="outline" className="border-2 border-slate-600 text-slate-600 hover:bg-slate-50 font-semibold px-8 py-3">
               <RefreshCw className="h-5 w-5 mr-2" />
-              Nueva Conciliación
+              Nuevo Análisis
             </Button>
           </div>
         </div>

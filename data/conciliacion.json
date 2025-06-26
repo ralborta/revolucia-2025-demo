@@ -38,5 +38,349 @@
     "monto_contable": 4800.00,
     "monto_bancario": 0,
     "estado": "⚠️"
+  },
+  {
+    "id": "CON-006",
+    "fecha": "2024-06-21",
+    "descripcion": "Transferencia Banco Central",
+    "monto_contable": 85000.00,
+    "monto_bancario": 85000.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-007",
+    "fecha": "2024-06-20",
+    "descripcion": "Pago salarios junio",
+    "monto_contable": 124500.75,
+    "monto_bancario": 124500.75,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-008",
+    "fecha": "2024-06-19",
+    "descripcion": "Comisión transferencia internacional",
+    "monto_contable": 0,
+    "monto_bancario": 325.50,
+    "estado": "⚠️"
+  },
+  {
+    "id": "CON-009",
+    "fecha": "2024-06-18",
+    "descripcion": "Cobro Cliente Constructora Sur",
+    "monto_contable": 45000.00,
+    "monto_bancario": 42750.00,
+    "estado": "❌"
+  },
+  {
+    "id": "CON-010",
+    "fecha": "2024-06-17",
+    "descripcion": "Pago alquiler oficina principal",
+    "monto_contable": 12800.00,
+    "monto_bancario": 12800.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-011",
+    "fecha": "2024-06-16",
+    "descripcion": "Depósito en efectivo",
+    "monto_contable": 8750.00,
+    "monto_bancario": 8750.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-012",
+    "fecha": "2024-06-15",
+    "descripcion": "Cheque devuelto - Metalúrgica Norte",
+    "monto_contable": 18500.00,
+    "monto_bancario": 0,
+    "estado": "❌"
+  },
+  {
+    "id": "CON-013",
+    "fecha": "2024-06-14",
+    "descripcion": "Intereses ganados cuenta corriente",
+    "monto_contable": 0,
+    "monto_bancario": 285.40,
+    "estado": "⚠️"
+  },
+  {
+    "id": "CON-014",
+    "fecha": "2024-06-13",
+    "descripcion": "Pago servicios públicos",
+    "monto_contable": 3420.00,
+    "monto_bancario": 3420.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-015",
+    "fecha": "2024-06-12",
+    "descripcion": "Facturación exportación Brasil",
+    "monto_contable": 67850.00,
+    "monto_bancario": 67850.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-016",
+    "fecha": "2024-06-11",
+    "descripcion": "Débito automático seguro",
+    "monto_contable": 0,
+    "monto_bancario": 1890.00,
+    "estado": "⚠️"
+  },
+  {
+    "id": "CON-017",
+    "fecha": "2024-06-10",
+    "descripcion": "Cobro duplicado mantenimiento",
+    "monto_contable": 5600.00,
+    "monto_bancario": 11200.00,
+    "estado": "❌"
+  },
+  {
+    "id": "CON-018",
+    "fecha": "2024-06-09",
+    "descripcion": "Transferencia inversiones",
+    "monto_contable": 95000.00,
+    "monto_bancario": 95000.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-019",
+    "fecha": "2024-06-08",
+    "descripcion": "Pago proveedores varios",
+    "monto_contable": 23750.50,
+    "monto_bancario": 23750.50,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-020",
+    "fecha": "2024-06-07",
+    "descripcion": "Cargo por sobregiro",
+    "monto_contable": 0,
+    "monto_bancario": 450.00,
+    "estado": "⚠️"
+  },
+  {
+    "id": "CON-021",
+    "fecha": "2024-06-06",
+    "descripcion": "Depósito Cliente Agroindustrial",
+    "monto_contable": 156000.00,
+    "monto_bancario": 156000.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-022",
+    "fecha": "2024-06-05",
+    "descripcion": "Error contable - doble registro",
+    "monto_contable": 7300.00,
+    "monto_bancario": 3650.00,
+    "estado": "❌"
+  },
+  {
+    "id": "CON-023",
+    "fecha": "2024-06-04",
+    "descripcion": "Comisión tarjeta de crédito",
+    "monto_contable": 0,
+    "monto_bancario": 125.75,
+    "estado": "⚠️"
+  },
+  {
+    "id": "CON-024",
+    "fecha": "2024-06-03",
+    "descripcion": "Pago honorarios contables",
+    "monto_contable": 18900.00,
+    "monto_bancario": 18900.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-025",
+    "fecha": "2024-06-02",
+    "descripcion": "Cobro Cliente Textil Buenos Aires",
+    "monto_contable": 89400.00,
+    "monto_bancario": 89400.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-026",
+    "fecha": "2024-06-01",
+    "descripcion": "Retención IIBB no registrada",
+    "monto_contable": 0,
+    "monto_bancario": 2340.00,
+    "estado": "⚠️"
+  },
+  {
+    "id": "CON-027",
+    "fecha": "2024-05-31",
+    "descripcion": "Pago anticipado proveedor",
+    "monto_contable": 34500.00,
+    "monto_bancario": 34500.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-028",
+    "fecha": "2024-05-30",
+    "descripcion": "Diferencia tipo de cambio",
+    "monto_contable": 12000.00,
+    "monto_bancario": 12450.00,
+    "estado": "❌"
+  },
+  {
+    "id": "CON-029",
+    "fecha": "2024-05-29",
+    "descripcion": "Depósito cheque diferido",
+    "monto_contable": 25800.00,
+    "monto_bancario": 25800.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-030",
+    "fecha": "2024-05-28",
+    "descripcion": "Cargo mantenimiento cuenta",
+    "monto_contable": 0,
+    "monto_bancario": 890.00,
+    "estado": "⚠️"
+  },
+  {
+    "id": "CON-031",
+    "fecha": "2024-05-27",
+    "descripcion": "Facturación servicios profesionales",
+    "monto_contable": 78650.00,
+    "monto_bancario": 78650.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-032",
+    "fecha": "2024-05-26",
+    "descripcion": "Error sistema - transacción duplicada",
+    "monto_contable": 15200.00,
+    "monto_bancario": 30400.00,
+    "estado": "❌"
+  },
+  {
+    "id": "CON-033",
+    "fecha": "2024-05-25",
+    "descripcion": "Pago impuesto a las ganancias",
+    "monto_contable": 45600.00,
+    "monto_bancario": 45600.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-034",
+    "fecha": "2024-05-24",
+    "descripcion": "Intereses por mora no contabilizados",
+    "monto_contable": 0,
+    "monto_bancario": 675.30,
+    "estado": "⚠️"
+  },
+  {
+    "id": "CON-035",
+    "fecha": "2024-05-23",
+    "descripcion": "Cobro Cliente Farmacéutica Central",
+    "monto_contable": 198750.00,
+    "monto_bancario": 198750.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-036",
+    "fecha": "2024-05-22",
+    "descripcion": "Pago viáticos no autorizados",
+    "monto_contable": 2800.00,
+    "monto_bancario": 4200.00,
+    "estado": "❌"
+  },
+  {
+    "id": "CON-037",
+    "fecha": "2024-05-21",
+    "descripcion": "Transferencia interna cuentas",
+    "monto_contable": 50000.00,
+    "monto_bancario": 50000.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-038",
+    "fecha": "2024-05-20",
+    "descripcion": "Comisión wire transfer",
+    "monto_contable": 0,
+    "monto_bancario": 1250.00,
+    "estado": "⚠️"
+  },
+  {
+    "id": "CON-039",
+    "fecha": "2024-05-19",
+    "descripcion": "Depósito Cliente Logística Express",
+    "monto_contable": 67890.50,
+    "monto_bancario": 67890.50,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-040",
+    "fecha": "2024-05-18",
+    "descripcion": "Rechazo débito automático",
+    "monto_contable": 3400.00,
+    "monto_bancario": 0,
+    "estado": "❌"
+  },
+  {
+    "id": "CON-041",
+    "fecha": "2024-05-17",
+    "descripcion": "Pago consultoría IT",
+    "monto_contable": 28900.00,
+    "monto_bancario": 28900.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-042",
+    "fecha": "2024-05-16",
+    "descripcion": "Retención ganancias no registrada",
+    "monto_contable": 0,
+    "monto_bancario": 1890.75,
+    "estado": "⚠️"
+  },
+  {
+    "id": "CON-043",
+    "fecha": "2024-05-15",
+    "descripcion": "Cobro exportación Chile",
+    "monto_contable": 145600.00,
+    "monto_bancario": 145600.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-044",
+    "fecha": "2024-05-14",
+    "descripcion": "Error carga - monto incorrecto",
+    "monto_contable": 12500.00,
+    "monto_bancario": 15600.00,
+    "estado": "❌"
+  },
+  {
+    "id": "CON-045",
+    "fecha": "2024-05-13",
+    "descripcion": "Pago seguros varios",
+    "monto_contable": 8945.60,
+    "monto_bancario": 8945.60,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-046",
+    "fecha": "2024-05-12",
+    "descripcion": "Comisión cheque rechazado",
+    "monto_contable": 0,
+    "monto_bancario": 345.00,
+    "estado": "⚠️"
+  },
+  {
+    "id": "CON-047",
+    "fecha": "2024-05-11",
+    "descripcion": "Depósito Cliente Construcciones Sur",
+    "monto_contable": 234750.00,
+    "monto_bancario": 234750.00,
+    "estado": "✅"
+  },
+  {
+    "id": "CON-048",
+    "fecha": "2024-05-10",
+    "descripcion": "Ajuste inflación no aplicado",
+    "monto_contable": 5600.00,
+    "monto_bancario": 7280.00,
+    "estado": "❌"
   }
 ] 
