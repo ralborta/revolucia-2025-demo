@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Bot, Home, Truck, DollarSign, Landmark, Combine, User } from "lucide-react";
+import { Home, Truck, DollarSign, Landmark, Combine, User } from "lucide-react";
+import Image from "next/image";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
@@ -22,8 +23,14 @@ export function Sidebar() {
         {/* Header */}
         <div className="flex h-16 items-center border-b border-slate-700 px-6">
           <Link className="flex items-center gap-2 font-semibold text-white" href="/">
-            <Bot className="h-6 w-6" />
-            <span>Agentes IA Demo</span>
+            <Image 
+              src="/logo.svg" 
+              alt="Logo Agentes IA" 
+              width={24} 
+              height={24}
+              className="h-6 w-6"
+            />
+            <span>Plataforma de Agentes IA</span>
           </Link>
         </div>
         

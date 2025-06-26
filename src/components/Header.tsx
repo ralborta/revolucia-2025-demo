@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import {
-  Bot,
   CircleUser,
   Home,
   Landmark,
@@ -11,6 +10,7 @@ import {
   Truck,
   DollarSign,
 } from "lucide-react";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -50,8 +50,14 @@ export function Header({ title }: { title: string }) {
               href="#"
               className="flex items-center gap-2 text-lg font-semibold mb-4"
             >
-              <Bot className="h-6 w-6" />
-              <span>Agentes IA Demo</span>
+              <Image 
+                src="/logo.svg" 
+                alt="Logo Agentes IA" 
+                width={24} 
+                height={24}
+                className="h-6 w-6"
+              />
+              <span>Plataforma de Agentes IA</span>
             </Link>
             {navLinks.map(link => {
                 const isActive = pathname === link.href;
