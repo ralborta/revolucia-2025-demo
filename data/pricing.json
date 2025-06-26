@@ -21,7 +21,7 @@
     "nombre": "Componente Electrónico B",
     "precio_actual": 1250,
     "precio_sugerido": 1300,
-    "variacion": 4,
+    "variacion": 4.00,
     "stock_actual": 400,
     "ritmo_ventas": [
       { "mes": "Enero", "ventas": 200 },
@@ -32,5 +32,175 @@
     ],
     "mensaje_agente": "Demanda en alza y stock bajo. Sugiero subir el precio a $1300 para maximizar margen.",
     "interaccion_costos": "Costo estable. Aumento de precio es viable."
+  },
+  {
+    "sku": "PROD-003",
+    "nombre": "Módulo Industrial C",
+    "precio_actual": 2150,
+    "precio_sugerido": 2200,
+    "variacion": 2.33,
+    "stock_actual": 85,
+    "ritmo_ventas": [
+      { "mes": "Enero", "ventas": 25 },
+      { "mes": "Febrero", "ventas": 30 },
+      { "mes": "Marzo", "ventas": 28 },
+      { "mes": "Abril", "ventas": 35 },
+      { "mes": "Mayo", "ventas": 32 }
+    ],
+    "mensaje_agente": "Producto premium con demanda estable. Incremento moderado recomendado.",
+    "interaccion_costos": "Margen saludable. Aumento justificado por valor agregado."
+  },
+  {
+    "sku": "PROD-004",
+    "nombre": "Sensor Avanzado D",
+    "precio_actual": 780,
+    "precio_sugerido": 820,
+    "variacion": 5.13,
+    "stock_actual": 320,
+    "ritmo_ventas": [
+      { "mes": "Enero", "ventas": 80 },
+      { "mes": "Febrero", "ventas": 85 },
+      { "mes": "Marzo", "ventas": 90 },
+      { "mes": "Abril", "ventas": 95 },
+      { "mes": "Mayo", "ventas": 100 }
+    ],
+    "mensaje_agente": "Tendencia positiva en ventas. Mercado acepta precio premium.",
+    "interaccion_costos": "Costos controlados. Incremento viable sin afectar competitividad."
+  },
+  {
+    "sku": "PROD-005",
+    "nombre": "Dispositivo Óptico E",
+    "precio_actual": 1580,
+    "precio_sugerido": 1520,
+    "variacion": -3.80,
+    "stock_actual": 150,
+    "ritmo_ventas": [
+      { "mes": "Enero", "ventas": 45 },
+      { "mes": "Febrero", "ventas": 40 },
+      { "mes": "Marzo", "ventas": 35 },
+      { "mes": "Abril", "ventas": 30 },
+      { "mes": "Mayo", "ventas": 28 }
+    ],
+    "mensaje_agente": "Ventas decrecientes. Ajuste de precio necesario para recuperar competitividad.",
+    "interaccion_costos": "Reducción factible manteniendo margen mínimo."
+  },
+  {
+    "sku": "PROD-006",
+    "nombre": "Controlador Inteligente F",
+    "precio_actual": 3200,
+    "precio_sugerido": 3350,
+    "variacion": 4.69,
+    "stock_actual": 45,
+    "ritmo_ventas": [
+      { "mes": "Enero", "ventas": 12 },
+      { "mes": "Febrero", "ventas": 15 },
+      { "mes": "Marzo", "ventas": 18 },
+      { "mes": "Abril", "ventas": 20 },
+      { "mes": "Mayo", "ventas": 22 }
+    ],
+    "mensaje_agente": "Producto de alta gama con demanda creciente. Justifica precio premium.",
+    "interaccion_costos": "Margen excelente. Incremento alineado con posicionamiento premium."
+  },
+  {
+    "sku": "PROD-007",
+    "nombre": "Actuador Hidráulico G",
+    "precio_actual": 1890,
+    "precio_sugerido": 1850,
+    "variacion": -2.12,
+    "stock_actual": 95,
+    "ritmo_ventas": [
+      { "mes": "Enero", "ventas": 38 },
+      { "mes": "Febrero", "ventas": 35 },
+      { "mes": "Marzo", "ventas": 32 },
+      { "mes": "Abril", "ventas": 30 },
+      { "mes": "Mayo", "ventas": 28 }
+    ],
+    "mensaje_agente": "Ligera presión competitiva. Ajuste menor para mantener posición.",
+    "interaccion_costos": "Reducción mínima sin impacto significativo en margen."
+  },
+  {
+    "sku": "PROD-008",
+    "nombre": "Panel de Control H",
+    "precio_actual": 2800,
+    "precio_sugerido": 2950,
+    "variacion": 5.36,
+    "stock_actual": 60,
+    "ritmo_ventas": [
+      { "mes": "Enero", "ventas": 18 },
+      { "mes": "Febrero", "ventas": 22 },
+      { "mes": "Marzo", "ventas": 25 },
+      { "mes": "Abril", "ventas": 28 },
+      { "mes": "Mayo", "ventas": 30 }
+    ],
+    "mensaje_agente": "Excelente aceptación del mercado. Oportunidad de optimizar margen.",
+    "interaccion_costos": "Costos estables. Incremento estratégico recomendado."
+  },
+  {
+    "sku": "PROD-009",
+    "nombre": "Válvula Especializada I",
+    "precio_actual": 650,
+    "precio_sugerido": 680,
+    "variacion": 4.62,
+    "stock_actual": 280,
+    "ritmo_ventas": [
+      { "mes": "Enero", "ventas": 70 },
+      { "mes": "Febrero", "ventas": 75 },
+      { "mes": "Marzo", "ventas": 80 },
+      { "mes": "Abril", "ventas": 85 },
+      { "mes": "Mayo", "ventas": 90 }
+    ],
+    "mensaje_agente": "Producto con alta rotación. Incremento gradual justificado por demanda.",
+    "interaccion_costos": "Volumen alto permite absorber incremento sin riesgo."
+  },
+  {
+    "sku": "PROD-010",
+    "nombre": "Sistema de Medición J",
+    "precio_actual": 4200,
+    "precio_sugerido": 4100,
+    "variacion": -2.38,
+    "stock_actual": 25,
+    "ritmo_ventas": [
+      { "mes": "Enero", "ventas": 8 },
+      { "mes": "Febrero", "ventas": 7 },
+      { "mes": "Marzo", "ventas": 6 },
+      { "mes": "Abril", "ventas": 5 },
+      { "mes": "Mayo", "ventas": 4 }
+    ],
+    "mensaje_agente": "Ventas en declive. Ajuste necesario para estimular demanda.",
+    "interaccion_costos": "Reducción estratégica para mantener competitividad en segmento premium."
+  },
+  {
+    "sku": "PROD-011",
+    "nombre": "Transmisor Inalámbrico K",
+    "precio_actual": 1120,
+    "precio_sugerido": 1180,
+    "variacion": 5.36,
+    "stock_actual": 180,
+    "ritmo_ventas": [
+      { "mes": "Enero", "ventas": 50 },
+      { "mes": "Febrero", "ventas": 55 },
+      { "mes": "Marzo", "ventas": 60 },
+      { "mes": "Abril", "ventas": 65 },
+      { "mes": "Mayo", "ventas": 70 }
+    ],
+    "mensaje_agente": "Tecnología en demanda creciente. Oportunidad de capturar mayor valor.",
+    "interaccion_costos": "Innovación justifica precio premium. Margen objetivo alcanzable."
+  },
+  {
+    "sku": "PROD-012",
+    "nombre": "Motor Servo L",
+    "precio_actual": 2450,
+    "precio_sugerido": 2380,
+    "variacion": -2.86,
+    "stock_actual": 70,
+    "ritmo_ventas": [
+      { "mes": "Enero", "ventas": 22 },
+      { "mes": "Febrero", "ventas": 20 },
+      { "mes": "Marzo", "ventas": 18 },
+      { "mes": "Abril", "ventas": 16 },
+      { "mes": "Mayo", "ventas": 15 }
+    ],
+    "mensaje_agente": "Competencia intensa en motores. Ajuste táctico para recuperar cuota.",
+    "interaccion_costos": "Reducción controlada manteniendo rentabilidad base."
   }
 ]
