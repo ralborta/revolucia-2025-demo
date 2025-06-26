@@ -471,7 +471,7 @@ export function LogisticaDemo() {
             </div>
           </div>
           <CardTitle className="text-3xl font-bold text-white">
-            Análisis Inteligente de Logística
+            🚚 Análisis Inteligente de Logística 
           </CardTitle>
           <p className="text-blue-100 text-lg">
             Monitoreo y seguimiento de vehículos con WhatsApp integrado
