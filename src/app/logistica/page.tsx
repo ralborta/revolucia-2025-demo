@@ -105,9 +105,9 @@ export default function LogisticaPage() {
                       <Bot className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-white">Demo Interactivo de Logística</h3>
+                      <h3 className="text-xl font-semibold text-white">🚚 Análisis Inteligente de Logística</h3>
                       <p className="text-blue-100">
-                        Prueba el agente IA para monitoreo de vehículos con WhatsApp integrado
+                        Monitoreo y seguimiento de vehículos con WhatsApp integrado
                       </p>
                     </div>
                   </div>
@@ -117,7 +117,7 @@ export default function LogisticaPage() {
                     size="lg"
                   >
                     <Search className="h-5 w-5" />
-                    Probar Demo
+                    Ejecutar Análisis
                   </Button>
                 </div>
               </CardContent>
