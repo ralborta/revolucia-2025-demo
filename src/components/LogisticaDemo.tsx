@@ -471,11 +471,17 @@ export function LogisticaDemo() {
             </div>
           </div>
           <CardTitle className="text-3xl font-bold text-white">
-            Agente de Logística Inteligente
+            Análisis Inteligente de Logística
           </CardTitle>
           <p className="text-blue-100 text-lg">
             Monitoreo y seguimiento de vehículos con WhatsApp integrado
           </p>
+          <div className="mt-6">
+            <Button className="bg-white/20 hover:bg-white/30 text-white border border-white/30 font-semibold px-6 py-2">
+              <Navigation className="h-5 w-5 mr-2" />
+              Ejecutar Análisis
+            </Button>
+          </div>
         </CardHeader>
       </Card>
 
