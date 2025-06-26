@@ -16,7 +16,9 @@ import {
   Download,
   RefreshCw,
   FileText,
-  Navigation
+  Navigation,
+  Image,
+  XCircle
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -32,6 +34,8 @@ interface RegistroLogistica {
   demora_minutos: number;
   combustible_litros: number;
   observaciones: string;
+  boleta_imagen: boolean;
+  conductor: string;
 }
 
 const mockLogisticaData: RegistroLogistica[] = [
@@ -46,7 +50,9 @@ const mockLogisticaData: RegistroLogistica[] = [
     estado: "✅",
     demora_minutos: 12,
     combustible_litros: 85,
-    observaciones: "Entrega completa sin incidentes"
+    observaciones: "Entrega completa sin incidentes",
+    boleta_imagen: true,
+    conductor: "Juan Pérez"
   },
   {
     unidad: "2187",
@@ -59,7 +65,9 @@ const mockLogisticaData: RegistroLogistica[] = [
     estado: "⚠️",
     demora_minutos: 25,
     combustible_litros: 120,
-    observaciones: "Demora por tráfico en acceso"
+    observaciones: "Demora por tráfico en acceso",
+    boleta_imagen: true,
+    conductor: "Carlos Rodríguez"
   },
   {
     unidad: "4521",
@@ -72,13 +80,240 @@ const mockLogisticaData: RegistroLogistica[] = [
     estado: "✅",
     demora_minutos: 5,
     combustible_litros: 95,
-    observaciones: "Entrega anticipada"
+    observaciones: "Entrega anticipada",
+    boleta_imagen: true,
+    conductor: "Miguel Torres"
+  },
+  {
+    unidad: "1892",
+    fecha: "21/06/2024",
+    hora_llegada: "11:30",
+    km_inicial: 67800,
+    km_final: 68120,
+    tipo_carga: "Gas",
+    ruta: "Tucumán - Salta",
+    estado: "✅",
+    demora_minutos: 8,
+    combustible_litros: 110,
+    observaciones: "Entrega normal, documentación completa",
+    boleta_imagen: true,
+    conductor: "Eduardo Silva"
+  },
+  {
+    unidad: "5643",
+    fecha: "21/06/2024",
+    hora_llegada: "15:50",
+    km_inicial: 23450,
+    km_final: 23680,
+    tipo_carga: "Nafta",
+    ruta: "Santa Fe - Paraná",
+    estado: "⚠️",
+    demora_minutos: 18,
+    combustible_litros: 78,
+    observaciones: "Retraso por control policial rutinario",
+    boleta_imagen: false,
+    conductor: "Roberto Martín"
+  },
+  {
+    unidad: "7234",
+    fecha: "20/06/2024",
+    hora_llegada: "13:45",
+    km_inicial: 89200,
+    km_final: 89580,
+    tipo_carga: "Diesel",
+    ruta: "Neuquén - Bahía Blanca",
+    estado: "✅",
+    demora_minutos: 3,
+    combustible_litros: 140,
+    observaciones: "Viaje completado según cronograma",
+    boleta_imagen: true,
+    conductor: "Fernando López"
+  },
+  {
+    unidad: "9876",
+    fecha: "20/06/2024",
+    hora_llegada: "08:20",
+    km_inicial: 45670,
+    km_final: 45890,
+    tipo_carga: "Gasoil",
+    ruta: "Mar del Plata - Tandil",
+    estado: "❌",
+    demora_minutos: 45,
+    combustible_litros: 92,
+    observaciones: "Incidente mecánico menor, reparado en ruta",
+    boleta_imagen: false,
+    conductor: "Alejandro Vega"
+  },
+  {
+    unidad: "3621",
+    fecha: "20/06/2024",
+    hora_llegada: "17:10",
+    km_inicial: 12340,
+    km_final: 12590,
+    tipo_carga: "Gas",
+    ruta: "Córdoba - Villa María",
+    estado: "✅",
+    demora_minutos: 10,
+    combustible_litros: 88,
+    observaciones: "Entrega exitosa, cliente satisfecho",
+    boleta_imagen: true,
+    conductor: "Gustavo Herrera"
+  },
+  {
+    unidad: "8451",
+    fecha: "19/06/2024",
+    hora_llegada: "12:35",
+    km_inicial: 78900,
+    km_final: 79200,
+    tipo_carga: "Nafta",
+    ruta: "Río Gallegos - Calafate",
+    estado: "⚠️",
+    demora_minutos: 30,
+    combustible_litros: 135,
+    observaciones: "Condiciones climáticas adversas",
+    boleta_imagen: true,
+    conductor: "Diego Morales"
+  },
+  {
+    unidad: "6789",
+    fecha: "19/06/2024",
+    hora_llegada: "10:45",
+    km_inicial: 34500,
+    km_final: 34820,
+    tipo_carga: "Diesel",
+    ruta: "Resistencia - Corrientes",
+    estado: "✅",
+    demora_minutos: 7,
+    combustible_litros: 105,
+    observaciones: "Ruta despejada, tiempo óptimo",
+    boleta_imagen: false,
+    conductor: "Marcelo Ramírez"
+  },
+  {
+    unidad: "1256",
+    fecha: "19/06/2024",
+    hora_llegada: "14:15",
+    km_inicial: 56780,
+    km_final: 57020,
+    tipo_carga: "Gasoil",
+    ruta: "Ushuaia - Río Grande",
+    estado: "✅",
+    demora_minutos: 12,
+    combustible_litros: 98,
+    observaciones: "Entrega en tiempo y forma",
+    boleta_imagen: true,
+    conductor: "Sebastián Castro"
+  },
+  {
+    unidad: "4567",
+    fecha: "18/06/2024",
+    hora_llegada: "16:30",
+    km_inicial: 23450,
+    km_final: 23780,
+    tipo_carga: "Gas",
+    ruta: "San Luis - Villa Mercedes",
+    estado: "⚠️",
+    demora_minutos: 22,
+    combustible_litros: 87,
+    observaciones: "Espera prolongada en destino por descarga",
+    boleta_imagen: false,
+    conductor: "Raúl Jiménez"
+  },
+  {
+    unidad: "7890",
+    fecha: "18/06/2024",
+    hora_llegada: "09:50",
+    km_inicial: 65400,
+    km_final: 65720,
+    tipo_carga: "Nafta",
+    ruta: "Formosa - Clorinda",
+    estado: "✅",
+    demora_minutos: 5,
+    combustible_litros: 82,
+    observaciones: "Entrega perfecta, documentación OK",
+    boleta_imagen: true,
+    conductor: "Jorge González"
+  },
+  {
+    unidad: "2468",
+    fecha: "18/06/2024",
+    hora_llegada: "18:20",
+    km_inicial: 87650,
+    km_final: 87980,
+    tipo_carga: "Diesel",
+    ruta: "Comodoro Rivadavia - Puerto Madryn",
+    estado: "❌",
+    demora_minutos: 55,
+    combustible_litros: 145,
+    observaciones: "Falla en sistema de carga, resuelto",
+    boleta_imagen: false,
+    conductor: "Pablo Fernández"
+  },
+  {
+    unidad: "1357",
+    fecha: "17/06/2024",
+    hora_llegada: "11:25",
+    km_inicial: 43210,
+    km_final: 43480,
+    tipo_carga: "Gasoil",
+    ruta: "Posadas - Puerto Iguazú",
+    estado: "✅",
+    demora_minutos: 9,
+    combustible_litros: 95,
+    observaciones: "Viaje sin novedades",
+    boleta_imagen: true,
+    conductor: "Nicolás Ruiz"
+  },
+  {
+    unidad: "9753",
+    fecha: "17/06/2024",
+    hora_llegada: "15:40",
+    km_inicial: 76540,
+    km_final: 76890,
+    tipo_carga: "Gas",
+    ruta: "Catamarca - La Rioja",
+    estado: "⚠️",
+    demora_minutos: 15,
+    combustible_litros: 108,
+    observaciones: "Retraso menor por documentación",
+    boleta_imagen: false,
+    conductor: "Andrés Vargas"
+  },
+  {
+    unidad: "8642",
+    fecha: "17/06/2024",
+    hora_llegada: "07:30",
+    km_inicial: 54320,
+    km_final: 54650,
+    tipo_carga: "Nafta",
+    ruta: "Santiago del Estero - Termas",
+    estado: "✅",
+    demora_minutos: 4,
+    combustible_litros: 75,
+    observaciones: "Entrega matutina exitosa",
+    boleta_imagen: true,
+    conductor: "Emilio Díaz"
+  },
+  {
+    unidad: "3691",
+    fecha: "16/06/2024",
+    hora_llegada: "13:55",
+    km_inicial: 98760,
+    km_final: 99100,
+    tipo_carga: "Diesel",
+    ruta: "Jujuy - La Quiaca",
+    estado: "✅",
+    demora_minutos: 11,
+    combustible_litros: 118,
+    observaciones: "Frontera despejada, entrega normal",
+    boleta_imagen: true,
+    conductor: "Horacio Medina"
   }
 ];
 
 const monitoringSteps = [
   { 
-    text: "🔄 Iniciando monitoreo de unidad...", 
+    text: "🔄 Iniciando análisis de flota...", 
     icon: Truck, 
     bgColor: "bg-blue-600", 
     iconColor: "text-white",
@@ -86,7 +321,7 @@ const monitoringSteps = [
     duration: 3000
   },
   { 
-    text: "📍 Consultando ubicación GPS actual...", 
+    text: "📍 Consultando posiciones GPS...", 
     icon: MapPin, 
     bgColor: "bg-green-600", 
     iconColor: "text-white",
@@ -94,7 +329,7 @@ const monitoringSteps = [
     duration: 3500
   },
   { 
-    text: "📲 Enviando solicitud vía WhatsApp...", 
+    text: "📲 Enviando solicitudes vía WhatsApp...", 
     icon: MessageCircle, 
     bgColor: "bg-emerald-600", 
     iconColor: "text-white",
@@ -102,7 +337,7 @@ const monitoringSteps = [
     duration: 4000
   },
   { 
-    text: "📸 Procesando foto de papeleta...", 
+    text: "📸 Procesando imágenes de papeletas...", 
     icon: Camera, 
     bgColor: "bg-purple-600", 
     iconColor: "text-white",
@@ -110,7 +345,7 @@ const monitoringSteps = [
     duration: 3500
   },
   { 
-    text: "🤖 Generando análisis de ruta...", 
+    text: "🤖 Generando análisis completo...", 
     icon: Bot, 
     bgColor: "bg-slate-600", 
     iconColor: "text-white",
@@ -120,9 +355,9 @@ const monitoringSteps = [
 ];
 
 export function LogisticaDemo() {
-  const [selectedUnidad, setSelectedUnidad] = useState("3045");
-  const [tipoCarga, setTipoCarga] = useState("nafta");
-  const [rutaSeleccionada, setRutaSeleccionada] = useState("rosario-cordoba");
+  const [selectedUnidad, setSelectedUnidad] = useState("todas");
+  const [tipoCarga, setTipoCarga] = useState("todas");
+  const [rutaSeleccionada, setRutaSeleccionada] = useState("todas");
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -132,7 +367,7 @@ export function LogisticaDemo() {
   const [showMessages, setShowMessages] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleIniciarMonitoreo = async () => {
+  const handleEjecutarAnalisis = async () => {
     setLoading(true);
     setResult(null);
     setError(null);
@@ -145,10 +380,29 @@ export function LogisticaDemo() {
     // Simulate monitoring steps (17-20 seconds total)
     const stepRunner = (stepIndex: number) => {
       if (stepIndex >= monitoringSteps.length) {
-        // Filter results based on selected unit
-        const filteredResults = selectedUnidad === "todas" 
-          ? mockLogisticaData 
-          : mockLogisticaData.filter(item => item.unidad === selectedUnidad);
+        // Filter results based on selections
+        let filteredResults = mockLogisticaData;
+        
+        if (selectedUnidad !== "todas") {
+          filteredResults = filteredResults.filter(item => item.unidad === selectedUnidad);
+        }
+        
+        if (tipoCarga !== "todas") {
+          filteredResults = filteredResults.filter(item => 
+            item.tipo_carga.toLowerCase() === tipoCarga.toLowerCase()
+          );
+        }
+        
+        if (rutaSeleccionada !== "todas") {
+          filteredResults = filteredResults.filter(item => 
+            item.ruta.toLowerCase().includes(rutaSeleccionada.toLowerCase())
+          );
+        }
+
+        // If no specific filters, show all data
+        if (filteredResults.length === 0 && selectedUnidad === "todas") {
+          filteredResults = mockLogisticaData;
+        }
         
         setResult(filteredResults);
         setLoading(false);
@@ -236,10 +490,17 @@ export function LogisticaDemo() {
                   <SelectValue placeholder="Selecciona unidad" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="todas">📦 Todas las unidades</SelectItem>
                   <SelectItem value="3045">🚛 Unidad 3045</SelectItem>
                   <SelectItem value="2187">🚚 Unidad 2187</SelectItem>
                   <SelectItem value="4521">🚐 Unidad 4521</SelectItem>
-                  <SelectItem value="todas">📦 Todas las unidades</SelectItem>
+                  <SelectItem value="1892">🚛 Unidad 1892</SelectItem>
+                  <SelectItem value="5643">🚚 Unidad 5643</SelectItem>
+                  <SelectItem value="7234">🚐 Unidad 7234</SelectItem>
+                  <SelectItem value="9876">🚛 Unidad 9876</SelectItem>
+                  <SelectItem value="3621">🚚 Unidad 3621</SelectItem>
+                  <SelectItem value="8451">🚐 Unidad 8451</SelectItem>
+                  <SelectItem value="6789">🚛 Unidad 6789</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -251,6 +512,7 @@ export function LogisticaDemo() {
                   <SelectValue placeholder="Selecciona carga" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="todas">🔄 Todos los tipos</SelectItem>
                   <SelectItem value="nafta">⛽ Nafta</SelectItem>
                   <SelectItem value="gasoil">🛢️ Gasoil</SelectItem>
                   <SelectItem value="diesel">🚗 Diesel</SelectItem>
@@ -260,16 +522,19 @@ export function LogisticaDemo() {
             </div>
 
             <div className="space-y-4">
-              <label className="text-lg font-semibold text-slate-800">Ruta:</label>
+              <label className="text-lg font-semibold text-slate-800">Región:</label>
               <Select value={rutaSeleccionada} onValueChange={setRutaSeleccionada} disabled={loading}>
                 <SelectTrigger className="h-12 text-lg border-2 border-slate-200 focus:border-blue-500">
-                  <SelectValue placeholder="Selecciona ruta" />
+                  <SelectValue placeholder="Selecciona región" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="rosario-cordoba">🗺️ Rosario - Córdoba</SelectItem>
-                  <SelectItem value="bsas-laplata">🏙️ Buenos Aires - La Plata</SelectItem>
-                  <SelectItem value="mendoza-sanjuan">🏔️ Mendoza - San Juan</SelectItem>
-                  <SelectItem value="custom">📍 Ruta personalizada</SelectItem>
+                  <SelectItem value="todas">🗺️ Todas las regiones</SelectItem>
+                  <SelectItem value="cordoba">🏙️ Centro (Córdoba)</SelectItem>
+                  <SelectItem value="buenos">🏛️ AMBA (Buenos Aires)</SelectItem>
+                  <SelectItem value="mendoza">🏔️ Cuyo (Mendoza)</SelectItem>
+                  <SelectItem value="tucuman">🌿 NOA (Tucumán)</SelectItem>
+                  <SelectItem value="neuquen">❄️ Patagonia (Neuquén)</SelectItem>
+                  <SelectItem value="formosa">🌳 NEA (Formosa)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -277,13 +542,13 @@ export function LogisticaDemo() {
           
           <div className="flex justify-center mt-6">
             <Button 
-              onClick={handleIniciarMonitoreo} 
+              onClick={handleEjecutarAnalisis} 
               disabled={loading}
               className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg"
               size="lg"
             >
               <Navigation className="h-5 w-5 mr-2" />
-              Iniciar Monitoreo
+              Ejecutar
             </Button>
           </div>
         </CardContent>
@@ -297,7 +562,7 @@ export function LogisticaDemo() {
             <CardContent className="p-8">
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-bold text-white">Monitoreo en Progreso</h3>
+                  <h3 className="text-2xl font-bold text-white">Análisis en Progreso</h3>
                   <div className="flex items-center gap-3">
                     <div className="text-right">
                       <div className="text-3xl font-bold text-white">{Math.round(progress)}%</div>
@@ -316,7 +581,7 @@ export function LogisticaDemo() {
                     <span>Iniciar</span>
                     <span>GPS</span>
                     <span>WhatsApp</span>
-                    <span>Foto</span>
+                    <span>Boletas</span>
                     <span>Análisis</span>
                   </div>
                 </div>
@@ -357,7 +622,9 @@ export function LogisticaDemo() {
                     </h3>
                     <div className="flex items-center gap-4">
                       <div className="text-white/80 text-lg">
-                        Coordinando con transportista en tiempo real...
+                        {currentStep <= 1 ? "Estableciendo conexiones con la flota..." : 
+                         currentStep <= 3 ? "Coordinando con transportistas en tiempo real..." : 
+                         "Consolidando información de rutas..."}
                       </div>
                       {/* Animated dots */}
                       <div className="flex gap-1">
@@ -375,6 +642,32 @@ export function LogisticaDemo() {
                       {(currentStep + 1).toString().padStart(2, '0')}
                     </div>
                     <div className="text-white/60 text-sm">de {monitoringSteps.length.toString().padStart(2, '0')}</div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Step details */}
+              <div className="p-6 bg-white">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <span className="text-slate-600">
+                      {currentStep < 2 ? "Recopilando datos GPS" : 
+                       currentStep < 4 ? "Comunicación WhatsApp activa" : 
+                       "Generando reportes automáticos"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <span className="text-slate-600">
+                      Vehículos: {currentStep >= 1 ? `${result?.length || 18} conectados` : "Escaneando flota"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                    <span className="text-slate-600">
+                      Estado: {currentStep >= 4 ? "Finalizando" : "Procesando"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -455,6 +748,44 @@ export function LogisticaDemo() {
       {/* Results */}
       {result && (
         <div className="space-y-6">
+          {/* Statistics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <Card className="border-none shadow-lg bg-blue-600 text-white">
+              <CardContent className="p-4 text-center">
+                <div className="text-2xl font-bold">{result.length}</div>
+                <div className="text-blue-100 text-sm">Total Viajes</div>
+                <div className="text-blue-200 text-xs">Registrados</div>
+              </CardContent>
+            </Card>
+            <Card className="border-none shadow-lg bg-green-600 text-white">
+              <CardContent className="p-4 text-center">
+                <div className="text-2xl font-bold">
+                  {result.filter(item => item.estado === "✅").length}
+                </div>
+                <div className="text-green-100 text-sm">Completados</div>
+                <div className="text-green-200 text-xs">Sin incidentes</div>
+              </CardContent>
+            </Card>
+            <Card className="border-none shadow-lg bg-orange-600 text-white">
+              <CardContent className="p-4 text-center">
+                <div className="text-2xl font-bold">
+                  {result.filter(item => item.estado === "⚠️").length}
+                </div>
+                <div className="text-orange-100 text-sm">En Curso</div>
+                <div className="text-orange-200 text-xs">Activos ahora</div>
+              </CardContent>
+            </Card>
+            <Card className="border-none shadow-lg bg-purple-600 text-white">
+              <CardContent className="p-4 text-center">
+                <div className="text-2xl font-bold">
+                  {Math.round(result.reduce((sum, item) => sum + (item.km_final - item.km_inicial), 0) / result.length)}
+                </div>
+                <div className="text-purple-100 text-sm">KM Totales</div>
+                <div className="text-purple-200 text-xs">Recorridos</div>
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Success Step */}
           <Card className="border-none shadow-lg bg-green-50 border-green-200">
             <CardContent className="p-6">
@@ -464,10 +795,12 @@ export function LogisticaDemo() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-slate-800">
-                    Monitoreo completado exitosamente
+                    Análisis completado exitosamente
                   </h3>
                   <p className="text-slate-600 text-lg">
-                    Unidad: {selectedUnidad} | Registros: {result.length} procesados
+                    {selectedUnidad === "todas" ? "Flota completa" : `Unidad ${selectedUnidad}`} | 
+                    {result.length} registros procesados | 
+                    {result.filter(item => item.boleta_imagen).length} con boletas verificadas
                   </p>
                 </div>
               </div>
@@ -485,19 +818,22 @@ export function LogisticaDemo() {
                   <thead className="bg-slate-100">
                     <tr>
                       <th className="text-left p-4 font-semibold text-slate-700">Unidad</th>
+                      <th className="text-left p-4 font-semibold text-slate-700">Conductor</th>
                       <th className="text-left p-4 font-semibold text-slate-700">Fecha</th>
-                      <th className="text-left p-4 font-semibold text-slate-700">Hora Llegada</th>
+                      <th className="text-left p-4 font-semibold text-slate-700">Hora</th>
                       <th className="text-left p-4 font-semibold text-slate-700">KM</th>
                       <th className="text-left p-4 font-semibold text-slate-700">Carga</th>
                       <th className="text-left p-4 font-semibold text-slate-700">Demora</th>
+                      <th className="text-left p-4 font-semibold text-slate-700">Boleta</th>
                       <th className="text-left p-4 font-semibold text-slate-700">Estado</th>
                     </tr>
                   </thead>
                   <tbody>
                     {result.map((item, index) => (
-                      <tr key={`${item.unidad}-${item.fecha}`} className={`border-b hover:bg-slate-50 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-25'}`}>
+                      <tr key={`${item.unidad}-${item.fecha}-${index}`} className={`border-b hover:bg-slate-50 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-25'}`}>
                         <td className="p-4 font-semibold text-blue-600">{item.unidad}</td>
-                        <td className="p-4 text-slate-700">{item.fecha}</td>
+                        <td className="p-4 text-slate-700 text-sm">{item.conductor}</td>
+                        <td className="p-4 text-slate-700 text-sm">{item.fecha}</td>
                         <td className="p-4 font-semibold text-slate-900">{item.hora_llegada}</td>
                         <td className="p-4 text-slate-700">{item.km_final.toLocaleString()}</td>
                         <td className="p-4 text-slate-700">{item.tipo_carga}</td>
@@ -505,6 +841,19 @@ export function LogisticaDemo() {
                           <span className={`font-semibold ${getDemoraColor(item.demora_minutos)}`}>
                             {item.demora_minutos} min
                           </span>
+                        </td>
+                        <td className="p-4">
+                          {item.boleta_imagen ? (
+                            <div className="flex items-center gap-1">
+                              <Image className="h-4 w-4 text-green-600" />
+                              <span className="text-green-600 text-sm font-medium">✓</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1">
+                              <XCircle className="h-4 w-4 text-red-500" />
+                              <span className="text-red-500 text-sm font-medium">✗</span>
+                            </div>
+                          )}
                         </td>
                         <td className="p-4">
                           <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(item.estado)}`}>
@@ -529,8 +878,13 @@ export function LogisticaDemo() {
             </CardHeader>
             <CardContent className="p-6">
               <p className="text-blue-100 text-lg mb-6 leading-relaxed">
-                🔍 La unidad {result[0].unidad} registra demoras de {result[0].demora_minutos} minutos promedio. 
-                {result[0].demora_minutos > 15 ? ' Se sugiere revisar tiempos en la ruta ' + result[0].ruta + '.' : ' Los tiempos están dentro del rango esperado.'}
+                🔍 Análisis de {result.length} viajes completado. 
+                Promedio de demora: {Math.round(result.reduce((sum, item) => sum + item.demora_minutos, 0) / result.length)} minutos. 
+                {result.filter(item => item.boleta_imagen).length} de {result.length} viajes tienen documentación fotográfica completa.
+                {result.filter(item => item.demora_minutos > 20).length > 0 ? 
+                  ` Se detectaron ${result.filter(item => item.demora_minutos > 20).length} viajes con demoras significativas que requieren atención.` : 
+                  ' Todos los tiempos están dentro del rango esperado.'
+                }
               </p>
               <div className="bg-white/10 rounded-lg p-6 border border-white/20">
                 <h4 className="font-semibold text-blue-100 mb-4 text-lg">Acciones Recomendadas:</h4>
@@ -542,17 +896,25 @@ export function LogisticaDemo() {
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
+                      <span>Completar documentación faltante</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
                       <span>Revisar horarios de carga</span>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
-                      <span>Capacitar conductores</span>
+                      <span>Capacitar conductores en WhatsApp</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
-                      <span>Monitorear combustible</span>
+                      <span>Monitorear consumo de combustible</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                      <span>Implementar alertas automáticas</span>
                     </div>
                   </div>
                 </div>
@@ -576,12 +938,14 @@ export function LogisticaDemo() {
                     <div className="text-sm font-semibold text-green-700 mb-2">📲 Agente Logística</div>
                     <div className="space-y-2 text-sm text-slate-700">
                       <p>Hola Supervisor.</p>
-                      <p>Resumen de viaje unidad {result[0].unidad}:</p>
-                      <p>✅ Llegada: {result[0].hora_llegada}</p>
-                      <p>📍 KM: {result[0].km_final.toLocaleString()}</p>
-                      <p>⏱️ Demora: {result[0].demora_minutos} min</p>
-                      <p>🔋 Combustible: {result[0].combustible_litros}L</p>
-                      <p>Todo en orden!</p>
+                      <p>Resumen de análisis de flota:</p>
+                      <p>📊 Total viajes: {result.length}</p>
+                      <p>✅ Completados: {result.filter(item => item.estado === "✅").length}</p>
+                      <p>⚠️ En proceso: {result.filter(item => item.estado === "⚠️").length}</p>
+                      <p>📸 Con boletas: {result.filter(item => item.boleta_imagen).length}/{result.length}</p>
+                      <p>⏱️ Demora promedio: {Math.round(result.reduce((sum, item) => sum + item.demora_minutos, 0) / result.length)} min</p>
+                      <p>🛣️ KM recorridos: {result.reduce((sum, item) => sum + (item.km_final - item.km_inicial), 0).toLocaleString()}</p>
+                      <p>Sistema funcionando correctamente!</p>
                     </div>
                   </div>
                 </CardContent>
@@ -598,19 +962,21 @@ export function LogisticaDemo() {
                 <CardContent className="p-6">
                   <div className="bg-white rounded-lg p-4 border-2 border-blue-300 shadow-sm">
                     <div className="text-sm font-semibold text-blue-700 mb-2">
-                      Asunto: Reporte de viaje - Unidad {result[0].unidad}
+                      Asunto: Reporte análisis de flota - {new Date().toLocaleDateString()}
                     </div>
                     <div className="space-y-2 text-sm text-slate-700">
                       <p>Estimado Supervisor,</p>
-                      <p>Adjunto el reporte del viaje completado:</p>
+                      <p>Adjunto el reporte del análisis de flota completado:</p>
                       <ul className="list-disc list-inside space-y-1 ml-2">
-                        <li>Unidad: {result[0].unidad}</li>
-                        <li>Ruta: {result[0].ruta}</li>
-                        <li>Hora llegada: {result[0].hora_llegada}</li>
-                        <li>Kilometraje: {result[0].km_final.toLocaleString()} km</li>
-                        <li>Estado: {result[0].estado} Completado</li>
+                        <li>Total de unidades analizadas: {new Set(result.map(item => item.unidad)).size}</li>
+                        <li>Viajes registrados: {result.length}</li>
+                        <li>Promedio de demoras: {Math.round(result.reduce((sum, item) => sum + item.demora_minutos, 0) / result.length)} minutos</li>
+                        <li>Eficiencia general: {Math.round((result.filter(item => item.estado === "✅").length / result.length) * 100)}%</li>
+                        <li>Documentación completa: {Math.round((result.filter(item => item.boleta_imagen).length / result.length) * 100)}%</li>
                       </ul>
-                      <p>📋 <strong>Observaciones:</strong> {result[0].observaciones}</p>
+                      <p>📋 <strong>Observaciones:</strong> {result.filter(item => item.demora_minutos > 20).length > 0 ? 
+                        `${result.filter(item => item.demora_minutos > 20).length} viajes requieren seguimiento por demoras.` : 
+                        'Todos los viajes dentro de los tiempos esperados.'}</p>
                       <p className="mt-3">Saludos,<br/>Agente de Logística – Empleados IA</p>
                     </div>
                   </div>
@@ -631,7 +997,7 @@ export function LogisticaDemo() {
             </Button>
             <Button variant="outline" className="border-2 border-slate-600 text-slate-600 hover:bg-slate-50 font-semibold px-8 py-3">
               <RefreshCw className="h-5 w-5 mr-2" />
-              Nuevo Monitoreo
+              Nuevo Análisis
             </Button>
           </div>
         </div>
@@ -646,7 +1012,7 @@ export function LogisticaDemo() {
                 <AlertTriangle className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-red-900">Error en el monitoreo</h3>
+                <h3 className="text-xl font-semibold text-red-900">Error en el análisis</h3>
                 <p className="text-red-700 text-lg">{error}</p>
               </div>
             </div>
