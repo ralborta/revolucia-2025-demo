@@ -89,6 +89,7 @@ export function ConciliacionDemo() {
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<ConciliacionData[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [terminalOutput, setTerminalOutput] = useState<string[]>([]);
 
   const handleEjecutar = async () => {
     setLoading(true);
@@ -96,13 +97,12 @@ export function ConciliacionDemo() {
     setError(null);
     setCurrentStep(0);
     setProgress(0);
+    setTerminalOutput([]);
 
-    // Simulate analysis steps with realistic timing (25-30 seconds total)
     const stepRunner = (stepIndex: number) => {
       if (stepIndex >= analysisSteps.length) {
-        // Simulate successful analysis with data
-        setResult(conciliacionData);
         setLoading(false);
+        setResult(conciliacionData);
         return;
       }
       
@@ -125,6 +125,34 @@ export function ConciliacionDemo() {
         }
         setProgress(Math.min(currentProgress, targetProgress));
       }, 100);
+
+      // Simular procesamiento en terminal
+      const terminalMessages = [
+        `[${new Date().toLocaleTimeString()}] Iniciando análisis de ${tipoConciliacion}...`,
+        `[${new Date().toLocaleTimeString()}] Cargando registros del período ${periodo}...`,
+        `[${new Date().toLocaleTimeString()}] Procesando registro 1/48...`,
+        `[${new Date().toLocaleTimeString()}] Procesando registro 15/48...`,
+        `[${new Date().toLocaleTimeString()}] Procesando registro 32/48...`,
+        `[${new Date().toLocaleTimeString()}] Procesando registro 48/48...`,
+        `[${new Date().toLocaleTimeString()}] Calculando diferencias: $150.00...`,
+        `[${new Date().toLocaleTimeString()}] Calculando diferencias: $320.50...`,
+        `[${new Date().toLocaleTimeString()}] Calculando diferencias: $890.25...`,
+        `[${new Date().toLocaleTimeString()}] Validando movimientos bancarios...`,
+        `[${new Date().toLocaleTimeString()}] Validando movimientos contables...`,
+        `[${new Date().toLocaleTimeString()}] Validando movimientos fiscales...`,
+        `[${new Date().toLocaleTimeString()}] Conciliación: 45% completada...`,
+        `[${new Date().toLocaleTimeString()}] Conciliación: 67% completada...`,
+        `[${new Date().toLocaleTimeString()}] Conciliación: 89% completada...`,
+        `[${new Date().toLocaleTimeString()}] Generando reporte final...`,
+        `[${new Date().toLocaleTimeString()}] Análisis completado exitosamente.`
+      ];
+
+      // Mostrar mensajes de terminal progresivamente
+      terminalMessages.forEach((message, index) => {
+        setTimeout(() => {
+          setTerminalOutput(prev => [...prev, message]);
+        }, index * 200);
+      });
     };
 
     stepRunner(0);
@@ -317,6 +345,39 @@ export function ConciliacionDemo() {
                     </div>
                     <div className="text-white/60 text-sm">de {analysisSteps.length.toString().padStart(2, '0')}</div>
                   </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Terminal de Procesamiento */}
+          <Card className="border-none shadow-lg bg-black">
+            <CardHeader className="bg-slate-900 border-b border-slate-700">
+              <CardTitle className="text-white text-lg flex items-center gap-2">
+                <Calculator className="h-5 w-5 text-green-400" />
+                Terminal de Procesamiento
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4">
+              <div className="bg-black rounded-lg p-4 h-48 overflow-y-auto font-mono text-sm">
+                <div className="text-green-400 space-y-1">
+                  {terminalOutput.map((message, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <span className="text-green-500">$</span>
+                      <span>{message}</span>
+                    </div>
+                  ))}
+                  {loading && (
+                    <div className="flex items-center gap-2 animate-pulse">
+                      <span className="text-green-500">$</span>
+                      <span className="text-green-400">Procesando...</span>
+                      <div className="flex gap-1">
+                        <div className="w-1 h-1 bg-green-400 rounded-full animate-bounce"></div>
+                        <div className="w-1 h-1 bg-green-400 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
+                        <div className="w-1 h-1 bg-green-400 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>

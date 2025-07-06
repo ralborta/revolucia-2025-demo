@@ -139,7 +139,7 @@ export default function PricingPage() {
                       </p>
                     </div>
                     <DollarSign className="h-8 w-8 text-green-200" />
-                  </div>
+        </div>
                 </CardContent>
               </Card>
             </div>
@@ -200,7 +200,7 @@ export default function PricingPage() {
                     </tbody>
                   </table>
                 </div>
-              </CardContent>
+                </CardContent>
             </Card>
 
             {/* Insights del Agente IA */}
@@ -229,7 +229,7 @@ export default function PricingPage() {
                       <li>• Monitorear impacto en ventas</li>
                     </ul>
                   </div>
-                </div>
+        </div>
               </CardContent>
             </Card>
           </>

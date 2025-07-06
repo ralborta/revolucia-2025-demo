@@ -103,8 +103,8 @@ export default function ConciliacionPage() {
                   >
                     <Search className="h-5 w-5" />
                     Ejecutar Análisis
-                  </Button>
-                </div>
+            </Button>
+        </div>
               </CardContent>
             </Card>
 

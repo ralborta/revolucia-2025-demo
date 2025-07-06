@@ -345,7 +345,7 @@ export function PricingDemo() {
           <p className="text-blue-100 text-lg">
             Análisis inteligente de precios con IA
           </p>
-        </CardHeader>
+      </CardHeader>
       </Card>
 
       {/* SKU Input Section */}
@@ -356,11 +356,11 @@ export function PricingDemo() {
               <label className="text-lg font-semibold text-slate-800">SKU:</label>
               <div className="flex gap-4 items-center">
                 <div className="relative max-w-sm">
-                  <Input
-                    type="text"
-                    value={sku}
-                    onChange={(e) => setSku(e.target.value)}
-                    disabled={loading}
+          <Input
+            type="text"
+            value={sku}
+            onChange={(e) => setSku(e.target.value)}
+            disabled={loading}
                     className="h-12 text-lg border-2 border-slate-200 focus:border-blue-500 pr-12"
                     placeholder="Ingrese SKU (ej: SKU1025)"
                   />
@@ -397,7 +397,7 @@ export function PricingDemo() {
                 >
                   <Search className="h-5 w-5 mr-2" />
                   Ejecutar Análisis
-                </Button>
+          </Button>
               </div>
             </div>
           </CardContent>
@@ -540,7 +540,7 @@ export function PricingDemo() {
       )}
 
       {/* Analysis Progress */}
-      {loading && (
+        {loading && (
         <div className="space-y-6">
           {/* Modern Progress Bar */}
           <Card className="border-none shadow-lg bg-gradient-to-r from-slate-800 to-slate-900">
@@ -809,7 +809,7 @@ export function PricingDemo() {
                       const difference = competitor.price - currentPrice;
                       const percentDiff = ((difference / currentPrice) * 100);
                       
-                      return (
+                    return (
                         <div 
                           key={index}
                           className={`p-4 rounded-lg border-2 transition-all duration-200 hover:shadow-md ${
@@ -850,10 +850,10 @@ export function PricingDemo() {
                                 ({percentDiff > 0 ? '+' : ''}{percentDiff.toFixed(1)}%)
                               </div>
                             </div>
-                          </div>
+                           </div>
                         </div>
-                      );
-                    })}
+                    );
+                })}
                   </div>
 
                   {/* Análisis Resumido */}
@@ -928,9 +928,9 @@ export function PricingDemo() {
                     </Button>
                   </div>
                 </div>
-              </div>
             </div>
-          )}
+          </div>
+        )}
 
           {/* Market Analysis */}
           <Card className="border-none shadow-lg">
@@ -973,7 +973,7 @@ export function PricingDemo() {
 
           {/* Recommendation */}
           <Card className="border-none shadow-lg bg-gradient-to-r from-purple-600 to-purple-700 text-white">
-            <CardHeader>
+                <CardHeader>
               <CardTitle className="text-xl flex items-center gap-3">
                 <Bot className="h-8 w-8" />
                 Recomendación del Agente IA
@@ -1015,7 +1015,7 @@ export function PricingDemo() {
           <Card className="border-none shadow-lg">
             <CardHeader className="bg-slate-800 text-white">
               <CardTitle className="text-xl">Datos Históricos</CardTitle>
-            </CardHeader>
+                </CardHeader>
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-3">
@@ -1053,8 +1053,8 @@ export function PricingDemo() {
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+                </CardContent>
+            </Card>
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-4 justify-center">
@@ -1090,8 +1090,8 @@ export function PricingDemo() {
                 <p className="text-red-700 text-lg">{error}</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+      </CardContent>
+    </Card>
       )}
     </div>
   );
