@@ -19,9 +19,15 @@ import {
   MessageCircle,
   Calculator,
   Warehouse,
-  Users
+  Users,
+  X,
+  Send,
+  Clock,
+  FileText,
+  Mail
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 interface CostoVenta {
   id: string;
@@ -205,6 +211,9 @@ export function Costos() {
   const [result, setResult] = useState<CostoVenta[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [terminalOutput, setTerminalOutput] = useState<string[]>([]);
+  const [showConsultaModal, setShowConsultaModal] = useState(false);
+  const [consultaEnviada, setConsultaEnviada] = useState(false);
+  const [numeroTicket, setNumeroTicket] = useState<string>("");
 
   const handleAnalizar = async () => {
     setLoading(true);
@@ -293,6 +302,30 @@ export function Costos() {
 
   const totalCostos = filteredData.reduce((sum, item) => sum + item.costo_actual, 0);
   const promedioVariacion = filteredData.reduce((sum, item) => sum + item.variacion_esperada, 0) / filteredData.length;
+
+  const handleConsultaAgente = () => {
+    setShowConsultaModal(true);
+    setConsultaEnviada(false);
+    setNumeroTicket("");
+  };
+
+  const handleEnviarConsulta = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Generar número de ticket
+    const ticket = `TKT-${Date.now().toString().slice(-6)}`;
+    setNumeroTicket(ticket);
+    setConsultaEnviada(true);
+    
+    // Simular envío al agente
+    setTimeout(() => {
+      setShowConsultaModal(false);
+      setConsultaEnviada(false);
+      setNumeroTicket("");
+    }, 3000);
+  };
+
+
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -662,9 +695,13 @@ export function Costos() {
               <Download className="h-5 w-5 mr-2" />
               Exportar Análisis
             </Button>
-            <Button variant="outline" className="border-2 border-orange-600 text-orange-600 hover:bg-orange-50 font-semibold px-8 py-3">
+            <Button 
+              variant="outline" 
+              className="border-2 border-orange-600 text-orange-600 hover:bg-orange-50 font-semibold px-8 py-3"
+              onClick={handleConsultaAgente}
+            >
               <MessageCircle className="h-5 w-5 mr-2" />
-              Consultar con IA
+              Consultar con Agente
             </Button>
             <Button variant="outline" className="border-2 border-slate-600 text-slate-600 hover:bg-slate-50 font-semibold px-8 py-3">
               <RefreshCw className="h-5 w-5 mr-2" />
@@ -689,6 +726,144 @@ export function Costos() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Modal de Consulta al Agente */}
+      {showConsultaModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-2xl border-none shadow-2xl">
+            <CardHeader className="bg-gradient-to-r from-orange-600 to-orange-700 text-white">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Bot className="h-6 w-6" />
+                  Consultar con Agente de Costos
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-white/20"
+                  onClick={() => setShowConsultaModal(false)}
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-6">
+              {!consultaEnviada ? (
+                <form onSubmit={handleEnviarConsulta} className="space-y-6">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Categoría de Consulta:
+                      </label>
+                      <Select name="categoria" required>
+                        <SelectTrigger className="h-12 border-2 border-slate-200 focus:border-orange-500">
+                          <SelectValue placeholder="Selecciona categoría" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Adquisición">📦 Costos de Adquisición</SelectItem>
+                          <SelectItem value="Logística">🚚 Costos Logísticos</SelectItem>
+                          <SelectItem value="Almacenamiento">🏢 Almacenamiento</SelectItem>
+                          <SelectItem value="Comercialización">💼 Comercialización</SelectItem>
+                          <SelectItem value="Financieros">⚠️ Costos Financieros</SelectItem>
+                          <SelectItem value="Estratégicos">🧠 Costos Estratégicos</SelectItem>
+                          <SelectItem value="general">📊 Consulta General</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Prioridad:
+                      </label>
+                      <Select name="prioridad" required>
+                        <SelectTrigger className="h-12 border-2 border-slate-200 focus:border-orange-500">
+                          <SelectValue placeholder="Selecciona prioridad" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Alta">🔴 Alta - Urgente</SelectItem>
+                          <SelectItem value="Media">🟡 Media - Importante</SelectItem>
+                          <SelectItem value="Baja">🟢 Baja - Consulta</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Tu Consulta:
+                      </label>
+                      <Textarea
+                        name="consulta"
+                        placeholder="Describe tu consulta específica sobre costos..."
+                        className="min-h-[120px] border-2 border-slate-200 focus:border-orange-500"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 justify-end">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowConsultaModal(false)}
+                      className="border-2 border-slate-300 text-slate-600 hover:bg-slate-50"
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-6"
+                    >
+                      <Send className="h-4 w-4 mr-2" />
+                      Enviar Consulta
+                    </Button>
+                  </div>
+                </form>
+              ) : (
+                <div className="text-center space-y-6">
+                  <div className="p-4 rounded-full bg-green-100 w-fit mx-auto">
+                    <CheckCircle2 className="h-12 w-12 text-green-600" />
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-xl font-semibold text-slate-800 mb-2">
+                      Consulta Enviada Exitosamente
+                    </h3>
+                    <p className="text-slate-600 mb-4">
+                      Tu consulta ha sido enviada al Agente de Costos
+                    </p>
+                    
+                    <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                      <div className="flex items-center gap-2 text-sm text-slate-600 mb-2">
+                        <FileText className="h-4 w-4" />
+                        <span className="font-medium">Número de Ticket:</span>
+                      </div>
+                      <div className="text-lg font-bold text-orange-600">{numeroTicket}</div>
+                    </div>
+                  </div>
+
+                  <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                    <div className="flex items-center gap-2 text-sm text-blue-700 mb-2">
+                      <Clock className="h-4 w-4" />
+                      <span className="font-medium">Tiempo estimado de respuesta:</span>
+                    </div>
+                    <div className="text-blue-800 font-semibold">2-4 horas</div>
+                  </div>
+
+                  <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                    <div className="flex items-center gap-2 text-sm text-green-700 mb-2">
+                      <Mail className="h-4 w-4" />
+                      <span className="font-medium">Notificaciones:</span>
+                    </div>
+                    <div className="text-green-800 text-sm">
+                      Recibirás confirmación por email y WhatsApp
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   );
