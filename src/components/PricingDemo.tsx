@@ -25,6 +25,7 @@ import {
   Eye
 } from "lucide-react";
 import jsPDF from "jspdf";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
 interface SkuData {
     sku: string;
@@ -228,6 +229,8 @@ export function PricingDemo() {
   const [implProgress, setImplProgress] = useState(0);
   const [result, setResult] = useState<SkuData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [fileName, setFileName] = useState("");
 
   const handleConsultar = async () => {
     setLoading(true);
@@ -330,8 +333,7 @@ export function PricingDemo() {
   const averageCompetitorPrice = Math.round(competitorPrices.reduce((sum, comp) => sum + comp.price, 0) / competitorPrices.length);
   const suggestedPrice = result ? Math.round(result.precio_actual * 0.85) : 970;
 
-  // Función para exportar análisis a PDF
-  const handleExportPDF = () => {
+  const handleExportPDF = (customName?: string) => {
     if (!result) return;
     const doc = new jsPDF();
     const today = new Date();
@@ -376,7 +378,8 @@ export function PricingDemo() {
     doc.text(`Tiempo de implementación: 24 horas`, 14, 194);
     doc.text(`ROI proyectado: +12.8%`, 14, 201);
     // Guardar PDF
-    doc.save(`analisis_pricing_${result.sku}_${fecha}.pdf`);
+    const defaultName = `analisis_pricing_${result.sku}_${fecha}.pdf`;
+    doc.save(customName || defaultName);
   };
 
   return (
@@ -1115,7 +1118,10 @@ export function PricingDemo() {
               <Zap className="h-5 w-5 mr-2" />
               Implementar Recomendación
             </Button>
-            <Button onClick={handleExportPDF} disabled={!result} className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3">
+            <Button onClick={() => {
+              setFileName(`analisis_pricing_${result?.sku || ''}_${new Date().toLocaleDateString()}.pdf`);
+              setShowExportModal(true);
+            }} disabled={!result} className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3">
               <Download className="h-5 w-5 mr-2" />
               Exportar Análisis
             </Button>
@@ -1142,6 +1148,25 @@ export function PricingDemo() {
             </div>
       </CardContent>
     </Card>
+      )}
+
+      {/* Modal de exportación */}
+      {showExportModal && (
+        <Dialog open={showExportModal} onOpenChange={setShowExportModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Exportar Análisis a PDF</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <label className="block text-sm font-medium text-slate-700">Nombre del archivo:</label>
+              <Input value={fileName} onChange={e => setFileName(e.target.value)} />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowExportModal(false)}>Cancelar</Button>
+              <Button onClick={() => { handleExportPDF(fileName); setShowExportModal(false); }}>Aceptar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );
