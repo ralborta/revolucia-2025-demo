@@ -148,7 +148,7 @@ export default function PricingPage() {
             <Card className="border-none shadow-lg">
               <CardHeader className="bg-slate-800 text-white">
                 <CardTitle className="text-xl">Análisis Detallado de Productos</CardTitle>
-              </CardHeader>
+                </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full">

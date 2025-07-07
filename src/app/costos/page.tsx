@@ -6,6 +6,8 @@ import { Costos } from "@/components/CostosDemo";
 import costosData from "@/../data/costos.json";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -17,6 +19,7 @@ import {
   Factory,
   FileDown
 } from "lucide-react";
+import jsPDF from "jspdf";
 
 // This type should ideally be shared or imported from a central types file
 interface CostoItem {
@@ -30,6 +33,8 @@ interface CostoItem {
 
 export default function CostosPage() {
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [fileName, setFileName] = useState("");
 
   // Calcular métricas resumidas
   const totalInsumos = costosData.length;
@@ -48,6 +53,68 @@ export default function CostosPage() {
 
   const getVariationColor = (variacion: number) => {
     return variacion > 0 ? 'text-red-600' : variacion < 0 ? 'text-green-600' : 'text-slate-600';
+  };
+
+  const handleExportPDF = (customName?: string) => {
+    const doc = new jsPDF();
+    const today = new Date();
+    const fecha = today.toLocaleDateString();
+    
+    // Título y encabezado
+    doc.setFontSize(18);
+    doc.text("Análisis de Costos – " + fecha, 14, 20);
+    doc.setFontSize(12);
+    doc.text("Empresa: Empliados", 14, 30);
+    doc.text("Usuario: Test", 14, 37);
+    
+    // KPIs principales
+    doc.setFontSize(14);
+    doc.text("Métricas Principales", 14, 50);
+    doc.setFontSize(12);
+    doc.text(`Total Insumos: ${totalInsumos}`, 14, 58);
+    doc.text(`En Alza: ${insumosAlza}`, 14, 65);
+    doc.text(`En Baja: ${insumosBaja}`, 14, 72);
+    doc.text(`Costo Total: $${Math.round(costoTotal).toLocaleString()}`, 14, 79);
+    doc.text(`Variación Promedio: ${variacionPromedio > 0 ? '+' : ''}${variacionPromedio.toFixed(1)}%`, 14, 86);
+    doc.text(`Estado General: ${insumosEstables} estables, ${insumosAlza} incremento, ${insumosBaja} reducción`, 14, 93);
+    
+    // Alertas críticas
+    doc.setFontSize(14);
+    doc.text("Alertas de Costos", 14, 110);
+    doc.setFontSize(12);
+    doc.text(`• ${insumosAlza} insumos con incremento esperado`, 14, 118);
+    doc.text(`• Variación promedio: ${variacionPromedio > 0 ? '+' : ''}${variacionPromedio.toFixed(1)}%`, 14, 125);
+    doc.text(`• Impacto financiero significativo en operaciones`, 14, 132);
+    
+    // Recomendaciones del agente IA
+    doc.setFontSize(14);
+    doc.text("Recomendaciones del Agente IA", 14, 145);
+    doc.setFontSize(12);
+    doc.text(`• Revisar contratos con proveedores`, 14, 153);
+    doc.text(`• Evaluar proveedores alternativos`, 14, 160);
+    doc.text(`• Negociar descuentos por volumen`, 14, 167);
+    doc.text(`• Considerar compras anticipadas`, 14, 174);
+    
+    // Tabla de insumos (página 2)
+    doc.addPage();
+    doc.setFontSize(16);
+    doc.text("Análisis Detallado por Insumo", 14, 20);
+    doc.setFontSize(10);
+    
+    let y = 30;
+    costosData.forEach((item) => {
+      if (y > 250) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(`${item.id} - ${item.insumo}`, 14, y);
+      doc.text(`Costo: $${item.costo_actual.toFixed(2)} | Variación: ${item.variacion_esperada > 0 ? '+' : ''}${item.variacion_esperada.toFixed(1)}% | Impacto: ${item.impacto_operativo}`, 14, y + 5);
+      y += 12;
+    });
+    
+    // Guardar PDF
+    const defaultName = `analisis_costos_general_${fecha}.pdf`;
+    doc.save(customName || defaultName);
   };
 
   return (
@@ -207,7 +274,10 @@ export default function CostosPage() {
               <CardHeader className="bg-slate-800 text-white">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-xl">Análisis de Costos por Insumo</CardTitle>
-                  <Button className="bg-white text-slate-800 hover:bg-slate-100">
+                  <Button 
+                    className="bg-white text-slate-800 hover:bg-slate-100"
+                    onClick={() => setShowExportModal(true)}
+                  >
                     <FileDown className="h-4 w-4 mr-2" />
                     Exportar Análisis
                   </Button>
@@ -309,6 +379,42 @@ export default function CostosPage() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Modal de Exportación */}
+            {showExportModal && (
+              <Dialog open={showExportModal} onOpenChange={setShowExportModal}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Exportar Análisis a PDF</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Nombre del archivo:
+                      </label>
+                      <Input
+                        type="text"
+                        value={fileName}
+                        onChange={(e) => setFileName(e.target.value)}
+                        placeholder="analisis_costos_general_2024-01-15.pdf"
+                        className="w-full"
+                      />
+                    </div>
+                    <p className="text-sm text-slate-600">
+                      El PDF incluirá: KPIs principales, tabla completa de insumos, alertas críticas y recomendaciones del agente IA.
+                    </p>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setShowExportModal(false)}>
+                      Cancelar
+                    </Button>
+                    <Button onClick={() => { handleExportPDF(fileName); setShowExportModal(false); }}>
+                      Exportar
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
           </>
         )}
       </main>
