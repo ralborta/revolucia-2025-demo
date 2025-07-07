@@ -24,6 +24,8 @@ import {
   TrendingDown,
   Eye
 } from "lucide-react";
+import jsPDF from "jspdf";
+import logo from "@/../public/logo.svg";
 
 interface SkuData {
     sku: string;
@@ -328,6 +330,54 @@ export function PricingDemo() {
 
   const averageCompetitorPrice = Math.round(competitorPrices.reduce((sum, comp) => sum + comp.price, 0) / competitorPrices.length);
   const suggestedPrice = result ? Math.round(result.precio_actual * 0.85) : 970;
+
+  // Función para exportar análisis a PDF
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    const today = new Date();
+    const fecha = today.toLocaleDateString();
+    // Título y encabezado
+    doc.setFontSize(18);
+    doc.text("Análisis de Pricing – " + fecha, 14, 20);
+    doc.setFontSize(12);
+    doc.text("Empresa: Empliados", 14, 30);
+    doc.text("Usuario: Test", 14, 37);
+    // Logo (opcional, si se puede cargar como base64)
+    // doc.addImage(logo, 'SVG', 160, 10, 35, 15);
+    // Resumen de resultados
+    doc.setFontSize(14);
+    doc.text("Resumen de Resultados", 14, 50);
+    doc.setFontSize(12);
+    doc.text(`SKU: ${result.sku}`, 14, 58);
+    doc.text(`Producto: ${result.producto}`, 14, 65);
+    doc.text(`Precio actual: $${result.precio_actual}`, 14, 72);
+    doc.text(`Precio competidor: $${result.precio_competidor}`, 14, 79);
+    doc.text(`Recomendación: ${result.recomendacion}`, 14, 86, { maxWidth: 180 });
+    // Datos históricos
+    doc.setFontSize(14);
+    doc.text("Datos Históricos", 14, 100);
+    doc.setFontSize(12);
+    doc.text(`Ventas promedio: 45 unidades/día`, 14, 108);
+    doc.text(`Precio promedio: $1678`, 14, 115);
+    doc.text(`Mejor día: 67 unidades`, 14, 122);
+    // Rendimiento vs Competencia
+    doc.setFontSize(14);
+    doc.text("Rendimiento vs Competencia", 14, 136);
+    doc.setFontSize(12);
+    doc.text(`Posición en mercado: #2 de 8`, 14, 144);
+    doc.text(`Cuota de mercado: 18.5%`, 14, 151);
+    doc.text(`Oportunidad de mejora: +4.2%`, 14, 158);
+    // Impacto esperado
+    doc.setFontSize(14);
+    doc.text("Impacto Esperado", 14, 172);
+    doc.setFontSize(12);
+    doc.text(`Incremento en ventas: +15%`, 14, 180);
+    doc.text(`Mejora en competitividad: Muy Alta`, 14, 187);
+    doc.text(`Tiempo de implementación: 24 horas`, 14, 194);
+    doc.text(`ROI proyectado: +12.8%`, 14, 201);
+    // Guardar PDF
+    doc.save(`analisis_pricing_${result.sku}_${fecha}.pdf`);
+  };
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -1065,7 +1115,7 @@ export function PricingDemo() {
               <Zap className="h-5 w-5 mr-2" />
               Implementar Recomendación
             </Button>
-            <Button variant="outline" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3">
+            <Button onClick={handleExportPDF} className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3">
               <Download className="h-5 w-5 mr-2" />
               Exportar Análisis
             </Button>
