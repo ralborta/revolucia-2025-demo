@@ -5,6 +5,8 @@ import { Header } from "@/components/Header";
 import { ConciliacionDemo } from "@/components/ConciliacionDemo";
 import conciliacionData from "@/../data/conciliacion.json";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { 
   AlertTriangle, 
   FileDown, 
@@ -17,6 +19,7 @@ import {
   Building2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import jsPDF from "jspdf";
 
 // This type should ideally be shared or imported from a central types file
 interface ConciliacionItem {
@@ -30,6 +33,8 @@ interface ConciliacionItem {
 
 export default function ConciliacionPage() {
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [fileName, setFileName] = useState("");
 
   // Calcular métricas resumidas
   const totalMovimientos = conciliacionData.length;
@@ -56,6 +61,61 @@ export default function ConciliacionPage() {
       case "❌": return "Diferencia";
       default: return estado;
     }
+  };
+
+  const handleExportPDF = (customName?: string) => {
+    const doc = new jsPDF();
+    const today = new Date();
+    const fecha = today.toLocaleDateString();
+    // Título y encabezado
+    doc.setFontSize(18);
+    doc.text("Reporte de Conciliación – " + fecha, 14, 20);
+    doc.setFontSize(12);
+    doc.text("Empresa: Empliados", 14, 30);
+    doc.text("Usuario: Test", 14, 37);
+    // KPIs principales
+    doc.setFontSize(14);
+    doc.text("Métricas Principales", 14, 50);
+    doc.setFontSize(12);
+    doc.text(`Total Movimientos: ${totalMovimientos}`, 14, 58);
+    doc.text(`Conciliados: ${conciliados}`, 14, 65);
+    doc.text(`Pendientes: ${noRegistrados + diferencias}`, 14, 72);
+    doc.text(`Diferencia Total: $${Math.round(diferenciaMonto).toLocaleString()}`, 14, 79);
+    doc.text(`Balance Bancario: $${totalBancario.toLocaleString()}`, 14, 86);
+    doc.text(`Balance Contable: $${totalContable.toLocaleString()}`, 14, 93);
+    // Alertas críticas
+    doc.setFontSize(14);
+    doc.text("Alertas Críticas", 14, 110);
+    doc.setFontSize(12);
+    doc.text(`• ${diferencias} movimientos con discrepancias`, 14, 118);
+    doc.text(`• ${noRegistrados} transacciones no registradas`, 14, 125);
+    doc.text(`• Diferencia total: $${Math.round(diferenciaMonto).toLocaleString()}`, 14, 132);
+    // Recomendaciones del agente IA
+    doc.setFontSize(14);
+    doc.text("Recomendaciones del Agente IA", 14, 145);
+    doc.setFontSize(12);
+    doc.text(`• Revisar movimientos no registrados`, 14, 153);
+    doc.text(`• Validar diferencias con el área contable`, 14, 160);
+    doc.text(`• Solicitar auditoría de transacciones`, 14, 167);
+    doc.text(`• Actualizar registros contables`, 14, 174);
+    // Tabla de movimientos (página 2)
+    doc.addPage();
+    doc.setFontSize(16);
+    doc.text("Movimientos de Conciliación", 14, 20);
+    doc.setFontSize(10);
+    let y = 30;
+    conciliacionData.forEach((item) => {
+      if (y > 250) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(`${item.id} - ${item.fecha} - ${item.descripcion}`, 14, y);
+      doc.text(`Bancario: $${item.monto_bancario.toLocaleString()} | Contable: $${item.monto_contable.toLocaleString()} | Estado: ${item.estado}`, 14, y + 5);
+      y += 12;
+    });
+    // Guardar PDF
+    const defaultName = `reporte_conciliacion_${fecha}.pdf`;
+    doc.save(customName || defaultName);
   };
 
   return (
@@ -103,8 +163,8 @@ export default function ConciliacionPage() {
                   >
                     <Search className="h-5 w-5" />
                     Ejecutar Análisis
-            </Button>
-        </div>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
@@ -205,7 +265,10 @@ export default function ConciliacionPage() {
               <CardHeader className="bg-slate-800 text-white">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-xl">Movimientos de Conciliación</CardTitle>
-                  <Button className="bg-white text-slate-800 hover:bg-slate-100">
+                  <Button 
+                    className="bg-white text-slate-800 hover:bg-slate-100"
+                    onClick={() => setShowExportModal(true)}
+                  >
                     <FileDown className="h-4 w-4 mr-2" />
                     Generar Reporte
                   </Button>
@@ -312,6 +375,42 @@ export default function ConciliacionPage() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Modal de Exportación */}
+            {showExportModal && (
+              <Dialog open={showExportModal} onOpenChange={setShowExportModal}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Exportar Reporte a PDF</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Nombre del archivo:
+                      </label>
+                      <Input
+                        type="text"
+                        value={fileName}
+                        onChange={(e) => setFileName(e.target.value)}
+                        placeholder="reporte_conciliacion_2024-01-15.pdf"
+                        className="w-full"
+                      />
+                    </div>
+                    <p className="text-sm text-slate-600">
+                      El PDF incluirá: KPIs principales, tabla completa de movimientos, alertas críticas y recomendaciones del agente IA.
+                    </p>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setShowExportModal(false)}>
+                      Cancelar
+                    </Button>
+                    <Button onClick={() => { handleExportPDF(fileName); setShowExportModal(false); }}>
+                      Exportar
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
           </>
         )}
       </main>
