@@ -28,6 +28,9 @@ import {
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import jsPDF from "jspdf";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 interface CostoVenta {
   id: string;
@@ -214,6 +217,8 @@ export function Costos() {
   const [showConsultaModal, setShowConsultaModal] = useState(false);
   const [consultaEnviada, setConsultaEnviada] = useState(false);
   const [numeroTicket, setNumeroTicket] = useState<string>("");
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [fileName, setFileName] = useState("");
 
   const handleAnalizar = async () => {
     setLoading(true);
@@ -325,7 +330,39 @@ export function Costos() {
     }, 3000);
   };
 
-
+  const handleExportPDF = (customName?: string) => {
+    if (!result) return;
+    const doc = new jsPDF();
+    const today = new Date();
+    const fecha = today.toLocaleDateString();
+    // Título y encabezado
+    doc.setFontSize(18);
+    doc.text("Análisis de Costos – " + fecha, 14, 20);
+    doc.setFontSize(12);
+    doc.text("Empresa: Empliados", 14, 30);
+    doc.text("Usuario: Test", 14, 37);
+    // Resumen de resultados
+    doc.setFontSize(14);
+    doc.text("Resumen de Resultados", 14, 50);
+    doc.setFontSize(12);
+    doc.text(`Producto: ${tipoProducto}`, 14, 58);
+    doc.text(`Categoría: ${selectedCategoria}`, 14, 65);
+    doc.text(`Total Costos: $${totalCostos.toLocaleString()}`, 14, 72);
+    doc.text(`Variación Promedio: ${promedioVariacion.toFixed(1)}%`, 14, 79);
+    doc.text(`Margen Sugerido: 35%`, 14, 86);
+    // Detalle de costos
+    doc.setFontSize(14);
+    doc.text("Detalle de Costos por Categoría", 14, 100);
+    doc.setFontSize(12);
+    let y = 108;
+    filteredData.forEach(item => {
+      doc.text(`${item.categoria}: ${item.descripcion} - $${item.costo_actual} (${item.variacion_esperada > 0 ? '+' : ''}${item.variacion_esperada}%)`, 14, y, { maxWidth: 180 });
+      y += 7;
+    });
+    // Guardar PDF
+    const defaultName = `analisis_costos_${tipoProducto}_${fecha}.pdf`;
+    doc.save(customName || defaultName);
+  };
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -691,7 +728,10 @@ export function Costos() {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-8 py-3">
+            <Button onClick={() => {
+              setFileName(`analisis_costos_${tipoProducto}_${new Date().toLocaleDateString()}.pdf`);
+              setShowExportModal(true);
+            }} className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-8 py-3">
               <Download className="h-5 w-5 mr-2" />
               Exportar Análisis
             </Button>
@@ -864,6 +904,25 @@ export function Costos() {
             </CardContent>
           </Card>
         </div>
+      )}
+
+      {/* Modal de Exportación */}
+      {showExportModal && (
+        <Dialog open={showExportModal} onOpenChange={setShowExportModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Exportar Análisis a PDF</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <label className="block text-sm font-medium text-slate-700">Nombre del archivo:</label>
+              <Input value={fileName} onChange={e => setFileName(e.target.value)} />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowExportModal(false)}>Cancelar</Button>
+              <Button onClick={() => { handleExportPDF(fileName); setShowExportModal(false); }}>Aceptar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );
