@@ -25,7 +25,6 @@ import {
   Eye
 } from "lucide-react";
 import jsPDF from "jspdf";
-import logo from "@/../public/logo.svg";
 
 interface SkuData {
     sku: string;
@@ -333,6 +332,7 @@ export function PricingDemo() {
 
   // Función para exportar análisis a PDF
   const handleExportPDF = () => {
+    if (!result) return;
     const doc = new jsPDF();
     const today = new Date();
     const fecha = today.toLocaleDateString();
@@ -1115,7 +1115,7 @@ export function PricingDemo() {
               <Zap className="h-5 w-5 mr-2" />
               Implementar Recomendación
             </Button>
-            <Button onClick={handleExportPDF} className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3">
+            <Button onClick={handleExportPDF} disabled={!result} className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3">
               <Download className="h-5 w-5 mr-2" />
               Exportar Análisis
             </Button>
