@@ -21,6 +21,9 @@ import {
   XCircle
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import jsPDF from "jspdf";
 
 interface RegistroLogistica {
   unidad: string;
@@ -366,6 +369,8 @@ export function LogisticaDemo() {
   const [whatsappStep, setWhatsappStep] = useState(0);
   const [showMessages, setShowMessages] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [fileName, setFileName] = useState("");
 
   const handleEjecutarAnalisis = async () => {
     setLoading(true);
@@ -458,6 +463,60 @@ export function LogisticaDemo() {
     if (minutos <= 10) return "text-green-600";
     if (minutos <= 20) return "text-yellow-600";
     return "text-red-600";
+  };
+
+  const handleExportPDF = (customName?: string) => {
+    if (!result) return;
+    const doc = new jsPDF();
+    const today = new Date();
+    const fecha = today.toLocaleDateString();
+    // Título y encabezado
+    doc.setFontSize(18);
+    doc.text("Informe de Logística – " + fecha, 14, 20);
+    doc.setFontSize(12);
+    doc.text("Empresa: Empliados", 14, 30);
+    doc.text("Usuario: Test", 14, 37);
+    // KPIs principales
+    doc.setFontSize(14);
+    doc.text("Métricas Principales", 14, 50);
+    doc.setFontSize(12);
+    doc.text(`Total Viajes: ${result.length}`, 14, 58);
+    doc.text(`Completados: ${result.filter(item => item.estado === "✅").length}`, 14, 65);
+    doc.text(`En Curso: ${result.filter(item => item.estado === "⚠️").length}`, 14, 72);
+    doc.text(`KM Totales: ${result.reduce((sum, item) => sum + (item.km_final - item.km_inicial), 0).toLocaleString()}`, 14, 79);
+    doc.text(`Demora Promedio: ${Math.round(result.reduce((sum, item) => sum + item.demora_minutos, 0) / result.length)} min`, 14, 86);
+    // Alertas
+    doc.setFontSize(14);
+    doc.text("Alertas y Observaciones", 14, 100);
+    doc.setFontSize(12);
+    doc.text(`• ${result.filter(item => item.demora_minutos > 20).length} viajes con demoras significativas`, 14, 108);
+    doc.text(`• Documentación completa: ${result.filter(item => item.boleta_imagen).length}/${result.length}`, 14, 115);
+    // Recomendaciones IA
+    doc.setFontSize(14);
+    doc.text("Recomendaciones del Agente IA", 14, 130);
+    doc.setFontSize(12);
+    doc.text(`• Optimizar rutas de distribución`, 14, 138);
+    doc.text(`• Completar documentación faltante`, 14, 145);
+    doc.text(`• Revisar horarios de carga`, 14, 152);
+    doc.text(`• Monitorear consumo de combustible`, 14, 159);
+    // Tabla de viajes (página 2)
+    doc.addPage();
+    doc.setFontSize(16);
+    doc.text("Registro Histórico de Viajes", 14, 20);
+    doc.setFontSize(10);
+    let y = 30;
+    result.forEach((item) => {
+      if (y > 250) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(`${item.unidad} - ${item.conductor} - ${item.fecha} - ${item.ruta}`, 14, y);
+      doc.text(`KM: ${item.km_final} | Carga: ${item.tipo_carga} | Demora: ${item.demora_minutos} min | Estado: ${item.estado}`, 14, y + 5);
+      y += 12;
+    });
+    // Guardar PDF
+    const defaultName = `informe_logistica_${fecha}.pdf`;
+    doc.save(customName || defaultName);
   };
 
   return (
@@ -993,9 +1052,12 @@ export function LogisticaDemo() {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3">
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3"
+              onClick={() => setShowExportModal(true)}
+            >
               <Download className="h-5 w-5 mr-2" />
-              Enviar Reporte al Supervisor
+              Descargar Informe
             </Button>
             <Button variant="outline" className="border-2 border-green-600 text-green-600 hover:bg-green-50 font-semibold px-8 py-3">
               <FileText className="h-5 w-5 mr-2" />
@@ -1024,6 +1086,42 @@ export function LogisticaDemo() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Modal de Exportación */}
+      {showExportModal && (
+        <Dialog open={showExportModal} onOpenChange={setShowExportModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Exportar Informe de Logística a PDF</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Nombre del archivo:
+                </label>
+                <Input
+                  type="text"
+                  value={fileName}
+                  onChange={(e) => setFileName(e.target.value)}
+                  placeholder="informe_logistica_2024-01-15.pdf"
+                  className="w-full"
+                />
+              </div>
+              <p className="text-sm text-slate-600">
+                El PDF incluirá: KPIs principales, tabla completa de viajes, alertas y recomendaciones del agente IA.
+              </p>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowExportModal(false)}>
+                Cancelar
+              </Button>
+              <Button onClick={() => { handleExportPDF(fileName); setShowExportModal(false); }}>
+                Exportar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );
