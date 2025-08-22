@@ -910,7 +910,7 @@ export function LogisticaDemo() {
                         <td className="p-4">
                           {item.boleta_imagen ? (
                             <div className="flex items-center gap-1">
-                              <Image className="h-4 w-4 text-green-600" />
+                              <Image className="h-4 w-4 text-green-600" alt="Imagen disponible" />
                               <span className="text-green-600 text-sm font-medium">✓</span>
                             </div>
                           ) : (

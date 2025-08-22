@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Home, Truck, DollarSign, Landmark, Combine, User, Bot, TrendingUp, Clock } from "lucide-react";
-import Image from "next/image";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
