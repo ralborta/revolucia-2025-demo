@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { ConciliacionDemo } from "@/components/ConciliacionDemo";
+import { ResumenEjecutivo } from "@/components/ResumenEjecutivo";
 import conciliacionData from "@/../data/conciliacion.json";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -120,8 +121,8 @@ export default function ConciliacionPage() {
 
   return (
     <>
-      <Header title="Agente de Conciliación" />
-      <main className="flex-1 flex flex-col gap-6 p-6 bg-slate-50">
+      <Header title="Dashboard Contable" />
+      <main className="flex-1 flex flex-col gap-6 p-6 bg-gray-50">
         {/* Analysis Interactive Section */}
         {showAnalysis ? (
           <div className="w-full">
@@ -141,8 +142,18 @@ export default function ConciliacionPage() {
           </div>
         ) : (
           <>
+            {/* Resumen Ejecutivo */}
+            <ResumenEjecutivo 
+              balance={totalBancario}
+              tipoBalance="Balance"
+              liquidacion={700000}
+              conciliados={conciliados}
+              totalMovimientos={totalMovimientos}
+              eficiencia={Math.round((conciliados / totalMovimientos) * 100)}
+            />
+
             {/* Analysis Activation Button */}
-            <Card className="border-none shadow-lg bg-gradient-to-r from-purple-600 to-purple-700">
+            <Card className="border-none shadow-lg bg-gradient-to-r from-blue-600 to-blue-700">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -151,14 +162,14 @@ export default function ConciliacionPage() {
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold text-white">Análisis Inteligente de Conciliación</h3>
-                      <p className="text-purple-100">
+                      <p className="text-blue-100">
                         Ejecuta el agente IA para conciliación bancaria, contable y fiscal
                       </p>
                     </div>
                   </div>
                   <Button 
                     onClick={() => setShowAnalysis(true)}
-                    className="flex items-center gap-2 bg-white text-purple-600 hover:bg-purple-50"
+                    className="flex items-center gap-2 bg-white text-blue-600 hover:bg-blue-50"
                     size="lg"
                   >
                     <Search className="h-5 w-5" />
