@@ -36,7 +36,7 @@ export function Header({ title }: { title: string }) {
     const pathname = usePathname();
 
   return (
-    <header className="flex h-16 items-center gap-4 border-b border-gray-200 bg-white px-6 shadow-sm">
+    <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -76,7 +76,7 @@ export function Header({ title }: { title: string }) {
         </SheetContent>
       </Sheet>
       <div className="w-full flex-1">
-        <h1 className="text-xl font-bold text-gray-900">{title}</h1>
+        <h1 className="text-lg font-semibold md:text-2xl">{title}</h1>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

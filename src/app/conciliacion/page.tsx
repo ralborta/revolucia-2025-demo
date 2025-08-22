@@ -121,8 +121,8 @@ export default function ConciliacionPage() {
 
   return (
     <>
-      <Header title="Dashboard Contable" />
-      <main className="flex-1 flex flex-col gap-6 p-6 bg-gray-50">
+      <Header title="Agente de Conciliación" />
+      <main className="flex-1 flex flex-col gap-6 p-6 bg-slate-50">
         {/* Analysis Interactive Section */}
         {showAnalysis ? (
           <div className="w-full">

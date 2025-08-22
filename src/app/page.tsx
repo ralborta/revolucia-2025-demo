@@ -28,13 +28,13 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Header title="Dashboard Contable" />
-      <main className="flex flex-1 flex-col gap-6 p-6 bg-gray-50">
+      <Header title="Dashboard" />
+      <main className="flex flex-1 flex-col gap-6 p-6 bg-slate-50">
         {/* Header principal */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard Contable</h1>
-          <p className="text-gray-600">
-            Gestión de conciliación bancaria con inteligencia artificial y análisis contable
+          <h1 className="text-3xl font-bold text-slate-800 mb-2">Dashboard de Agentes IA</h1>
+          <p className="text-slate-600">
+            Centro de control para todos los agentes de automatización empresarial
           </p>
         </div>
 
