@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, Truck, DollarSign, Landmark, Combine, User, Bot } from "lucide-react";
+import { Home, Truck, DollarSign, Landmark, Combine, User, Bot, Workflow } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
   { name: "Conciliación", href: "/conciliacion", icon: Landmark },
   { name: "Logística", href: "/logistica", icon: Truck },
   { name: "Pricing", href: "/pricing", icon: DollarSign },
+  { name: "Pricing v 5.1", href: "/pricing-v51", icon: Workflow, badge: "Nuevo" },
   { name: "Costos", href: "/costos", icon: Combine },
 ];
 
@@ -46,7 +47,12 @@ export function Sidebar() {
                   )}
                 >
                   <item.icon className="h-5 w-5" />
-                  {item.name}
+                  <span className="flex-1">{item.name}</span>
+                  {item.badge && (
+                    <span className="rounded-full bg-orange-500 px-2 py-0.5 text-xs font-semibold text-white">
+                      {item.badge}
+                    </span>
+                  )}
                 </Link>
               );
             })}

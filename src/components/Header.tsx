@@ -9,6 +9,7 @@ import {
   Menu,
   Truck,
   DollarSign,
+  Workflow,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -28,6 +29,7 @@ const navLinks = [
     { href: "/", label: "Dashboard", icon: Home },
     { href: "/logistica", label: "Logística", icon: Truck },
     { href: "/pricing", label: "Pricing", icon: DollarSign },
+    { href: "/pricing-v51", label: "Pricing v 5.1", icon: Workflow, badge: "Nuevo" },
     { href: "/conciliacion", label: "Conciliación", icon: Landmark },
     { href: "/costos", label: "Costos", icon: Combine },
 ];
@@ -68,7 +70,12 @@ export function Header({ title }: { title: string }) {
                         className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground ${isActive ? "bg-muted text-foreground" : ""}`}
                     >
                         <link.icon className="h-5 w-5" />
-                        {link.label}
+                        <span className="flex-1">{link.label}</span>
+                        {link.badge && (
+                          <span className="rounded-full bg-orange-500 px-2 py-0.5 text-xs font-semibold text-white">
+                            {link.badge}
+                          </span>
+                        )}
                     </Link>
                 )
             })}
