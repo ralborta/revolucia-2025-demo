@@ -176,8 +176,11 @@ function computeNodeValue(type: string, inputs: unknown[], data: Record<string, 
       if (Array.isArray(data?.rows) && data.rows.length) return data.rows;
       if (typeof data?.csvText === "string") return parseCSV(data.csvText);
       return [
-        { sku: "SKU1025", nombre: "Suero X", costo: "62", precio_comp1: "118", precio_comp2: "112", stock: "200" },
-        { sku: "SKU1050", nombre: "Crema Y", costo: "40", precio_comp1: "79", precio_comp2: "85", stock: "55" },
+        { sku: "SKU1025", nombre: "Suero Hidratante Premium", costo: "62", precio_comp1: "118", precio_comp2: "112", precio_comp3: "125", stock: "200" },
+        { sku: "SKU1050", nombre: "Crema Antiarrugas Noche", costo: "40", precio_comp1: "79", precio_comp2: "85", precio_comp3: "82", stock: "55" },
+        { sku: "SKU1075", nombre: "Limpiador Facial Suave", costo: "25", precio_comp1: "45", precio_comp2: "48", precio_comp3: "42", stock: "150" },
+        { sku: "SKU1100", nombre: "Protector Solar FPS 50", costo: "35", precio_comp1: "65", precio_comp2: "68", precio_comp3: "70", stock: "80" },
+        { sku: "SKU1125", nombre: "Mascarilla Purificante", costo: "18", precio_comp1: "35", precio_comp2: "38", precio_comp3: "33", stock: "120" },
       ];
     }
     case "Limpiador": {
@@ -330,6 +333,8 @@ export default function PricingV51Page() {
   const [runLog, setRunLog] = useState<string[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [connectionState, setConnectionState] = useState<{ from?: string; to?: string }>({});
+  const [dragState, setDragState] = useState<{ nodeId?: string; offset?: { x: number; y: number }; isDragging?: boolean }>({});
+  const [tempConnection, setTempConnection] = useState<{ from?: string; mouseX?: number; mouseY?: number }>({});
 
   // Referencias
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -450,7 +455,107 @@ export default function PricingV51Page() {
     setRunLog(prev => [...prev, `🗑️ Eliminado nodo ${nodeId}`]);
   };
 
-  // Manejar conexiones
+  // Eliminar conexión
+  const deleteEdge = (edgeId: string) => {
+    setEdges(prev => prev.filter(e => e.id !== edgeId));
+    setRunLog(prev => [...prev, `🗑️ Eliminada conexión`]);
+  };
+
+  // Manejar drag & drop de nodos
+  const handleMouseDown = (e: React.MouseEvent, nodeId: string) => {
+    if (e.button !== 0) return; // Solo botón izquierdo
+    
+    const node = getNodeById(nodeId);
+    if (!node) return;
+    
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    
+    const offset = {
+      x: e.clientX - rect.left - node.x,
+      y: e.clientY - rect.top - node.y
+    };
+    
+    setDragState({ nodeId, offset, isDragging: true });
+    e.preventDefault();
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (dragState.isDragging && dragState.nodeId && dragState.offset) {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      
+      const newX = e.clientX - rect.left - dragState.offset.x;
+      const newY = e.clientY - rect.top - dragState.offset.y;
+      
+      setNodes(prev => prev.map(node => 
+        node.id === dragState.nodeId 
+          ? { ...node, x: Math.max(0, newX), y: Math.max(0, newY) }
+          : node
+      ));
+    }
+    
+    // Actualizar conexión temporal
+    if (tempConnection.from) {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (rect) {
+        setTempConnection(prev => ({
+          ...prev,
+          mouseX: e.clientX - rect.left,
+          mouseY: e.clientY - rect.top
+        }));
+      }
+    }
+  };
+
+  const handleMouseUp = () => {
+    setDragState({});
+  };
+
+  // Manejar conexiones con drag
+  const handleConnectionStart = (nodeId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const fromNode = getNodeById(nodeId);
+    if (!fromNode) return;
+    
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    
+    setTempConnection({
+      from: nodeId,
+      mouseX: e.clientX - rect.left,
+      mouseY: e.clientY - rect.top
+    });
+  };
+
+  const handleConnectionEnd = (nodeId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (tempConnection.from && tempConnection.from !== nodeId) {
+      const fromNode = getNodeById(tempConnection.from);
+      const toNode = getNodeById(nodeId);
+      
+      if (fromNode && toNode) {
+        // Validar conexión
+        const allowed = ALLOWED[fromNode.type] || [];
+        if (allowed.includes(toNode.type) && !createsCycle(edges, tempConnection.from, nodeId)) {
+          const newEdge: Edge = {
+            id: genId(),
+            from: tempConnection.from,
+            to: nodeId
+          };
+          setEdges(prev => [...prev, newEdge]);
+          setRunLog(prev => [...prev, `🔗 Conectado ${fromNode.type} → ${toNode.type}`]);
+        } else {
+          setRunLog(prev => [...prev, `❌ Conexión no válida: ${fromNode.type} → ${toNode.type}`]);
+        }
+      }
+    }
+    
+    setTempConnection({});
+  };
+
+  // Manejar conexiones (método original como fallback)
   const handleNodeClick = (nodeId: string, isOutput: boolean) => {
     if (isOutput) {
       if (connectionState.from) {
@@ -529,6 +634,11 @@ export default function PricingV51Page() {
             <button onClick={() => presetComparativas(setNodes, setEdges, setRunLog)} className="rounded-xl border px-2 py-1 text-sm hover:bg-slate-50">Comparativas</button>
             <button onClick={() => presetInconsistencias(setNodes, setEdges, setRunLog)} className="rounded-xl border px-2 py-1 text-sm hover:bg-slate-50">Inconsistencias</button>
           </div>
+          
+          {/* Instrucciones de uso */}
+          <div className="mt-2 text-xs text-slate-500">
+            💡 <strong>Cómo usar:</strong> Arrastra nodos para moverlos • Arrastra desde punto verde para conectar • Doble click en líneas para eliminar • Click en nodos para configurar
+          </div>
         </div>
 
         <div className="flex flex-1">
@@ -552,16 +662,20 @@ export default function PricingV51Page() {
           <div className="flex-1 relative overflow-hidden">
             <div
               ref={canvasRef}
-              className="absolute inset-0 bg-slate-100"
+              className="absolute inset-0 bg-slate-100 cursor-default"
               style={{
                 backgroundImage: `
                   radial-gradient(circle, #cbd5e1 1px, transparent 1px)
                 `,
                 backgroundSize: "20px 20px"
               }}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
             >
               {/* SVG para conexiones */}
               <svg className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}>
+                {/* Conexiones existentes */}
                 {edges.map(edge => {
                   const fromNode = getNodeById(edge.from);
                   const toNode = getNodeById(edge.to);
@@ -573,15 +687,52 @@ export default function PricingV51Page() {
                   const y2 = toNode.y + NODE_H / 2;
                   
                   return (
+                    <g key={edge.id}>
+                      {/* Línea invisible más gruesa para facilitar el click */}
+                      <path
+                        d={bezierPath(x1, y1, x2, y2)}
+                        stroke="transparent"
+                        strokeWidth="12"
+                        fill="none"
+                        className="cursor-pointer"
+                        style={{ pointerEvents: "all" }}
+                        onDoubleClick={() => deleteEdge(edge.id)}
+                      >
+                        <title>Doble click para eliminar conexión</title>
+                      </path>
+                      {/* Línea visible */}
+                      <path
+                        d={bezierPath(x1, y1, x2, y2)}
+                        stroke="#3b82f6"
+                        strokeWidth="2"
+                        fill="none"
+                        className="hover:stroke-red-500 transition-colors"
+                        style={{ pointerEvents: "none" }}
+                      />
+                    </g>
+                  );
+                })}
+                
+                {/* Conexión temporal mientras se arrastra */}
+                {tempConnection.from && tempConnection.mouseX && tempConnection.mouseY && (() => {
+                  const fromNode = getNodeById(tempConnection.from);
+                  if (!fromNode) return null;
+                  
+                  const x1 = fromNode.x + NODE_W;
+                  const y1 = fromNode.y + NODE_H / 2;
+                  const x2 = tempConnection.mouseX;
+                  const y2 = tempConnection.mouseY;
+                  
+                  return (
                     <path
-                      key={edge.id}
                       d={bezierPath(x1, y1, x2, y2)}
-                      stroke="#3b82f6"
+                      stroke="#f59e0b"
                       strokeWidth="2"
+                      strokeDasharray="5,5"
                       fill="none"
                     />
                   );
-                })}
+                })()}
               </svg>
 
               {/* Nodos */}
@@ -598,16 +749,19 @@ export default function PricingV51Page() {
                 return (
                   <div
                     key={node.id}
-                    className={`absolute rounded-lg border-2 p-3 shadow-sm ${statusColor} ${
+                    className={`absolute rounded-lg border-2 p-3 shadow-sm select-none ${statusColor} ${
                       isSelected ? "ring-2 ring-blue-500" : ""
-                    } ${isConnecting ? "ring-2 ring-orange-400" : ""}`}
+                    } ${isConnecting ? "ring-2 ring-orange-400" : ""} ${
+                      dragState.isDragging && dragState.nodeId === node.id ? "cursor-grabbing" : "cursor-grab"
+                    }`}
                     style={{
                       left: node.x,
                       top: node.y,
                       width: NODE_W,
                       height: NODE_H,
-                      zIndex: 2
+                      zIndex: dragState.isDragging && dragState.nodeId === node.id ? 10 : 2
                     }}
+                    onMouseDown={(e) => handleMouseDown(e, node.id)}
                   >
                     {/* Header del nodo */}
                     <div className="flex items-center justify-between mb-2">
@@ -634,13 +788,23 @@ export default function PricingV51Page() {
                     </div>
                     
                     {/* Puntos de conexión */}
+                    {/* Punto de entrada (izquierda) */}
                     <div
-                      className="absolute left-0 top-1/2 w-3 h-3 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                      onClick={() => handleNodeClick(node.id, false)}
+                      className="absolute left-0 top-1/2 w-3 h-3 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:w-4 hover:h-4 transition-all"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNodeClick(node.id, false);
+                      }}
+                      onMouseUp={(e) => handleConnectionEnd(node.id, e)}
                     />
+                    {/* Punto de salida (derecha) */}
                     <div
-                      className="absolute right-0 top-1/2 w-3 h-3 bg-green-500 rounded-full transform translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                      onClick={() => handleNodeClick(node.id, true)}
+                      className="absolute right-0 top-1/2 w-3 h-3 bg-green-500 rounded-full transform translate-x-1/2 -translate-y-1/2 cursor-pointer hover:w-4 hover:h-4 transition-all"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNodeClick(node.id, true);
+                      }}
+                      onMouseDown={(e) => handleConnectionStart(node.id, e)}
                     />
                   </div>
                 );
@@ -674,7 +838,7 @@ export default function PricingV51Page() {
                         setNodes(prev => prev.map(n => n.id === selectedNode.id ? updatedNode : n));
                         setSelectedNode(updatedNode);
                       }}
-                      placeholder={"sku,nombre,costo,precio_comp1,precio_comp2,stock\nSKU1025,Suero X,62,118,112,200"}
+                      placeholder={"sku,nombre,costo,precio_comp1,precio_comp2,precio_comp3,stock\nSKU1025,Suero Hidratante Premium,62,118,112,125,200\nSKU1050,Crema Antiarrugas Noche,40,79,85,82,55"}
                     />
                     <label className="block text-sm">o subir archivo</label>
                     <input
