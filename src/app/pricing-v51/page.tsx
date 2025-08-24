@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Header } from "@/components/Header";
 
 /**
@@ -71,25 +71,26 @@ const NODE_TYPES = [
   { type: "Reporte", label: "Reporte" },
 ];
 
-// ===== Reglas de conexión y aridad =====
-const NODE_RULES: Record<string, { inMin: number; inMax: number; outMin: number; outMax: number }> = {
-  SKU: { inMin: 0, inMax: 0, outMin: 0, outMax: Infinity },
-  Precios: { inMin: 0, inMax: 0, outMin: 0, outMax: Infinity },
-  AgenteCostos: { inMin: 0, inMax: 0, outMin: 0, outMax: Infinity },
-  AgenteIA: { inMin: 2, inMax: 5, outMin: 0, outMax: 1 },
-  Output: { inMin: 1, inMax: 1, outMin: 0, outMax: 0 },
-  Concat: { inMin: 2, inMax: 10, outMin: 0, outMax: Infinity },
-  Sum: { inMin: 2, inMax: 10, outMin: 0, outMax: Infinity },
-  InputText: { inMin: 0, inMax: 0, outMin: 0, outMax: Infinity },
-  InputNumber: { inMin: 0, inMax: 0, outMin: 0, outMax: Infinity },
-  DatasetCSV: { inMin: 0, inMax: 0, outMin: 0, outMax: Infinity },
-  Limpiador: { inMin: 1, inMax: 1, outMin: 0, outMax: Infinity },
-  Costos: { inMin: 1, inMax: 1, outMin: 0, outMax: Infinity },
-  Pricing: { inMin: 1, inMax: 1, outMin: 0, outMax: Infinity },
-  Comparativas: { inMin: 1, inMax: 1, outMin: 0, outMax: Infinity },
-  Inconsistencias: { inMin: 1, inMax: 1, outMin: 0, outMax: Infinity },
-  Reporte: { inMin: 1, inMax: 10, outMin: 0, outMax: Infinity },
-};
+// ===== Reglas de conexión y aridad ===== 
+// Nota: NODE_RULES se puede usar para validaciones futuras
+// const NODE_RULES: Record<string, { inMin: number; inMax: number; outMin: number; outMax: number }> = {
+//   SKU: { inMin: 0, inMax: 0, outMin: 0, outMax: Infinity },
+//   Precios: { inMin: 0, inMax: 0, outMin: 0, outMax: Infinity },
+//   AgenteCostos: { inMin: 0, inMax: 0, outMin: 0, outMax: Infinity },
+//   AgenteIA: { inMin: 2, inMax: 5, outMin: 0, outMax: 1 },
+//   Output: { inMin: 1, inMax: 1, outMin: 0, outMax: 0 },
+//   Concat: { inMin: 2, inMax: 10, outMin: 0, outMax: Infinity },
+//   Sum: { inMin: 2, inMax: 10, outMin: 0, outMax: Infinity },
+//   InputText: { inMin: 0, inMax: 0, outMin: 0, outMax: Infinity },
+//   InputNumber: { inMin: 0, inMax: 0, outMin: 0, outMax: Infinity },
+//   DatasetCSV: { inMin: 0, inMax: 0, outMin: 0, outMax: Infinity },
+//   Limpiador: { inMin: 1, inMax: 1, outMin: 0, outMax: Infinity },
+//   Costos: { inMin: 1, inMax: 1, outMin: 0, outMax: Infinity },
+//   Pricing: { inMin: 1, inMax: 1, outMin: 0, outMax: Infinity },
+//   Comparativas: { inMin: 1, inMax: 1, outMin: 0, outMax: Infinity },
+//   Inconsistencias: { inMin: 1, inMax: 1, outMin: 0, outMax: Infinity },
+//   Reporte: { inMin: 1, inMax: 10, outMin: 0, outMax: Infinity },
+// };
 
 const ALLOWED: Record<string, string[]> = {
   SKU: ["AgenteIA", "Concat", "Sum"],
@@ -116,7 +117,7 @@ interface Node {
   type: string;
   x: number;
   y: number;
-  data?: any;
+  data?: Record<string, unknown>;
 }
 
 interface Edge {
@@ -128,7 +129,7 @@ interface Edge {
 interface RunStep {
   nodeId: string;
   status: "pending" | "running" | "done" | "error";
-  result?: any;
+  result?: unknown;
   error?: string;
   startTime?: number;
   endTime?: number;
@@ -148,10 +149,10 @@ function parseCSV(text: string) {
   });
 }
 
-const num = (x: any, d = 0) => Number.isFinite(+x) ? +x : d;
+const num = (x: unknown, d = 0) => Number.isFinite(+x) ? +x : d;
 
 // ===== Lógica de cómputo =====
-function computeNodeValue(type: string, inputs: any[], data: any, rng: () => number): any {
+function computeNodeValue(type: string, inputs: unknown[], data: Record<string, unknown>, rng: () => number): unknown {
   switch (type) {
     case "SKU":
       return data?.value || "SKU1025";
@@ -177,8 +178,8 @@ function computeNodeValue(type: string, inputs: any[], data: any, rng: () => num
       ];
     }
     case "Limpiador": {
-      const ds = Array.isArray(inputs?.[0]) ? inputs[0] : [];
-      return ds.map((r: any) => ({
+      const ds = Array.isArray(inputs?.[0]) ? inputs[0] as Record<string, unknown>[] : [];
+      return ds.map((r: Record<string, unknown>) => ({
         sku: String(r.sku || r.SKU || "").trim(),
         nombre: String(r.nombre || r.producto || "").trim(),
         costo: num(r.costo ?? r.cost ?? r.costo_unitario, 0),
@@ -189,20 +190,20 @@ function computeNodeValue(type: string, inputs: any[], data: any, rng: () => num
       }));
     }
     case "Costos": {
-      const ds = Array.isArray(inputs?.[0]) ? inputs[0] : [];
-      return ds.map((r: any) => ({
+      const ds = Array.isArray(inputs?.[0]) ? inputs[0] as Record<string, unknown>[] : [];
+      return ds.map((r: Record<string, unknown>) => ({
         sku: r.sku, nombre: r.nombre,
         costo: r.costo,
         costo_total: r.costo, // acá podrías sumar flete/impuestos si quisieras
       }));
     }
     case "Pricing": {
-      const ds = Array.isArray(inputs?.[0]) ? inputs[0] : [];
+      const ds = Array.isArray(inputs?.[0]) ? inputs[0] as Record<string, unknown>[] : [];
       const markup = clamp(Number(data?.markup ?? 0.25), 0, 1);
-      return ds.map((r: any) => {
+      return ds.map((r: Record<string, unknown>) => {
         const comps = [r.precio_comp1, r.precio_comp2, r.precio_comp3].filter(Number.isFinite);
-        const prom = comps.length ? comps.reduce((a: number, b: number) => a + b, 0) / comps.length : (r.costo * 1.3);
-        const margen_obj = r.costo * (1 + markup);
+        const prom = comps.length ? comps.reduce((a: number, b: number) => a + b, 0) / comps.length : (Number(r.costo) * 1.3);
+        const margen_obj = Number(r.costo) * (1 + markup);
         const precio_ref = prom * 0.98;
         let precio_sugerido = Math.max(margen_obj, precio_ref);
         const maxMercado = prom * 1.5;
@@ -211,8 +212,8 @@ function computeNodeValue(type: string, inputs: any[], data: any, rng: () => num
       });
     }
     case "Comparativas": {
-      const ds = Array.isArray(inputs?.[0]) ? inputs[0] : [];
-      return ds.map((r: any) => {
+      const ds = Array.isArray(inputs?.[0]) ? inputs[0] as Record<string, unknown>[] : [];
+      return ds.map((r: Record<string, unknown>) => {
         const comps = [r.precio_comp1, r.precio_comp2, r.precio_comp3].filter(Number.isFinite);
         const minComp = comps.length ? Math.min(...comps) : null;
         const maxComp = comps.length ? Math.max(...comps) : null;
@@ -221,16 +222,17 @@ function computeNodeValue(type: string, inputs: any[], data: any, rng: () => num
       });
     }
     case "Inconsistencias": {
-      const ds = Array.isArray(inputs?.[0]) ? inputs[0] : [];
+      const ds = Array.isArray(inputs?.[0]) ? inputs[0] as Record<string, unknown>[] : [];
       const seen = new Set<string>();
-      return ds.flatMap((r: any) => {
+      return ds.flatMap((r: Record<string, unknown>) => {
         const issues: string[] = [];
+        const sku = String(r.sku);
         if (!r.sku) issues.push("SKU vacío");
-        if (seen.has(r.sku)) issues.push("SKU duplicado"); else seen.add(r.sku);
-        if (!(r.costo > 0)) issues.push("Costo <= 0");
-        if (r.stock < 0) issues.push("Stock negativo");
+        if (seen.has(sku)) issues.push("SKU duplicado"); else seen.add(sku);
+        if (!(Number(r.costo) > 0)) issues.push("Costo <= 0");
+        if (Number(r.stock) < 0) issues.push("Stock negativo");
         const comps = [r.precio_comp1, r.precio_comp2, r.precio_comp3].filter(Number.isFinite);
-        if (comps.length && r.costo >= Math.min(...comps)) issues.push("Costo ≥ comp_min (margen nulo)");
+        if (comps.length && Number(r.costo) >= Math.min(...comps)) issues.push("Costo ≥ comp_min (margen nulo)");
         return issues.length ? [{ sku: r.sku, issues }] : [];
       });
     }
@@ -263,7 +265,7 @@ function computeNodeValue(type: string, inputs: any[], data: any, rng: () => num
 }
 
 // helpers
-function makeNode(type: string, x: number, y: number, data: any = {}) {
+function makeNode(type: string, x: number, y: number, data: Record<string, unknown> = {}) {
   return { id: genId(), type, x, y, data };
 }
 
@@ -324,7 +326,6 @@ export default function PricingV51Page() {
   const [runSteps, setRunSteps] = useState<RunStep[]>([]);
   const [runLog, setRunLog] = useState<string[]>([]);
   const [isRunning, setIsRunning] = useState(false);
-  const [dragState, setDragState] = useState<{ nodeId?: string; offset?: { x: number; y: number } }>({});
   const [connectionState, setConnectionState] = useState<{ from?: string; to?: string }>({});
 
   // Referencias
