@@ -332,7 +332,6 @@ export default function PricingV51Page() {
   const [runSteps, setRunSteps] = useState<RunStep[]>([]);
   const [runLog, setRunLog] = useState<string[]>([]);
   const [isRunning, setIsRunning] = useState(false);
-  const [connectionState, setConnectionState] = useState<{ from?: string; to?: string }>({});
   const [dragState, setDragState] = useState<{ nodeId?: string; offset?: { x: number; y: number }; isDragging?: boolean }>({});
   const [tempConnection, setTempConnection] = useState<{ from?: string; mouseX?: number; mouseY?: number }>({});
 
@@ -514,36 +513,54 @@ export default function PricingV51Page() {
     e.preventDefault();
   };
 
-  // Manejar conexiones con drag
+  // Sistema de conexiones simplificado
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [connectionFrom, setConnectionFrom] = useState<string | null>(null);
+
   const handleConnectionStart = (nodeId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     
-    const fromNode = getNodeById(nodeId);
-    if (!fromNode) return;
+    setIsConnecting(true);
+    setConnectionFrom(nodeId);
+    setRunLog(prev => [...prev, `🔗 Iniciando conexión desde ${getNodeById(nodeId)?.type}...`]);
     
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    
-    setTempConnection({
-      from: nodeId,
-      mouseX: e.clientX - rect.left,
-      mouseY: e.clientY - rect.top
-    });
-    
-    // Añadir event listeners globales para el drag
+    // Añadir event listeners globales para tracking del mouse
     const handleGlobalMouseMove = (globalE: MouseEvent) => {
       const rect = canvasRef.current?.getBoundingClientRect();
       if (rect) {
-        setTempConnection(prev => ({
-          ...prev,
+        setTempConnection({
+          from: nodeId,
           mouseX: globalE.clientX - rect.left,
           mouseY: globalE.clientY - rect.top
-        }));
+        });
       }
     };
     
-    const handleGlobalMouseUp = () => {
+    const handleGlobalMouseUp = (globalE: MouseEvent) => {
+      // Buscar si el mouse está sobre algún nodo
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (rect) {
+        const mouseX = globalE.clientX - rect.left;
+        const mouseY = globalE.clientY - rect.top;
+        
+        // Buscar nodo bajo el cursor
+        const targetNode = nodes.find(node => 
+          mouseX >= node.x && mouseX <= node.x + NODE_W &&
+          mouseY >= node.y && mouseY <= node.y + NODE_H &&
+          node.id !== nodeId
+        );
+        
+        if (targetNode) {
+          handleConnectionComplete(nodeId, targetNode.id);
+        } else {
+          setRunLog(prev => [...prev, `❌ Conexión cancelada`]);
+        }
+      }
+      
+      // Limpiar
+      setIsConnecting(false);
+      setConnectionFrom(null);
       setTempConnection({});
       document.removeEventListener('mousemove', handleGlobalMouseMove);
       document.removeEventListener('mouseup', handleGlobalMouseUp);
@@ -553,70 +570,28 @@ export default function PricingV51Page() {
     document.addEventListener('mouseup', handleGlobalMouseUp);
   };
 
-  const handleConnectionEnd = (nodeId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleConnectionComplete = (fromNodeId: string, toNodeId: string) => {
+    const fromNode = getNodeById(fromNodeId);
+    const toNode = getNodeById(toNodeId);
     
-    if (tempConnection.from && tempConnection.from !== nodeId) {
-      const fromNode = getNodeById(tempConnection.from);
-      const toNode = getNodeById(nodeId);
-      
-      if (fromNode && toNode) {
-        // Validar conexión
-        const allowed = ALLOWED[fromNode.type] || [];
-        if (allowed.includes(toNode.type) && !createsCycle(edges, tempConnection.from, nodeId)) {
-          const newEdge: Edge = {
-            id: genId(),
-            from: tempConnection.from,
-            to: nodeId
-          };
-          setEdges(prev => [...prev, newEdge]);
-          setRunLog(prev => [...prev, `🔗 Conectado ${fromNode.type} → ${toNode.type}`]);
-        } else {
-          setRunLog(prev => [...prev, `❌ Conexión no válida: ${fromNode.type} → ${toNode.type}`]);
-        }
+    if (fromNode && toNode && fromNodeId !== toNodeId) {
+      // Validar conexión
+      const allowed = ALLOWED[fromNode.type] || [];
+      if (allowed.includes(toNode.type) && !createsCycle(edges, fromNodeId, toNodeId)) {
+        const newEdge: Edge = {
+          id: genId(),
+          from: fromNodeId,
+          to: toNodeId
+        };
+        setEdges(prev => [...prev, newEdge]);
+        setRunLog(prev => [...prev, `✅ Conectado ${fromNode.type} → ${toNode.type}`]);
+      } else {
+        setRunLog(prev => [...prev, `❌ Conexión no válida: ${fromNode.type} → ${toNode.type}`]);
       }
     }
-    
-    setTempConnection({});
   };
 
-  // Manejar conexiones (método original como fallback)
-  const handleNodeClick = (nodeId: string, isOutput: boolean) => {
-    if (isOutput) {
-      if (connectionState.from) {
-        // Completar conexión
-        const fromNode = getNodeById(connectionState.from);
-        const toNode = getNodeById(nodeId);
-        
-        if (fromNode && toNode && connectionState.from !== nodeId) {
-          // Validar conexión
-          const allowed = ALLOWED[fromNode.type] || [];
-          if (allowed.includes(toNode.type) && !createsCycle(edges, connectionState.from, nodeId)) {
-            const newEdge: Edge = {
-              id: genId(),
-              from: connectionState.from,
-              to: nodeId
-            };
-            setEdges(prev => [...prev, newEdge]);
-            setRunLog(prev => [...prev, `🔗 Conectado ${fromNode.type} → ${toNode.type}`]);
-          } else {
-            setRunLog(prev => [...prev, `❌ Conexión no válida: ${fromNode.type} → ${toNode.type}`]);
-          }
-        }
-        setConnectionState({});
-      } else {
-        setConnectionState({ from: nodeId });
-      }
-    } else {
-      // Click en entrada - cancelar conexión o seleccionar nodo
-      if (connectionState.from) {
-        setConnectionState({});
-      } else {
-        const node = getNodeById(nodeId);
-        setSelectedNode(node || null);
-      }
-    }
-  };
+
 
   return (
     <>
@@ -673,7 +648,8 @@ export default function PricingV51Page() {
             </div>
             <div className="text-xs text-blue-700 mt-1 space-y-1">
               <div>• <strong>Mover nodos:</strong> Arrastra cualquier nodo por el canvas</div>
-              <div>• <strong>Conectar:</strong> Arrastra desde el punto verde (salida) hasta el punto azul (entrada)</div>
+              <div>• <strong>Conectar:</strong> Arrastra desde punto verde (salida) y suelta sobre cualquier nodo</div>
+              <div>• <strong>O click:</strong> Arrastra desde verde, luego click en punto azul (entrada)</div>
               <div>• <strong>Eliminar conexión:</strong> Doble click en cualquier línea</div>
               <div>• <strong>Configurar:</strong> Click en un nodo para ver sus opciones</div>
             </div>
@@ -775,7 +751,7 @@ export default function PricingV51Page() {
               {nodes.map(node => {
                 const step = runSteps.find(s => s.nodeId === node.id);
                 const isSelected = selectedNode?.id === node.id;
-                const isConnecting = connectionState.from === node.id;
+                const isNodeConnecting = connectionFrom === node.id;
                 
                 let statusColor = "bg-white border-slate-300";
                 if (step?.status === "running") statusColor = "bg-yellow-100 border-yellow-400";
@@ -787,7 +763,7 @@ export default function PricingV51Page() {
                     key={node.id}
                     className={`absolute rounded-lg border-2 p-3 shadow-sm select-none ${statusColor} ${
                       isSelected ? "ring-2 ring-blue-500" : ""
-                    } ${isConnecting ? "ring-2 ring-orange-400" : ""} ${
+                    } ${isNodeConnecting ? "ring-2 ring-orange-400" : ""} ${
                       dragState.isDragging && dragState.nodeId === node.id ? "cursor-grabbing" : "cursor-grab"
                     }`}
                     style={{
@@ -826,29 +802,30 @@ export default function PricingV51Page() {
                     {/* Puntos de conexión */}
                     {/* Punto de entrada (izquierda) - Azul */}
                     <div
-                      className="absolute left-0 top-1/2 w-4 h-4 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:w-5 hover:h-5 hover:bg-blue-600 transition-all border-2 border-white shadow-md"
+                      className={`absolute left-0 top-1/2 w-4 h-4 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:w-5 hover:h-5 hover:bg-blue-600 transition-all border-2 border-white shadow-md ${
+                        isConnecting && connectionFrom !== node.id ? 'ring-2 ring-blue-300 animate-pulse' : ''
+                      }`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleNodeClick(node.id, false);
-                      }}
-                      onMouseUp={(e) => {
-                        e.stopPropagation();
-                        handleConnectionEnd(node.id, e);
+                        if (isConnecting && connectionFrom && connectionFrom !== node.id) {
+                          handleConnectionComplete(connectionFrom, node.id);
+                          setIsConnecting(false);
+                          setConnectionFrom(null);
+                          setTempConnection({});
+                        }
                       }}
                       style={{ zIndex: 20 }}
+                      title="Punto de entrada"
                     />
                     {/* Punto de salida (derecha) - Verde */}
                     <div
                       className="absolute right-0 top-1/2 w-4 h-4 bg-green-500 rounded-full transform translate-x-1/2 -translate-y-1/2 cursor-pointer hover:w-5 hover:h-5 hover:bg-green-600 transition-all border-2 border-white shadow-md"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleNodeClick(node.id, true);
-                      }}
                       onMouseDown={(e) => {
                         e.stopPropagation();
                         handleConnectionStart(node.id, e);
                       }}
                       style={{ zIndex: 20 }}
+                      title="Punto de salida - Arrastra para conectar"
                     />
                   </div>
                 );
