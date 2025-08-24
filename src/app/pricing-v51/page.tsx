@@ -421,7 +421,7 @@ export default function PricingV51Page() {
         setEdges(data.edges || []);
         setRunLog(prev => [...prev, "📂 Flujo cargado"]);
       }
-    } catch (error) {
+    } catch {
       setRunLog(prev => [...prev, "❌ Error al cargar flujo"]);
     }
   };
@@ -688,7 +688,7 @@ export default function PricingV51Page() {
                             const updatedNode = { ...selectedNode, data: { ...selectedNode.data, rows, csvText: text } };
                             setNodes(prev => prev.map(n => n.id === selectedNode.id ? updatedNode : n));
                             setSelectedNode(updatedNode);
-                          } catch (e) {}
+                          } catch {}
                         };
                         reader.readAsText(f);
                       }}
