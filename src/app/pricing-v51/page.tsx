@@ -50,26 +50,38 @@ function createsCycle(edges: Edge[], from: string, to: string) {
   return false;
 }
 
-// ===== Tipos de nodo
-const NODE_TYPES = [
-  { type: "SKU", label: "SKU" },
-  { type: "Precios", label: "Precios" },
-  { type: "AgenteCostos", label: "Agente Costos" },
-  { type: "AgenteIA", label: "Agente IA" },
-  { type: "Output", label: "Output" },
-  { type: "Concat", label: "Concat" },
-  { type: "Sum", label: "Sum" },
-  { type: "InputText", label: "Input Text" },
-  { type: "InputNumber", label: "Input Number" },
-  // +++ nuevos tipos demo dataset/analítica +++
-  { type: "DatasetCSV", label: "Dataset CSV" },
-  { type: "Limpiador", label: "Limpiar/Normalizar" },
-  { type: "Costos", label: "Análisis de Costos" },
-  { type: "Pricing", label: "Generar Precios" },
-  { type: "Comparativas", label: "Reporte Comparativas" },
-  { type: "Inconsistencias", label: "Detección de Inconsistencias" },
-  { type: "Reporte", label: "Reporte" },
-];
+// ===== Tipos de nodo organizados por categoría
+const NODE_CATEGORIES = {
+  input: [
+    { type: "DatasetCSV", label: "Dataset CSV" },
+    { type: "InputText", label: "Input Text" },
+    { type: "InputNumber", label: "Input Number" },
+    { type: "SKU", label: "SKU" },
+    { type: "Precios", label: "Precios" },
+    { type: "AgenteCostos", label: "Agente Costos" },
+  ],
+  processing: [
+    { type: "Limpiador", label: "Limpiar/Normalizar" },
+    { type: "Costos", label: "Análisis de Costos" },
+    { type: "Pricing", label: "Generar Precios" },
+    { type: "Comparativas", label: "Reporte Comparativas" },
+    { type: "Inconsistencias", label: "Detección de Inconsistencias" },
+    { type: "AgenteIA", label: "Agente IA" },
+    { type: "Concat", label: "Concat" },
+    { type: "Sum", label: "Sum" },
+  ],
+  output: [
+    { type: "Reporte", label: "Reporte" },
+    { type: "Output", label: "Output" },
+  ]
+};
+
+// Lista plana para compatibilidad (comentada ya que no se usa)
+// const NODE_TYPES = [
+//   ...NODE_CATEGORIES.input,
+//   ...NODE_CATEGORIES.processing,
+//   ...NODE_CATEGORIES.output
+// ];
 
 // ===== Reglas de conexión y aridad ===== 
 // Nota: NODE_RULES se puede usar para validaciones futuras
@@ -333,7 +345,6 @@ export default function PricingV51Page() {
   const [runLog, setRunLog] = useState<string[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [dragState, setDragState] = useState<{ nodeId?: string; offset?: { x: number; y: number }; isDragging?: boolean }>({});
-  const [tempConnection, setTempConnection] = useState<{ from?: string; mouseX?: number; mouseY?: number }>({});
 
   // Referencias
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -513,81 +524,42 @@ export default function PricingV51Page() {
     e.preventDefault();
   };
 
-  // Sistema de conexiones simplificado
-  const [isConnecting, setIsConnecting] = useState(false);
+  // Sistema de conexiones por clicks
   const [connectionFrom, setConnectionFrom] = useState<string | null>(null);
 
-  const handleConnectionStart = (nodeId: string, e: React.MouseEvent) => {
+  const handleNodeConnectionClick = (nodeId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault();
     
-    setIsConnecting(true);
-    setConnectionFrom(nodeId);
-    setRunLog(prev => [...prev, `🔗 Iniciando conexión desde ${getNodeById(nodeId)?.type}...`]);
-    
-    // Añadir event listeners globales para tracking del mouse
-    const handleGlobalMouseMove = (globalE: MouseEvent) => {
-      const rect = canvasRef.current?.getBoundingClientRect();
-      if (rect) {
-        setTempConnection({
-          from: nodeId,
-          mouseX: globalE.clientX - rect.left,
-          mouseY: globalE.clientY - rect.top
-        });
-      }
-    };
-    
-    const handleGlobalMouseUp = (globalE: MouseEvent) => {
-      // Buscar si el mouse está sobre algún nodo
-      const rect = canvasRef.current?.getBoundingClientRect();
-      if (rect) {
-        const mouseX = globalE.clientX - rect.left;
-        const mouseY = globalE.clientY - rect.top;
-        
-        // Buscar nodo bajo el cursor
-        const targetNode = nodes.find(node => 
-          mouseX >= node.x && mouseX <= node.x + NODE_W &&
-          mouseY >= node.y && mouseY <= node.y + NODE_H &&
-          node.id !== nodeId
-        );
-        
-        if (targetNode) {
-          handleConnectionComplete(nodeId, targetNode.id);
+    if (!connectionFrom) {
+      // Primer click: seleccionar nodo origen
+      setConnectionFrom(nodeId);
+      setRunLog(prev => [...prev, `🔗 Seleccionado ${getNodeById(nodeId)?.type} como origen. Click en otro nodo para conectar.`]);
+    } else if (connectionFrom === nodeId) {
+      // Click en el mismo nodo: cancelar
+      setConnectionFrom(null);
+      setRunLog(prev => [...prev, `❌ Conexión cancelada`]);
+    } else {
+      // Segundo click: crear conexión
+      const fromNode = getNodeById(connectionFrom);
+      const toNode = getNodeById(nodeId);
+      
+      if (fromNode && toNode) {
+        // Validar conexión
+        const allowed = ALLOWED[fromNode.type] || [];
+        if (allowed.includes(toNode.type) && !createsCycle(edges, connectionFrom, nodeId)) {
+          const newEdge: Edge = {
+            id: genId(),
+            from: connectionFrom,
+            to: nodeId
+          };
+          setEdges(prev => [...prev, newEdge]);
+          setRunLog(prev => [...prev, `✅ Conectado ${fromNode.type} → ${toNode.type}`]);
         } else {
-          setRunLog(prev => [...prev, `❌ Conexión cancelada`]);
+          setRunLog(prev => [...prev, `❌ Conexión no válida: ${fromNode.type} → ${toNode.type}`]);
         }
       }
       
-      // Limpiar
-      setIsConnecting(false);
       setConnectionFrom(null);
-      setTempConnection({});
-      document.removeEventListener('mousemove', handleGlobalMouseMove);
-      document.removeEventListener('mouseup', handleGlobalMouseUp);
-    };
-    
-    document.addEventListener('mousemove', handleGlobalMouseMove);
-    document.addEventListener('mouseup', handleGlobalMouseUp);
-  };
-
-  const handleConnectionComplete = (fromNodeId: string, toNodeId: string) => {
-    const fromNode = getNodeById(fromNodeId);
-    const toNode = getNodeById(toNodeId);
-    
-    if (fromNode && toNode && fromNodeId !== toNodeId) {
-      // Validar conexión
-      const allowed = ALLOWED[fromNode.type] || [];
-      if (allowed.includes(toNode.type) && !createsCycle(edges, fromNodeId, toNodeId)) {
-        const newEdge: Edge = {
-          id: genId(),
-          from: fromNodeId,
-          to: toNodeId
-        };
-        setEdges(prev => [...prev, newEdge]);
-        setRunLog(prev => [...prev, `✅ Conectado ${fromNode.type} → ${toNode.type}`]);
-      } else {
-        setRunLog(prev => [...prev, `❌ Conexión no válida: ${fromNode.type} → ${toNode.type}`]);
-      }
     }
   };
 
@@ -648,10 +620,10 @@ export default function PricingV51Page() {
             </div>
             <div className="text-xs text-blue-700 mt-1 space-y-1">
               <div>• <strong>Mover nodos:</strong> Arrastra cualquier nodo por el canvas</div>
-              <div>• <strong>Conectar:</strong> Arrastra desde punto verde (salida) y suelta sobre cualquier nodo</div>
-              <div>• <strong>O click:</strong> Arrastra desde verde, luego click en punto azul (entrada)</div>
+              <div>• <strong>Conectar:</strong> Click en un nodo (aparece &quot;1&quot;), luego click en otro nodo (aparece &quot;2&quot;)</div>
+              <div>• <strong>Cancelar conexión:</strong> Click en el mismo nodo origen</div>
               <div>• <strong>Eliminar conexión:</strong> Doble click en cualquier línea</div>
-              <div>• <strong>Configurar:</strong> Click en un nodo para ver sus opciones</div>
+              <div>• <strong>Configurar:</strong> Shift + Click en un nodo para ver sus opciones en el panel</div>
             </div>
           </div>
         </div>
@@ -660,16 +632,53 @@ export default function PricingV51Page() {
           {/* Panel lateral izquierdo - Nodos disponibles */}
           <div className="w-64 border-r bg-white p-4">
             <h3 className="mb-4 font-semibold text-slate-800">Nodos Disponibles</h3>
-            <div className="space-y-2">
-              {NODE_TYPES.map(nodeType => (
-                <button
-                  key={nodeType.type}
-                  onClick={() => addNode(nodeType.type)}
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 text-left text-sm hover:bg-slate-100"
-                >
-                  {nodeType.label}
-                </button>
-              ))}
+            
+            {/* Nodos de Input */}
+            <div className="mb-4">
+              <h4 className="mb-2 text-xs font-semibold text-green-700 uppercase tracking-wide">📥 Input</h4>
+              <div className="space-y-1">
+                {NODE_CATEGORIES.input.map(nodeType => (
+                  <button
+                    key={nodeType.type}
+                    onClick={() => addNode(nodeType.type)}
+                    className="w-full rounded-lg border border-green-200 bg-green-50 p-2 text-left text-sm hover:bg-green-100 hover:border-green-300"
+                  >
+                    {nodeType.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Nodos de Procesamiento */}
+            <div className="mb-4">
+              <h4 className="mb-2 text-xs font-semibold text-blue-700 uppercase tracking-wide">⚙️ Procesamiento</h4>
+              <div className="space-y-1">
+                {NODE_CATEGORIES.processing.map(nodeType => (
+                  <button
+                    key={nodeType.type}
+                    onClick={() => addNode(nodeType.type)}
+                    className="w-full rounded-lg border border-blue-200 bg-blue-50 p-2 text-left text-sm hover:bg-blue-100 hover:border-blue-300"
+                  >
+                    {nodeType.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Nodos de Output */}
+            <div className="mb-4">
+              <h4 className="mb-2 text-xs font-semibold text-purple-700 uppercase tracking-wide">📤 Output</h4>
+              <div className="space-y-1">
+                {NODE_CATEGORIES.output.map(nodeType => (
+                  <button
+                    key={nodeType.type}
+                    onClick={() => addNode(nodeType.type)}
+                    className="w-full rounded-lg border border-purple-200 bg-purple-50 p-2 text-left text-sm hover:bg-purple-100 hover:border-purple-300"
+                  >
+                    {nodeType.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -725,26 +734,7 @@ export default function PricingV51Page() {
                   );
                 })}
                 
-                {/* Conexión temporal mientras se arrastra */}
-                {tempConnection.from && tempConnection.mouseX && tempConnection.mouseY && (() => {
-                  const fromNode = getNodeById(tempConnection.from);
-                  if (!fromNode) return null;
-                  
-                  const x1 = fromNode.x + NODE_W;
-                  const y1 = fromNode.y + NODE_H / 2;
-                  const x2 = tempConnection.mouseX;
-                  const y2 = tempConnection.mouseY;
-                  
-                  return (
-                    <path
-                      d={bezierPath(x1, y1, x2, y2)}
-                      stroke="#f59e0b"
-                      strokeWidth="2"
-                      strokeDasharray="5,5"
-                      fill="none"
-                    />
-                  );
-                })()}
+
               </svg>
 
               {/* Nodos */}
@@ -752,6 +742,7 @@ export default function PricingV51Page() {
                 const step = runSteps.find(s => s.nodeId === node.id);
                 const isSelected = selectedNode?.id === node.id;
                 const isNodeConnecting = connectionFrom === node.id;
+                const isTargetForConnection = connectionFrom && connectionFrom !== node.id;
                 
                 let statusColor = "bg-white border-slate-300";
                 if (step?.status === "running") statusColor = "bg-yellow-100 border-yellow-400";
@@ -761,9 +752,11 @@ export default function PricingV51Page() {
                 return (
                   <div
                     key={node.id}
-                    className={`absolute rounded-lg border-2 p-3 shadow-sm select-none ${statusColor} ${
+                    className={`absolute rounded-lg border-2 p-3 shadow-sm select-none transition-all ${statusColor} ${
                       isSelected ? "ring-2 ring-blue-500" : ""
                     } ${isNodeConnecting ? "ring-2 ring-orange-400" : ""} ${
+                      isTargetForConnection ? "ring-2 ring-green-400 animate-pulse" : ""
+                    } ${
                       dragState.isDragging && dragState.nodeId === node.id ? "cursor-grabbing" : "cursor-grab"
                     }`}
                     style={{
@@ -774,6 +767,18 @@ export default function PricingV51Page() {
                       zIndex: dragState.isDragging && dragState.nodeId === node.id ? 10 : 2
                     }}
                     onMouseDown={(e) => handleMouseDown(e, node.id)}
+                    onClick={(e) => {
+                      if (!dragState.isDragging) {
+                        if (e.shiftKey) {
+                          // Shift + Click para seleccionar sin conectar
+                          setSelectedNode(node);
+                          setRunLog(prev => [...prev, `🔧 Seleccionado ${node.type} para configuración`]);
+                        } else {
+                          // Click normal para conectar
+                          handleNodeConnectionClick(node.id, e);
+                        }
+                      }
+                    }}
                   >
                     {/* Header del nodo */}
                     <div className="flex items-center justify-between mb-2">
@@ -799,34 +804,17 @@ export default function PricingV51Page() {
                       {!step && <div className="text-slate-400">Listo para ejecutar</div>}
                     </div>
                     
-                    {/* Puntos de conexión */}
-                    {/* Punto de entrada (izquierda) - Azul */}
-                    <div
-                      className={`absolute left-0 top-1/2 w-4 h-4 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:w-5 hover:h-5 hover:bg-blue-600 transition-all border-2 border-white shadow-md ${
-                        isConnecting && connectionFrom !== node.id ? 'ring-2 ring-blue-300 animate-pulse' : ''
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (isConnecting && connectionFrom && connectionFrom !== node.id) {
-                          handleConnectionComplete(connectionFrom, node.id);
-                          setIsConnecting(false);
-                          setConnectionFrom(null);
-                          setTempConnection({});
-                        }
-                      }}
-                      style={{ zIndex: 20 }}
-                      title="Punto de entrada"
-                    />
-                    {/* Punto de salida (derecha) - Verde */}
-                    <div
-                      className="absolute right-0 top-1/2 w-4 h-4 bg-green-500 rounded-full transform translate-x-1/2 -translate-y-1/2 cursor-pointer hover:w-5 hover:h-5 hover:bg-green-600 transition-all border-2 border-white shadow-md"
-                      onMouseDown={(e) => {
-                        e.stopPropagation();
-                        handleConnectionStart(node.id, e);
-                      }}
-                      style={{ zIndex: 20 }}
-                      title="Punto de salida - Arrastra para conectar"
-                    />
+                    {/* Indicadores de estado de conexión */}
+                    {isNodeConnecting && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                        1
+                      </div>
+                    )}
+                    {isTargetForConnection && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold animate-pulse">
+                        2
+                      </div>
+                    )}
                   </div>
                 );
               })}
