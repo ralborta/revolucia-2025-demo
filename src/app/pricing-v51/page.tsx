@@ -434,6 +434,15 @@ export default function PricingV51Page() {
     }
   };
 
+  // Limpiar canvas
+  const clearCanvas = () => {
+    setNodes([]);
+    setEdges([]);
+    setSelectedNode(null);
+    setRunSteps([]);
+    setRunLog(prev => [...prev, "🧹 Canvas limpiado"]);
+  };
+
   // Añadir nodo
   const addNode = (type: string) => {
     const newNode: Node = {
@@ -477,44 +486,39 @@ export default function PricingV51Page() {
     };
     
     setDragState({ nodeId, offset, isDragging: true });
-    e.preventDefault();
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (dragState.isDragging && dragState.nodeId && dragState.offset) {
+    
+    // Event listeners globales para el drag de nodos
+    const handleGlobalMouseMove = (globalE: MouseEvent) => {
       const rect = canvasRef.current?.getBoundingClientRect();
       if (!rect) return;
       
-      const newX = e.clientX - rect.left - dragState.offset.x;
-      const newY = e.clientY - rect.top - dragState.offset.y;
+      const newX = globalE.clientX - rect.left - offset.x;
+      const newY = globalE.clientY - rect.top - offset.y;
       
-      setNodes(prev => prev.map(node => 
-        node.id === dragState.nodeId 
-          ? { ...node, x: Math.max(0, newX), y: Math.max(0, newY) }
-          : node
+      setNodes(prev => prev.map(n => 
+        n.id === nodeId 
+          ? { ...n, x: Math.max(0, newX), y: Math.max(0, newY) }
+          : n
       ));
-    }
+    };
     
-    // Actualizar conexión temporal
-    if (tempConnection.from) {
-      const rect = canvasRef.current?.getBoundingClientRect();
-      if (rect) {
-        setTempConnection(prev => ({
-          ...prev,
-          mouseX: e.clientX - rect.left,
-          mouseY: e.clientY - rect.top
-        }));
-      }
-    }
-  };
-
-  const handleMouseUp = () => {
-    setDragState({});
+    const handleGlobalMouseUp = () => {
+      setDragState({});
+      document.removeEventListener('mousemove', handleGlobalMouseMove);
+      document.removeEventListener('mouseup', handleGlobalMouseUp);
+    };
+    
+    document.addEventListener('mousemove', handleGlobalMouseMove);
+    document.addEventListener('mouseup', handleGlobalMouseUp);
+    
+    e.preventDefault();
   };
 
   // Manejar conexiones con drag
   const handleConnectionStart = (nodeId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
+    
     const fromNode = getNodeById(nodeId);
     if (!fromNode) return;
     
@@ -526,6 +530,27 @@ export default function PricingV51Page() {
       mouseX: e.clientX - rect.left,
       mouseY: e.clientY - rect.top
     });
+    
+    // Añadir event listeners globales para el drag
+    const handleGlobalMouseMove = (globalE: MouseEvent) => {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (rect) {
+        setTempConnection(prev => ({
+          ...prev,
+          mouseX: globalE.clientX - rect.left,
+          mouseY: globalE.clientY - rect.top
+        }));
+      }
+    };
+    
+    const handleGlobalMouseUp = () => {
+      setTempConnection({});
+      document.removeEventListener('mousemove', handleGlobalMouseMove);
+      document.removeEventListener('mouseup', handleGlobalMouseUp);
+    };
+    
+    document.addEventListener('mousemove', handleGlobalMouseMove);
+    document.addEventListener('mouseup', handleGlobalMouseUp);
   };
 
   const handleConnectionEnd = (nodeId: string, e: React.MouseEvent) => {
@@ -623,6 +648,12 @@ export default function PricingV51Page() {
               >
                 📂 Cargar
               </button>
+              <button
+                onClick={clearCanvas}
+                className="rounded-lg border border-red-300 bg-white px-4 py-2 text-red-700 hover:bg-red-50"
+              >
+                🧹 Limpiar
+              </button>
             </div>
           </div>
 
@@ -636,8 +667,16 @@ export default function PricingV51Page() {
           </div>
           
           {/* Instrucciones de uso */}
-          <div className="mt-2 text-xs text-slate-500">
-            💡 <strong>Cómo usar:</strong> Arrastra nodos para moverlos • Arrastra desde punto verde para conectar • Doble click en líneas para eliminar • Click en nodos para configurar
+          <div className="mt-2 p-2 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="text-xs text-blue-800">
+              <strong>💡 Cómo usar:</strong>
+            </div>
+            <div className="text-xs text-blue-700 mt-1 space-y-1">
+              <div>• <strong>Mover nodos:</strong> Arrastra cualquier nodo por el canvas</div>
+              <div>• <strong>Conectar:</strong> Arrastra desde el punto verde (salida) hasta el punto azul (entrada)</div>
+              <div>• <strong>Eliminar conexión:</strong> Doble click en cualquier línea</div>
+              <div>• <strong>Configurar:</strong> Click en un nodo para ver sus opciones</div>
+            </div>
           </div>
         </div>
 
@@ -669,9 +708,6 @@ export default function PricingV51Page() {
                 `,
                 backgroundSize: "20px 20px"
               }}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
             >
               {/* SVG para conexiones */}
               <svg className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}>
@@ -788,23 +824,31 @@ export default function PricingV51Page() {
                     </div>
                     
                     {/* Puntos de conexión */}
-                    {/* Punto de entrada (izquierda) */}
+                    {/* Punto de entrada (izquierda) - Azul */}
                     <div
-                      className="absolute left-0 top-1/2 w-3 h-3 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:w-4 hover:h-4 transition-all"
+                      className="absolute left-0 top-1/2 w-4 h-4 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:w-5 hover:h-5 hover:bg-blue-600 transition-all border-2 border-white shadow-md"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleNodeClick(node.id, false);
                       }}
-                      onMouseUp={(e) => handleConnectionEnd(node.id, e)}
+                      onMouseUp={(e) => {
+                        e.stopPropagation();
+                        handleConnectionEnd(node.id, e);
+                      }}
+                      style={{ zIndex: 20 }}
                     />
-                    {/* Punto de salida (derecha) */}
+                    {/* Punto de salida (derecha) - Verde */}
                     <div
-                      className="absolute right-0 top-1/2 w-3 h-3 bg-green-500 rounded-full transform translate-x-1/2 -translate-y-1/2 cursor-pointer hover:w-4 hover:h-4 transition-all"
+                      className="absolute right-0 top-1/2 w-4 h-4 bg-green-500 rounded-full transform translate-x-1/2 -translate-y-1/2 cursor-pointer hover:w-5 hover:h-5 hover:bg-green-600 transition-all border-2 border-white shadow-md"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleNodeClick(node.id, true);
                       }}
-                      onMouseDown={(e) => handleConnectionStart(node.id, e)}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        handleConnectionStart(node.id, e);
+                      }}
+                      style={{ zIndex: 20 }}
                     />
                   </div>
                 );
