@@ -149,7 +149,10 @@ function parseCSV(text: string) {
   });
 }
 
-const num = (x: unknown, d = 0) => Number.isFinite(+x) ? +x : d;
+const num = (x: unknown, d = 0) => {
+  const n = Number(x);
+  return Number.isFinite(n) ? n : d;
+};
 
 // ===== Lógica de cómputo =====
 function computeNodeValue(type: string, inputs: unknown[], data: Record<string, unknown>, rng: () => number): unknown {
@@ -201,7 +204,7 @@ function computeNodeValue(type: string, inputs: unknown[], data: Record<string, 
       const ds = Array.isArray(inputs?.[0]) ? inputs[0] as Record<string, unknown>[] : [];
       const markup = clamp(Number(data?.markup ?? 0.25), 0, 1);
       return ds.map((r: Record<string, unknown>) => {
-        const comps = [r.precio_comp1, r.precio_comp2, r.precio_comp3].filter(Number.isFinite);
+        const comps = [r.precio_comp1, r.precio_comp2, r.precio_comp3].map(Number).filter(Number.isFinite);
         const prom = comps.length ? comps.reduce((a: number, b: number) => a + b, 0) / comps.length : (Number(r.costo) * 1.3);
         const margen_obj = Number(r.costo) * (1 + markup);
         const precio_ref = prom * 0.98;
@@ -214,7 +217,7 @@ function computeNodeValue(type: string, inputs: unknown[], data: Record<string, 
     case "Comparativas": {
       const ds = Array.isArray(inputs?.[0]) ? inputs[0] as Record<string, unknown>[] : [];
       return ds.map((r: Record<string, unknown>) => {
-        const comps = [r.precio_comp1, r.precio_comp2, r.precio_comp3].filter(Number.isFinite);
+        const comps = [r.precio_comp1, r.precio_comp2, r.precio_comp3].map(Number).filter(Number.isFinite);
         const minComp = comps.length ? Math.min(...comps) : null;
         const maxComp = comps.length ? Math.max(...comps) : null;
         const prom = comps.length ? comps.reduce((a: number, b: number) => a + b, 0) / comps.length : null;
@@ -231,7 +234,7 @@ function computeNodeValue(type: string, inputs: unknown[], data: Record<string, 
         if (seen.has(sku)) issues.push("SKU duplicado"); else seen.add(sku);
         if (!(Number(r.costo) > 0)) issues.push("Costo <= 0");
         if (Number(r.stock) < 0) issues.push("Stock negativo");
-        const comps = [r.precio_comp1, r.precio_comp2, r.precio_comp3].filter(Number.isFinite);
+        const comps = [r.precio_comp1, r.precio_comp2, r.precio_comp3].map(Number).filter(Number.isFinite);
         if (comps.length && Number(r.costo) >= Math.min(...comps)) issues.push("Costo ≥ comp_min (margen nulo)");
         return issues.length ? [{ sku: r.sku, issues }] : [];
       });
@@ -242,8 +245,8 @@ function computeNodeValue(type: string, inputs: unknown[], data: Record<string, 
     case "AgenteIA": {
       // Simulación de IA con guardrails
       const prompt = data?.prompt || "Analizar datos y generar recomendaciones";
-      const temp = clamp(data?.temperature || 0.7, 0, 1);
-      const maxTokens = clamp(data?.maxTokens || 150, 50, 500);
+      const temp = clamp(Number(data?.temperature) || 0.7, 0, 1);
+      const maxTokens = clamp(Number(data?.maxTokens) || 150, 50, 500);
       
       // Simular análisis basado en inputs
       const inputSummary = inputs.map((inp, i) => `Input ${i + 1}: ${JSON.stringify(inp).slice(0, 100)}`).join("; ");
@@ -385,7 +388,7 @@ export default function PricingV51Page() {
       
       try {
         const inputs = getNodeInputs(node.id);
-        const result = computeNodeValue(node.type, inputs, node.data, rngRef.current);
+        const result = computeNodeValue(node.type, inputs, node.data || {}, rngRef.current);
         
         step.result = result;
         step.status = "done";
@@ -665,7 +668,7 @@ export default function PricingV51Page() {
                     <textarea
                       rows={6}
                       className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2"
-                      value={selectedNode.data?.csvText || ""}
+                      value={String(selectedNode.data?.csvText || "")}
                       onChange={(e) => {
                         const updatedNode = { ...selectedNode, data: { ...selectedNode.data, csvText: e.target.value } };
                         setNodes(prev => prev.map(n => n.id === selectedNode.id ? updatedNode : n));
@@ -707,7 +710,7 @@ export default function PricingV51Page() {
                       min="0"
                       max="100"
                       step="5"
-                      value={Math.round((selectedNode.data?.markup || 0.25) * 100)}
+                      value={Math.round((Number(selectedNode.data?.markup) || 0.25) * 100)}
                       onChange={(e) => {
                         const markup = Number(e.target.value) / 100;
                         const updatedNode = { ...selectedNode, data: { ...selectedNode.data, markup } };
@@ -727,7 +730,7 @@ export default function PricingV51Page() {
                       </label>
                       <textarea
                         rows={3}
-                        value={selectedNode.data?.prompt || "Analizar datos y generar recomendaciones"}
+                        value={String(selectedNode.data?.prompt || "Analizar datos y generar recomendaciones")}
                         onChange={(e) => {
                           const updatedNode = { ...selectedNode, data: { ...selectedNode.data, prompt: e.target.value } };
                           setNodes(prev => prev.map(n => n.id === selectedNode.id ? updatedNode : n));
@@ -738,14 +741,14 @@ export default function PricingV51Page() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-1">
-                        Temperatura: {selectedNode.data?.temperature || 0.7}
+                        Temperatura: {Number(selectedNode.data?.temperature) || 0.7}
                       </label>
                       <input
                         type="range"
                         min="0"
                         max="1"
                         step="0.1"
-                        value={selectedNode.data?.temperature || 0.7}
+                        value={Number(selectedNode.data?.temperature) || 0.7}
                         onChange={(e) => {
                           const updatedNode = { ...selectedNode, data: { ...selectedNode.data, temperature: Number(e.target.value) } };
                           setNodes(prev => prev.map(n => n.id === selectedNode.id ? updatedNode : n));
@@ -763,7 +766,7 @@ export default function PricingV51Page() {
                         min="50"
                         max="500"
                         step="10"
-                        value={selectedNode.data?.maxTokens || 150}
+                        value={Number(selectedNode.data?.maxTokens) || 150}
                         onChange={(e) => {
                           const updatedNode = { ...selectedNode, data: { ...selectedNode.data, maxTokens: Number(e.target.value) } };
                           setNodes(prev => prev.map(n => n.id === selectedNode.id ? updatedNode : n));
